@@ -1,0 +1,14 @@
+##################
+#   fixed file   #
+##################
+*.pyc
+*.bak
+*.conf
+*.ini
+uwsgi_params
+!.gitignore
+
+##################
+#     folder     #
+##################
+!/static/img/
