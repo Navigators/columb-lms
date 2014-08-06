@@ -12,3 +12,4 @@ uwsgi_params
 #     folder     #
 ##################
 !/static/img/
+!/media/
