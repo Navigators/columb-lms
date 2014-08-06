@@ -63,6 +63,7 @@ class Readers(User):
     input_code = models.CharField(max_length=40) 
     code = models.CharField(max_length=40)
     pwd = models.CharField(max_length=200)
+    name = models.CharField(max_length=40)
     card_id = models.CharField(max_length=40) 
     cate = models.ForeignKey(ReaderCate) 
     sex = models.BooleanField() 
@@ -110,7 +111,7 @@ class Books(models.Model):
     memo = models.CharField(max_length=200) 
     total_count = models.IntegerField(default=0) 
     loan_count = models.IntegerField(default=0) 
-    reg_date = models.DateField() 
+    reg_date = models.DateField(auto_now_add=True) 
     operator = models.ForeignKey(Librarians)
     pic_location = models.CharField(max_length=200)
     
@@ -122,11 +123,11 @@ class Bylaw(models.Model):
     title = models.CharField(max_length=100) 
     content = models.TextField() 
     memo = models.CharField(max_length=100) 
-    reg_date = models.DateField() 
+    reg_date = models.DateField(auto_now_add=True) 
     operator = models.ForeignKey(Librarians)
     
 class Copies(models.Model):
-    book = models.IntegerField() 
+    book = models.ForeignKey(Books) 
     barcode = models.CharField(max_length=80)
     code = models.CharField(max_length=80)
     state = models.ForeignKey(Items, related_name="copies_state")  
@@ -134,7 +135,7 @@ class Copies(models.Model):
     position = models.ForeignKey(Items, related_name="copies_position") 
     volume_info = models.CharField(max_length=80) 
     price = models.FloatField() 
-    reg_date = models.DateField() 
+    reg_date = models.DateField(auto_now_add=True) 
     operator = models.ForeignKey(Librarians)
     
     def __unicode__(self):
@@ -144,7 +145,7 @@ class LoanList(models.Model):
     copy = models.ForeignKey(Copies) 
     book = models.ForeignKey(Books) 
     reader = models.ForeignKey(Readers) 
-    loan_date_time = models.DateTimeField() 
+    loan_date_time = models.DateTimeField(auto_now_add=True) 
     should_return_date = models.DateField() 
     reloan_times = models.IntegerField() 
     reLoan_date = models.DateField() 
@@ -153,7 +154,7 @@ class LoanList(models.Model):
     loan_operator = models.ForeignKey(Librarians, related_name="loanlist_loan")
     return_operator = models.ForeignKey(Librarians, related_name="loanlist_return")
     praise = models.BooleanField()
-    rating_core = models.IntegerField(default=0)
+    rating_score = models.IntegerField(default=0)
     
     def __unicode__(self):
         return self.id
@@ -161,7 +162,7 @@ class LoanList(models.Model):
 class Comments(models.Model):
     loan = models.ForeignKey(LoanList)
     content = models.CharField(max_length=200) 
-    create_date_time=models.DateTimeField()   
+    create_date_time=models.DateTimeField(auto_now_add=True)   
 
 class Par(models.Model):
     system_name = models.CharField(max_length=100) 
@@ -193,7 +194,7 @@ class UserAccredit(models.Model):
     is_print = models.BooleanField()
     
 class UserLog(models.Model):
-    log_date_time = models.DateTimeField() 
+    log_date_time = models.DateTimeField(auto_now_add=True) 
     fun = models.ForeignKey(UserFun) 
     operate_content = models.CharField(max_length=8) 
     computer_name = models.CharField(max_length=40) 
