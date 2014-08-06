@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>admin-base</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<!-- 可选的Bootstrap主题文件（一般不用引入） -->
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="css/base.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/base.js"></script>
+</head>
+<body>
+	<header id="header" class="hvcenter title">
+		<div class="row">
+			<div class="col-md-1">
+				<span>欢迎，</span>
+				<span>用户</span>
+			</div>
+			<div class="col-md-4 col-md-offset-3">
+				<span><a href="index.html">FNST图书管理系统</a></span>
+			</div>
+		</div>	
+	</header><!-- /header -->
+	<div class="container-fluid">
+		<div class="row">
+			<nav class="col-sm-3 col-md-2 sidebar" style="float:left">
+				<ul class="nav nav-sidebar navigation">
+					<li>
+						<a href="#">书刊管理</a>
+						<ul class="nav nav-child">
+							<li>
+								<a href="addBook.html">图书入库</a>
+							</li>
+							<li>
+								<a href="bookCategory.html">分类管理</a>
+							</li>
+							<li>
+								<a href="buyBook.html">图书购买</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">读者管理</a>
+						<ul class="nav nav-child">
+							<li>
+								<a href="readerInfo.html">读者信息</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">借阅管理</a>
+						<ul class="nav nav-child">
+							<li>
+								<a href="borrowPermission.html">借阅权限</a>
+							</li>
+							<li>
+								<a href="returnBorrow.html">借书及管理</a>
+							</li>
+							<li>
+								<a href="borrowRecord.html">借阅记录查询</a>
+							</li>
+							<li>
+								<a href="overdueRecord.html">逾期记录查询</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">积分管理</a>
+					</li>
+					<li>
+						<a href="#">统计报表</a>
+					</li>
+					<li>
+						<a href="#">系统设置</a>
+						<ul class="nav nav-child">
+							<li>
+								<a href="password.html">管理员账号</a>
+							</li>
+							<li>
+								<a href="#">推送</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+			<section class="col-sm-8 col-md-9 main">
+				内容页
+			</section>
+		</div>
+	</div>
+</body>
+</html>

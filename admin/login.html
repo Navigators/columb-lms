@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>登录</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="zh-CN" />
+	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+	<style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+    </style>
+	<script   type= "text/javascript">
+		function NameInvalid(){
+			var name = document.forms[0].Username.value;
+             name = name.trim();
+             if (name == "")
+                 document.getElementById("user").innerText = "用户名不为空！";
+             else if (name.length > 10)
+                 document.getElementById("user").innerText = "用户名长度不大于10！";
+             else
+             { document.getElementById("user").innerText = ""; return true; }
+             return false;
+		}
+		function PwdInvalid() {
+             var pass= document.forms[0].Password.value;
+              pass =pass.trim();
+              if (pass == "")
+                  document.getElementById("pwd").innerText = "密码不为空！";
+              else if (pass.length > 16)
+                  document.getElementById("pwd").innerText = "密码长度不大于16！";
+              else if (pass.length < 6)
+                  document.getElementById("pwd").innerText = "密码长度不小于6！";
+              else
+              { document.getElementById("pwd").innerText = ""; return true; }
+              return false;
+          }
+		   function Submit() {
+             if (!NameInvalid()) return false;
+             if (!PwdInvalid()) return false;
+             return true;
+         }
+	</script>
+</head>
+<body>
+	<div class="container-fluid content">
+      <form class="form-signin" action="index.html">
+        <h2 class="form-signin-heading">登录</h2>
+        <input name="Username" type="text" class="form-control" placeholder="用户名" onblur="NameInvalid()">
+		    <span id="user" style="color:Red"></span>
+        <input name="Password" type="password" class="form-control" placeholder="输入密码" onblur="PWDInvalid()">
+		    <span id="pwd" style="color:Red"></span>
+        <input class="btn btn-lg btn-primary" type="submit" value="登录" onclick="return Submit();"/>
+      </form>
+    </div> <!-- /container -->
+</body>
+</html>

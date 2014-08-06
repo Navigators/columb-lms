@@ -1,0 +1,32 @@
+/** {
+	border: 1px solid;
+}*/
+.title {
+	font-size: 20px;
+}
+.hvcenter{
+	text-align: center;
+	vertical-align: middle;
+	line-height: 80px;
+}
+body section {
+	height: 900px;
+}
+.nav-child {
+	font-size: 10px;
+}
+.searchISBN {
+	margin-top: 200px;
+}
+/*section位置离header60px*/
+.section-content {
+	margin-top: 60px;
+}
+/*使label内文字横排*/
+.form-label {
+	padding-right: 5px;
+	padding-left: 5px;
+}
+.tr-choosen-ok {
+	background-color: rgb(196,196,226);
+}
