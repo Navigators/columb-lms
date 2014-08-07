@@ -8,11 +8,13 @@
 	<!-- 可选的Bootstrap主题文件（一般不用引入） -->
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/dtree.css">
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/base.js"></script>
+	<script src="js/dtree.js"></script>
 </head>
 <body>
 	<header id="header" class="hvcenter title">
@@ -35,9 +37,6 @@
 						<ul class="nav nav-child">
 							<li>
 								<a href="addBook.html">图书入库</a>
-							</li>
-							<li>
-								<a href="bookCategory.html">分类管理</a>
 							</li>
 							<li>
 								<a href="buyBook.html">图书购买</a>
@@ -88,9 +87,71 @@
 					</li>
 				</ul>
 			</nav>
-			<section class="col-sm-9 col-md-10 main">
-				读者信息
-			</section>
+			<section class="col-sm-8 col-md-9 main">
+				<div class="row section-content">
+					<div class="col-md-11">
+						<form class="form-horizontal" method="post" action="#">
+							<div class="row">
+								<div class="col-sm-4 col-md-5">
+									<button class="btn btn-success" type="button">新增</button>
+									<button class="btn btn-success" type="button">修改</button>
+									<button class="btn btn-success" type="button">删除</button>
+									<button class="btn btn-success" type="button">查询</button>
+								</div>
+								<div class="col-sm-12 col-md-12"><hr></div>
+								<div class="col-sm-4 col-md-6 dtree" style="border-right: 1px solid #000000">
+									<p><a href="javascript: d.openAll();">打开全部</a> | <a href="javascript: d.closeAll();">关闭全部</a></p>
+									<script type="text/javascript">
+										var d = new dTree('d');
+										d.add(0,-1,'图书分类');
+										d.add(1,0,'Node 1','bookCategory.html');
+										d.add(2,0,'Node 2','bookCategory.html');
+										d.add(3,1,'Node 1.1','bookCategory.html');
+										d.add(4,0,'Node 3','bookCategory.html');
+										d.add(5,3,'Node 1.1.1','bookCategory.html');
+										d.add(6,5,'Node 1.1.1.1','bookCategory.html');
+										d.add(7,0,'Node 4','bookCategory.html');
+										d.add(8,1,'Node 1.2','bookCategory.html');
+										d.add(9,0,'My Pictures','bookCategory.html','Pictures I\'ve taken over the years','','','img/imgfolder.gif');
+										d.add(10,9,'The trip to Iceland','bookCategory.html','Pictures of Gullfoss and Geysir');
+										d.add(11,9,'Mom\'s birthday','bookCategory.html');
+										d.add(12,0,'Recycle Bin','bookCategory.html','','','img/trash.gif');
+								
+										document.write(d);   
+    								</script>
+								</div>
+								<div class="col-sm-4 col-md-6">
+									<div class="row">
+										<table class="table table-striped">
+											<tr>
+												<th>读者姓名</th>
+												<th>读者编码</th>
+												<th>读者类别</th>
+												<th>性别</th>
+												<th>部门</th>
+											</tr>
+											<tr>
+												<td>阿三</td>
+												<td>010010</td>
+												<td>正式员工</td>
+												<td>男</td>
+												<td>第一软件事业部第一开发部</td>
+											</tr>
+											<tr>
+												<td>阿四</td>
+												<td>010011</td>
+												<td>正式员工</td>
+												<td>男</td>
+												<td>第一软件事业部第一开发部</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

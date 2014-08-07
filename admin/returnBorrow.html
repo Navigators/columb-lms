@@ -13,6 +13,11 @@
 	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/base.js"></script>
+	<style type="text/css">
+		th,td {
+			min-width: 100px;
+		}
+	</style>
 </head>
 <body>
 	<header id="header" class="hvcenter title">
@@ -35,9 +40,6 @@
 						<ul class="nav nav-child">
 							<li>
 								<a href="addBook.html">图书入库</a>
-							</li>
-							<li>
-								<a href="bookCategory.html">分类管理</a>
 							</li>
 							<li>
 								<a href="buyBook.html">图书购买</a>
@@ -88,10 +90,208 @@
 					</li>
 				</ul>
 			</nav>
-			<section class="col-sm-9 col-md-10 main">
-				借书及管理
+			<section class="col-sm-8 col-md-9 main">
+				<div class="row section-content">
+					<div class="col-md-11">
+						<div class="form-horizontal" method="post" action="#">
+							<div class="row">
+								<div class="col-sm-3 col-md-4">
+									<button id="borrow" class="btn btn-primary" type="button">借书</button>
+									<button id="return" class="btn btn-primary" type="button">还书</button>
+									<button id="renew" class="btn btn-primary" type="button">续借</button>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-md-2">
+									<div class="row">
+										<div class="col-md-11" style="border: 1px groove red; height: 250px; text-align: center; line-height: 250px;">
+											照片
+										</div>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="form-group">
+										<select class="col-md-3" style="padding-top:7px">
+											<option value="书刊条码">书刊条码</option>
+											<option value="书刊名称">书刊名称</option>
+											<option value="输入码">输入码</option>
+											<option value="ISBN/ISSN">ISBN/ISSN</option>
+										</select>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="bookName" class="col-md-3 col-sm-4 control-label">书刊名称:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="bookName" placeholder="书刊名称">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="bookCode" class="col-md-3 col-sm-4 control-label">书刊名称:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="bookCode" placeholder="书刊条码">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="ISBN" class="col-md-3 col-sm-4 control-label">ISBN/ISSN:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="ISBN" placeholder="ISBN/ISSN">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="bookrack" class="col-md-3 col-sm-4 control-label">书室架位:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="bookrack" placeholder="书室架位">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="form-group">
+										<select class="col-md-3" style="padding-top:7px">
+											<option value="证件编码">读者姓名</option>
+											<option value="读者姓名">读者姓名</option>
+											<option value="输入码">输入码</option>
+										</select>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="readerName" class="col-md-3 col-sm-4 control-label">读者姓名:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="readerName" placeholder="读者姓名">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="documentNumber" class="col-md-3 col-sm-4 control-label">证件编号:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="documentNumber" placeholder="证件编号">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="readerCategory" class="col-md-3 col-sm-4 control-label">读者类别:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="readerCategory" placeholder="读者类别">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="IDNumber" class="col-md-3 col-sm-4 control-label">身份证号:</label>
+										<div class="col-md-9 col-sm-8">
+											<input type="text" class="form-control" id="IDNumber" placeholder="身份证号">
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-md-1">
+									<button type="button" id="customize" class="btn btn-info">定制列表</button>
+								</div>
+								<div id="resultTable" class="col-md-11" style="overflow: auto">
+									<div id="items" style="display:none; white-space:nowrap">
+										<input type="checkbox">
+										<label>借出日期</label>
+										<input type="checkbox">
+										<label>借出时间</label>
+										<input type="checkbox">
+										<label>书刊名称</label>
+										<input type="checkbox">
+										<label>书刊输入码</label>
+										<input type="checkbox">
+										<label>馆藏类型</label>
+										<input type="checkbox">
+										<label>书刊条号</label>
+										<input type="checkbox">
+										<label>索书号</label>
+										<input type="checkbox">
+										<label>读者姓名</label>
+										<input type="checkbox">
+										<label>读者输入码</label>
+										<input type="checkbox">
+										<label>读者类别</label>
+										<input type="checkbox">
+										<label>读者性别</label>
+										<input type="checkbox">
+										<label>读者部门</label>
+										<input type="checkbox">
+										<label>应还日期</label>
+										<input type="checkbox">
+										<label>续借次数</label>
+										<input type="checkbox">
+										<label>借书操作员</label>
+									</div>
+									<table class="table">
+										<tr>
+											<th>借出日期</th>
+											<th>借出时间</th>
+											<th>书刊名称</th>
+											<th>书刊输入码</th>
+											<th>馆藏类型</th>
+											<th>书刊条号</th>
+											<th>索书号</th>
+											<th>读者姓名</th>
+											<th>读者输入码</th>
+											<th>读者类别</th>
+											<th>读者性别</th>
+											<th>读者部门</th>
+											<th>应还日期</th>
+											<th>续借次数</th>
+											<th>借书操作员</th>
+										</tr>
+										<tr class="choosen">
+											<td>2014/8/7</td>
+											<td>09:30:00</td>
+											<td>javascript秘密花园</td>
+											<td>MMHY</td>
+											<td>工具书</td>
+											<td>101010</td>
+											<td>TP12/1</td>
+											<td>张小强</td>
+											<td>ZXQ</td>
+											<td>正式员工</td>
+											<td>男</td>
+											<td>第一事业部第一开发部</td>
+											<td>2014/9/6</td>
+											<td>0</td>
+											<td>admin</td>
+										</tr>
+									</table>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
 			</section>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(function() {
+			$('#customize').on('click', function() {
+				if ($('#items').css('display') == 'none') {
+					$('#items').slideDown('slow');
+				} else {
+					$('#items').slideUp('slow');
+				}
+			});
+			$('#items input').attr('checked','checked');
+			$('#items input').each(function(index) {
+				$(this).click(function(){
+					if ($(this).attr('checked') == 'checked') {
+						$(this).removeAttr('checked');
+						console.log('这是第'+index+'个');
+						$('tr th:eq('+index+')').hide();
+						$('tr td:eq('+index+')').hide();
+					} else {
+						$(this).attr('checked','checked');
+						$('tr th:eq('+index+')').show();
+						$('tr td:eq('+index+')').show();
+					}
+				});
+			});
+		});
+	</script>
 </body>
 </html>

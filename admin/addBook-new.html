@@ -37,9 +37,6 @@
 								<a href="addBook.html">图书入库</a>
 							</li>
 							<li>
-								<a href="bookCategory.html">分类管理</a>
-							</li>
-							<li>
 								<a href="buyBook.html">图书购买</a>
 							</li>
 						</ul>
@@ -92,177 +89,162 @@
 				<div class="row section-content">
 					<div class="col-md-11">
 						<form class="form-horizontal" method="post" action="addBook-copy.html">
-							<ul id="myTab" class="nav nav-tabs" role="tablist">
-								<li class="active">
-									<a href="#basic-info" role="tab" data-toggle="tab">基本信息</a>
-								</li>
-								<li class>
-									<a href="#additional-info" role="tab" data-toggle="tab">附加信息</a>
-								</li>
-								<li class>
-									<a href="#picture-info" role="tab" data-toggle="tab">图片信息</a>
-								</li>
-							</ul>
-							<div id="myTabContent" class="tab-content" style="margin-top: 20px; height: 400px;">
-								<div class="tab-pane fade active in" id="basic-info">
-									<div class="container-fluid">
-										<div class="row">
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="bookName" class="col-md-3 col-sm-4 control-label">书刊名称:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="bookName" placeholder="书刊名称">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="inputCode" class="col-md-3 col-sm-4 control-label">输入码:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="inputCode" placeholder="输入码">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="author" class="col-md-3 col-sm-4 control-label">著者:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="author" placeholder="著者">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="collectionType" class="col-md-3 col-sm-4 control-label">馆藏类型:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="collectionType" placeholder="馆藏类型">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="classNumber" class="col-md-3 col-sm-4 control-label">分类号:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="classNumber" placeholder="分类号">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="className" class="col-md-3 col-sm-4 control-label">分类名称:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="className" placeholder="分类名称">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="publishingUnit" class="col-md-3 col-sm-4 control-label">出版单位:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="publishingUnit" placeholder="出版单位">
-													</div>
-												</div>
-												<div class="form-group row">
-													<label for="place" class="col-md-3 control-label form-label">出版地:</label>
-													<div class="col-md-3">
-														<input type="text" class="form-control" id="place" placeholder="出版地">
-													</div>
-													<label for="date" class="col-md-3 control-label form-label">出版日期:</label>
-													<div class="col-md-3">
-														<input type="text" class="form-control" id="date" placeholder="出版日期">
-													</div>
-												</div>
+							<div class="container-fluid">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="bookName" class="col-md-3 col-sm-4 control-label">书刊名称:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="bookName" placeholder="书刊名称">
 											</div>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="bookPrice" class="col-md-3 col-sm-4 control-label">书刊定价:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="bookPrice" placeholder="书刊定价">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="keyWords" class="col-md-3 col-sm-4 control-label">主题词:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="keyWords" placeholder="主题词">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="seriesName" class="col-md-3 col-sm-4 control-label">丛编名:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="seriesName" placeholder="丛编名">
-													</div>
-												</div>
-												<div class="form-group row">
-													<label for="revison" class="col-md-3 control-label form-label">出版版次:</label>
-													<div class="col-md-3">
-														<input type="text" class="form-control" id="revison" placeholder="出版版次">
-													</div>
-													<label for="language" class="col-md-3 control-label form-label">书刊语言:</label>
-													<div class="col-md-3">
-														<input type="text" class="form-control" id="language" placeholder="书刊语言">
-													</div>
-												</div>
-												<div class="form-group row">
-													<label for="digital" class="col-md-3 control-label form-label">载体形态:</label>
-													<div class="col-md-3">
-														<input type="text" class="form-control" id="digital" placeholder="载体形态">
-													</div>
-													<label for="attachment" class="col-md-3 control-label form-label">书刊附件:</label>
-													<div class="col-md-3">
-														<input type="text" class="form-control" id="attachment" placeholder="书刊附件">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="cnIssues" class="col-md-3 col-sm-4 control-label">CN刊号:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="cnIssues" placeholder="CN刊号">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="bimonthly" class="col-md-3 col-sm-4 control-label">出版周期:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="bimonthly" placeholder="出版周期">
-													</div>
-												</div>
-												<div class="form-group">
-													<label for="organizer" class="col-md-3 col-sm-4 control-label">主办单位:</label>
-													<div class="col-md-9 col-sm-8">
-														<input type="text" class="form-control" id="organizer" placeholder="主办单位">
-													</div>
-												</div>
-											</div>
-
 										</div>
-									</div>
-								</div>
-								<div class="tab-pane fade" id="additional-info">
-									<div class="container-fluid">
-										<div class="row">
-											<div class="col-sm-1 col-md-1 form-label">
-												<label>内容简介:</label>
+										<div class="form-group">
+											<label for="inputCode" class="col-md-3 col-sm-4 control-label">输入码:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="inputCode" placeholder="输入码">
 											</div>
-											<textarea id="description" class="col-sm-7 col-md-8" style="height: 150px" placeholder="内容简介"></textarea>
 										</div>
-										<div class="row" style="margin-top: 20px;">
-											<div class="col-sm-1 col-md-1 form-label" style="">
-												<label>备注:</label>
+										<div class="form-group">
+											<label for="author" class="col-md-3 col-sm-4 control-label">著者:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="author" placeholder="著者">
 											</div>
-											<textarea id="remarks" class="col-sm-7 col-md-8" style="height: 150px" placeholder="备注"></textarea>
 										</div>
-										<div class="row" style="margin-top: 20px;">
-											<div class="form-group">
-												<label for="checkDate" class="col-md-1 col-md-offset-1 col-sm-1 col-sm-offset-1 control-label form-label">登记时间:</label>
-												<div class="col-md-2 col-sm-2">
-													<input type="text" class="form-control" id="checkDate" disabled>
-												</div>
-												<label for="operator" class="col-md-1 col-sm-1 control-label form-label">操作员:</label>
-												<div class="col-md-2 col-sm-2">
-													<input type="text" class="form-control" id="operator" disabled>
-												</div>
+										<div class="form-group">
+											<label for="collectionType" class="col-md-3 col-sm-4 control-label">馆藏类型:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="collectionType" placeholder="馆藏类型">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="classNumber" class="col-md-3 col-sm-4 control-label">分类号:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="classNumber" placeholder="分类号">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="className" class="col-md-3 col-sm-4 control-label">分类名称:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="className" placeholder="分类名称">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="publishingUnit" class="col-md-3 col-sm-4 control-label">出版单位:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="publishingUnit" placeholder="出版单位">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="place" class="col-md-2 control-label form-label">出版地:</label>
+											<div class="col-md-4">
+												<input type="text" class="form-control" id="place" placeholder="出版地">
+											</div>
+											<label for="date" class="col-md-2 control-label form-label">出版日期:</label>
+											<div class="col-md-4">
+												<input type="text" class="form-control" id="date" placeholder="出版日期">
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="tab-pane fade" id="picture-info">
-									<div class="container-fluid">
-										<div class="row">
-											书刊图片<input id="pictureFile" type="file">
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="bookPrice" class="col-md-3 col-sm-4 control-label">书刊定价:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="bookPrice" placeholder="书刊定价">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="keyWords" class="col-md-3 col-sm-4 control-label">主题词:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="keyWords" placeholder="主题词">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="seriesName" class="col-md-3 col-sm-4 control-label">丛编名:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="seriesName" placeholder="丛编名">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="revison" class="col-md-2 control-label form-label">出版版次:</label>
+											<div class="col-md-4">
+												<input type="text" class="form-control" id="revison" placeholder="出版版次">
+											</div>
+											<label for="language" class="col-md-2 control-label form-label">书刊语言:</label>
+											<div class="col-md-4">
+												<input type="text" class="form-control" id="language" placeholder="书刊语言">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="digital" class="col-md-2 control-label form-label">载体形态:</label>
+											<div class="col-md-4">
+												<input type="text" class="form-control" id="digital" placeholder="载体形态">
+											</div>
+											<label for="attachment" class="col-md-2 control-label form-label">书刊附件:</label>
+											<div class="col-md-4">
+												<input type="text" class="form-control" id="attachment" placeholder="书刊附件">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="cnIssues" class="col-md-3 col-sm-4 control-label">CN刊号:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="cnIssues" placeholder="CN刊号">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="bimonthly" class="col-md-3 col-sm-4 control-label">出版周期:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="bimonthly" placeholder="出版周期">
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="organizer" class="col-md-3 col-sm-4 control-label">主办单位:</label>
+											<div class="col-md-9 col-sm-8">
+												<input type="text" class="form-control" id="organizer" placeholder="主办单位">
+											</div>
 										</div>
 									</div>
+									<div class="col-md-3" style="border: 1px groove red; height: 400px; text-align: center; line-height: 400px;">
+										图书照片
+									</div>
 								</div>
+								<hr>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="col-md-2 control-label" style="padding-top: 10px">
+											<label>内容简介:</label>
+										</div>
+										<textarea id="description" class="col-md-9" style="height: 150px" placeholder="内容简介"></textarea>
+										
+									</div>
+									<div class="col-md-6">
+										<div class="col-sm-1 col-md-1 control-label" style="padding-left: 0px">
+											<label>备注:</label>
+										</div>
+										<textarea id="remarks" class="col-md-9" style="height: 150px" placeholder="备注"></textarea>
+									</div>
+								</div>
+								<div class="row" style="margin-top: 20px">
+									<label for="checkDate" class="col-md-1 col-sm-1 control-label form-label">登记时间:</label>
+									<div class="col-md-2 col-sm-2">
+										<input type="text" class="form-control" id="checkDate" disabled>
+									</div>
+									<label for="operator" class="col-md-1 col-sm-1 control-label form-label">操作员:</label>
+									<div class="col-md-2 col-sm-2">
+										<input type="text" class="form-control" id="operator" disabled>
+									</div>	
+								</div>
+								<div class="row" style="margin-top: 20px">
+									<div class="col-md-4 col-sm-4">
+										注：共有<span>x</span>册书籍，已借出<span>y</span>册，还剩<span>x-y</span>册
+									</div>
+									<div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+										<button type="submit" class="btn btn-success">保存并添加复本</button>
+										<a href="addBook.html" class="btn btn-warning" style="margin-left: 20px">取消</a>
+										<button class="btn btn-info" style="margin-left: 20px">帮助</button>
+									</div>	
+								</div>
+								
 							</div>
-							<p>注：共有<span>x</span>册书籍，已借出<span>y</span>册，还剩<span>x-y</span>册</p>
-							<button type="submit" class="btn btn-success">保存并添加复本</button>
-							<a href="addBook.html" class="btn btn-warning" style="margin-left: 20px">取消</a>
-							<button class="btn btn-info" style="margin-left: 20px">帮助</button>
 						</form>
 					</div>
 				</div>

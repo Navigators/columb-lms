@@ -24,9 +24,12 @@ body section {
 }
 /*使label内文字横排*/
 .form-label {
-	padding-right: 5px;
-	padding-left: 5px;
+	padding-right: 0px;
+	padding-left: 0px;
 }
 .tr-choosen-ok {
 	background-color: rgb(196,196,226);
+}
+.cursor-pointer {
+	cursor: pointer;
 }

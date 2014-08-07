@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 	<meta charset="utf-8">
-	<title>添加复本</title>
+	<title>书库信息</title>
 	<!-- 新 Bootstrap 核心 CSS 文件 -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<!-- 可选的Bootstrap主题文件（一般不用引入） -->
@@ -91,15 +91,8 @@
 							<div class="form-horizontal" method="post" action="#">
 								<div class="row">
 									<div class="col-sm-3 col-md-4">
-										<button id="copy-add" class="btn btn-primary" type="button" data-toggle="modal" data-target="#bookModal">添加复本</button>
-										<button class="btn btn-primary" type="button">批量添加复本</button>
-										<a href="addBook-new.html">入库</a>
-									</div>
-									<div class="col-sm-3 col-sm-offset-4 col-md-4 col-md-offset-4">
 										<input type="text">
 										<button class="btn btn-primary" type="button">查找</button>
-										<button id="copy-update" class="btn btn-primary updateButton" type="button" data-toggle="modal" data-target="#bookModal" disabled="disabled">修改</button>
-										<button class="btn btn-primary updateButton" type="button" disabled="disabled">删除</button>
 									</div>
 								</div>
 								<div class="row" style="margin-top: 10px">
@@ -114,6 +107,7 @@
 											<th>卷期册价格</th>
 											<th>登记日期</th>
 											<th>操作员</th>
+											<th>详细信息</th>
 										</tr>
 										<tr class="choosen">
 											<td>NB001</td>
@@ -125,6 +119,7 @@
 											<td>23.0</td>
 											<td>2014-08-06</td>
 											<td>admin</td>
+											<td><a href="javascript:void(0)">查看</a></td>
 										</tr>
 										<tr class="choosen">
 											<td>NB002</td>
@@ -136,6 +131,7 @@
 											<td>23.0</td>
 											<td>2014-08-06</td>
 											<td>admin</td>
+											<td><a href="javascript:void(0)">查看</a></td>
 										</tr>
 									</table>
 								</div>

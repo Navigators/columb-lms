@@ -37,9 +37,6 @@
 								<a href="addBook.html">图书入库</a>
 							</li>
 							<li>
-								<a href="bookCategory.html">分类管理</a>
-							</li>
-							<li>
 								<a href="buyBook.html">图书购买</a>
 							</li>
 						</ul>
@@ -88,9 +85,98 @@
 					</li>
 				</ul>
 			</nav>
-			<section class="col-sm-9 col-md-10 main">
-				借阅权限
+			<section class="col-sm-8 col-md-9 main">
+				<div class="row section-content">
+					<div class="col-md-11">
+						<form class="form-horizontal" method="post" action="#">
+							<div class="row">
+								<div class="col-sm-4 col-md-5">
+									<button id="permission-add" class="btn btn-success" type="button" data-toggle="modal" data-target="#permissionModal">新增</button>
+									<button id="permission-update" class="btn btn-success updateButton" type="button"
+									data-toggle="modal" data-target="#permissionModal" disabled="disabled">修改</button>
+									<button class="btn btn-success updateButton" type="button" disabled="disabled">删除</button>
+									<button class="btn btn-success" type="button">查询</button>
+								</div>
+								<div class="col-sm-12 col-md-12"><hr></div>
+								<table class="table">
+									<tr>
+										<th>读者类别名称</th>
+										<th>可借书数</th>
+										<th>可借天数</th>
+										<th>可续借次数</th>
+										<th>每次可续借天数</th>
+									</tr>
+									<tr class="choosen">
+										<td>正式员工</td>
+										<td>5</td>
+										<td>30</td>
+										<td>1</td>
+										<td>30</td>
+									</tr>
+									<tr class="choosen">
+										<td>外注</td>
+										<td>2</td>
+										<td>30</td>
+										<td>1</td>
+										<td>30</td>
+									</tr>
+								</table>
+							</div>
+						</form>
+					</div>
+				</div>
 			</section>
+		</div>
+	</div>
+	<div class="modal fade" id="permissionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content form-horizontal">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="permissionModalLabel"></h4>
+				</div>
+				<div class="modal-body row">
+					<div class="col-md-11 col-md-offset-1">
+						<div class="form-group row">
+							<!-- 加入style="padding-top:0px"因为control-label中有padding-top:7px;会干扰两行的label使之偏下 -->
+							<div class="form-group">
+								<label for="readerCategory" class="col-md-3 control-label form-label">读者类别名称:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="readerCategory" placeholder="读者类别名称">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="borrowBooks" class="col-md-2 col-md-offset-1 control-label form-label">可借书数:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="borrowBooks" placeholder="可借书数">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="borrowDays" class="col-md-2 col-md-offset-1 control-label form-label">可借天数:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="borrowDays" placeholder="可借天数">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="renewalTimes" class="col-md-2 col-md-offset-1 control-label form-label">可续借次数:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="renewalTimes" placeholder="可续借次数">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="renewalDayss" class="col-md-2 col-md-offset-1 control-label form-label">可续借天数:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="renewalDays" placeholder="可续借天数">
+								</div>
+							</div>								
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button id="saveModal" type="button" class="btn btn-primary"></button>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

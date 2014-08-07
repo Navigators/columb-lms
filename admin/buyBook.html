@@ -37,9 +37,6 @@
 								<a href="addBook.html">图书入库</a>
 							</li>
 							<li>
-								<a href="bookCategory.html">分类管理</a>
-							</li>
-							<li>
 								<a href="buyBook.html">图书购买</a>
 							</li>
 						</ul>
@@ -90,7 +87,7 @@
 			</nav>
 			<section class="col-sm-8 col-md-9 main">
 				<div class="row section-content">
-					<div class="col-md-11 col-md-offset-1">
+					<div class="col-md-11">
 						<form class="form-horizontal" method="post" action="#">
 							<div class="row">
 								<table class="table">
@@ -116,9 +113,22 @@
 										<td>金戈</td>
 										<td>电子工业出版社</td>
 										<td>9787121022982</td>
-										<td class="price"><a href="javascript:void(0) data-toggle="modal" data-target="#priceModal"">CNY 128.00</a></td>
+										<td class="price">CNY 128.00</td>
 										<td>未购入</td>
 										<td>张小强</td>
+									</tr>
+									<tr class="choosen">
+										<td>2</td>
+										<td>江湖</td>
+										<td>笑傲江湖(第4版)</td>
+										<td>否</td>
+										<td>令狐冲</td>
+										<td>无</td>
+										<td>日月神教出版社</td>
+										<td>2342432432</td>
+										<td class="price">CNY 210.00</td>
+										<td>未购入</td>
+										<td>韦小宝</td>
 									</tr>
 								</table>
 							</div>
@@ -128,7 +138,7 @@
 			</section>
 		</div>
 	</div>
-	<div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!-- <div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content form-horizontal">
 				<div class="modal-header">
@@ -146,6 +156,25 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
+	<script type="text/javascript">
+	$(function(){
+		$('tr.choosen .price').each(function() {
+			var that = $(this);
+			that.hoverDelay({
+				hoverEvent: function() {
+					that.addClass('cursor-pointer');
+					var text = that.parent().find('td:eq(2)').text();
+					text = that.parent().find('td:eq(7)').text() + "——《" + text + "》";
+					console.log(text);
+					alert('添加' + text + '的比价');
+				},
+				outEvent: function() {
+					that.removeClass('cursor-pointer');
+				}
+			});
+		});
+	});
+	</script>
 </body>
 </html>
