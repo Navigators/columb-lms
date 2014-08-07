@@ -1,0 +1,145 @@
+{% extends base.html %} 
+{% block title %}书库信息{% endblock %} 
+
+{% block content %}
+<div class="row section-content">
+	<div class="col-md-11">
+		<div class="form-horizontal" method="post" action="#">
+			<div class="row">
+				<div class="col-sm-3 col-md-4">
+					<input type="text">
+					<button class="btn btn-primary" type="button">查找</button>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<table class="table">
+					<tr>
+						<th>书刊条码（自编号）</th>
+						<th>索书号</th>
+						<th>所在书室</th>
+						<th>状态</th>
+						<th>书刊架位</th>
+						<th>卷期册信息</th>
+						<th>卷期册价格</th>
+						<th>登记日期</th>
+						<th>操作员</th>
+						<th>详细信息</th>
+					</tr>
+					<tr class="choosen">
+						<td>NB001</td>
+						<td>001</td>
+						<td>书架一</td>
+						<td>破损</td>
+						<td>一排二列</td>
+						<td>好书</td>
+						<td>23.0</td>
+						<td>2014-08-06</td>
+						<td>admin</td>
+						<td><a href="javascript:void(0)">查看</a></td>
+					</tr>
+					<tr class="choosen">
+						<td>NB002</td>
+						<td>002</td>
+						<td>书架一</td>
+						<td>遗失</td>
+						<td>一排二列</td>
+						<td>好书</td>
+						<td>23.0</td>
+						<td>2014-08-06</td>
+						<td>admin</td>
+						<td><a href="javascript:void(0)">查看</a></td>
+					</tr>
+				</table>
+			</div>
+			<!-- <div class="row" style="margin-top: 10px">
+					<div class="col-md-2 col-md-offset-10">
+					     <button type='submit' class="btn btn-success">提交</button>
+					</div>
+				</div> -->
+		</div>
+	</div>
+</div>
+{% endblock %} 
+
+{% block modal %}
+<div class="modal fade" id="bookModal" tabindex="-1" role="dialog"
+	aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="bookModalLabel">111</h4>
+			</div>
+			<div class="modal-body row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="form-group row">
+						<!-- 加入style="padding-top:0px"因为control-label中有padding-top:7px;会干扰两行的label使之偏下 -->
+						<label for="bookBarCode"
+							class="col-md-2 col-md-offset-1 control-label form-label"
+							style="padding-top: 0px">书刊条码<br>(自编号):
+						</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="bookBarCode"
+								placeholder="书刊条码">
+						</div>
+						<div class="col-md-12">
+							<hr />
+						</div>
+
+						<label for="searchCode"
+							class="col-md-2 col-md-offset-1 control-label form-label">索书号:</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="searchCode"
+								placeholder="索书号">
+						</div>
+						<label for="bookRoom"
+							class="col-md-2 col-md-offset-1 control-label form-label">所在书室:</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="bookRoom"
+								placeholder="所在书室">
+						</div>
+						<label for="bookrack"
+							class="col-md-2 col-md-offset-1 control-label form-label">书刊架位:</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="bookrack"
+								placeholder="书刊架位">
+						</div>
+						<div class="col-md-12">
+							<hr />
+						</div>
+						<label for="volumeInfo" class="col-md-3 control-label form-label">卷期册信息:</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="volumeInfo"
+								placeholder="卷期册信息">
+						</div>
+						<label for="volumePrice" class="col-md-3 control-label form-label">卷册期价格:</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="volumePrice"
+								placeholder="卷册期价格">
+						</div>
+						<div class="col-md-12">
+							<hr />
+						</div>
+						<label for="status"
+							class="col-md-2 col-md-offset-1 control-label form-label">状态:</label>
+						<div class="col-md-8">
+							<select class="form-control" id="status">
+								<option value="可借">可借</option>
+								<option value="破损">破损</option>
+								<option value="遗失">遗失</option>
+								<option value="保留">保留</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button id="saveModal" type="button" class="btn btn-primary"></button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

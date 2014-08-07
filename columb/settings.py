@@ -104,5 +104,5 @@ STATICFILES_DIRS = (
     ('img_sys',os.path.join(BASE_DIR, 'static/img')),
     ('css',os.path.join(BASE_DIR, 'static/css')),
     ('js',os.path.join(BASE_DIR, 'static/js')),
-    ('fonts',os.path.join(BASE_DIR, 'static/fonts')),
+#     ('fonts',os.path.join(BASE_DIR, 'static/fonts')),
 )

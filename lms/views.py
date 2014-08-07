@@ -34,5 +34,5 @@ def book_enter_base(request):
         memo = request.POST['']+''
         total_count = 0
         loan_count = 0
-	operater = 
+        operater = 
         piclocation = request.POST['']+''

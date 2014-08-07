@@ -1,0 +1,22 @@
+{% extends base.html %} 
+{% block title %}图书入库{% endblock %} 
+{% block content %}
+<div class="container">
+	<div class="row searchISBN">
+		<form method="post" action="#">
+			<div
+				class="col-sm-5 col-sm-offset-2 col-md-4 col-md-offset-	2 input-group"
+				style="float: left">
+				<span class="input-group-addon">ISBN</span> <input type="text"
+					class="form-control" placeholder="	扫码或输入">
+			</div>
+			<div class="col-sm-1 col-md-1">
+				<button type="button" class="btn btn-primary">检测</button>
+			</div>
+		</form>
+		<a class="btn btn-info" href="booksInfo.html">入库信息</a> 
+  ——————<a class="btn btn-info" href="addBook-new.html">添加入库</a> 
+        <a class="btn btn-info" href="addBook-copy.html">添加复本</a>
+	</div>
+</div>
+{% endblock %}
