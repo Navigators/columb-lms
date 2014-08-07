@@ -100,7 +100,7 @@ class Books(models.Model):
     price = models.FloatField() 
     keywords = models.CharField(max_length=400) 
     series_name = models.CharField(max_length=200) 
-    edition_Time = models.CharField(max_length=80) 
+    edition_time = models.CharField(max_length=80) 
     language = models.CharField(max_length=80) 
     face_info = models.CharField(max_length=80) 
     addons = models.CharField(max_length=80) 
