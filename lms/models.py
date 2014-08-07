@@ -1,5 +1,6 @@
 # models.py of columb
 
+from django.contrib import admin
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.db import models
@@ -13,23 +14,25 @@ class Items(models.Model):
     
     def __unicode__(self):
         return self.name
+
+admin.site.register(Items)
     
 class Publishers(models.Model):
     name = models.CharField(max_length=200)
-    input_code = models.CharField(max_length=200) 
     isbn = models.CharField(max_length=40)
     place = models.CharField(max_length=100)
     
     def __unicode__(self):
         return self.name    
+admin.site.register(Publishers)
     
 class BookCate(models.Model):
-    parent_id = models.IntegerField(default=0) 
     code = models.CharField(max_length=40) 
     name = models.CharField(max_length=200)
     
     def __unicode__(self):
         return self.name
+admin.site.register(BookCate)
     
 class ReaderCate(models.Model):
     name = models.CharField(max_length=80) 
@@ -41,105 +44,90 @@ class ReaderCate(models.Model):
     
     def __unicode__(self):
         return self.name
+admin.site.register(ReaderCate)
     
 class Librarians(User):
-    code = models.CharField(max_length=40) 
-    pwd = models.CharField(max_length=200) 
-    title = models.CharField(max_length=40) 
+    name = models.CharField(max_length=40)
+    title = models.CharField(max_length=40,blank=True) 
     corp = models.ForeignKey(Items, related_name="librarian_corp") 
     dept = models.ForeignKey(Items, related_name="librarian_dept") 
     is_lock = models.BooleanField() 
-    memo = models.CharField(max_length=100)
+    memo = models.CharField(max_length=100,blank=True)
     
     def __unicode__(self):
         return self.username
     
-    def save(self):
-        self.password = make_password(self.pwd)
-        self.pwd = self.password
-        super(Librarians, self).save()
+admin.site.register(Librarians)
     
 class Readers(User):
-    input_code = models.CharField(max_length=40) 
-    code = models.CharField(max_length=40)
-    pwd = models.CharField(max_length=200)
     name = models.CharField(max_length=40)
-    card_id = models.CharField(max_length=40) 
     cate = models.ForeignKey(ReaderCate) 
     sex = models.BooleanField() 
-    birth_date = models.DateField() 
+    birth_date = models.DateField(blank=True) 
     corp = models.ForeignKey(Items, related_name="readers_corp") 
     dept = models.ForeignKey(Items, related_name="readers_dept") 
-    id_card = models.CharField(max_length=36)
-    work_card = models.CharField(max_length=36) 
-    work_phone = models.CharField(max_length=40) 
-    home_phone = models.CharField(max_length=40) 
-    mobile_phone = models.CharField(max_length=40)  
-    address = models.CharField(max_length=100)
-    memo = models.CharField(max_length=100)
+    work_phone = models.CharField(max_length=40,blank=True) 
+    home_phone = models.CharField(max_length=40,blank=True) 
+    mobile_phone = models.CharField(max_length=40,blank=True)  
+    memo = models.CharField(max_length=100,blank=True)
     operator = models.ForeignKey(Librarians)
-    pic_location = models.CharField(max_length=200)
+    pic_location = models.CharField(max_length=200,blank=True)
     
     def __unicode__(self):
         return self.username
-    
-    def save(self):
-        self.password = make_password(self.pwd)
-        self.pwd = self.password
-        super(Readers, self).save()
+
+admin.site.register(Readers)
         
 class Books(models.Model):
     isbn = models.CharField(max_length=40) 
     name = models.CharField(max_length=200) 
     input_code = models.CharField(max_length=200) 
     author = models.CharField(max_length=200) 
-    type = models.CharField(max_length=80) 
+    book_type = models.CharField(max_length=80) 
     cate = models.ForeignKey(BookCate) 
     publisher = models.ForeignKey(Publishers)
     publish_date = models.DateField()
-    price = models.FloatField() 
-    keywords = models.CharField(max_length=400) 
-    series_name = models.CharField(max_length=200) 
-    edition_time = models.CharField(max_length=80) 
-    language = models.CharField(max_length=80) 
-    face_info = models.CharField(max_length=80) 
-    addons = models.CharField(max_length=80) 
-    cn = models.CharField(max_length=40) 
-    publish_periods = models.CharField(max_length=80) 
-    up_dept = models.CharField(max_length=400)
-    content_intro = models.TextField() 
-    memo = models.CharField(max_length=200) 
+    price = models.CharField(max_length=40) 
+    keywords = models.CharField(max_length=400,blank=True) 
+    series_name = models.CharField(max_length=200,blank=True) 
+    edition_time = models.CharField(max_length=80,blank=True) 
+    language = models.CharField(max_length=80,blank=True) 
+    face_info = models.CharField(max_length=80,blank=True) 
+    addons = models.CharField(max_length=80,blank=True) 
+    cn = models.CharField(max_length=40,blank=True) 
+    publish_periods = models.CharField(max_length=80,blank=True) 
+    up_dept = models.CharField(max_length=400,blank=True)
+    content_intro = models.TextField(blank=True) 
+    memo = models.CharField(max_length=200,blank=True) 
     total_count = models.IntegerField(default=0) 
     loan_count = models.IntegerField(default=0) 
     reg_date = models.DateField(auto_now_add=True) 
     operator = models.ForeignKey(Librarians)
-    pic_location = models.CharField(max_length=200)
+    pic_location = models.CharField(max_length=200,blank=True)
     
     def __unicode__(self):
         return self.name
+admin.site.register(Books)
     
 class Bylaw(models.Model):
-    sort_code = models.IntegerField() 
     title = models.CharField(max_length=100) 
     content = models.TextField() 
-    memo = models.CharField(max_length=100) 
+    memo = models.CharField(max_length=100,blank=True) 
     reg_date = models.DateField(auto_now_add=True) 
     operator = models.ForeignKey(Librarians)
+admin.site.register(Bylaw)
     
 class Copies(models.Model):
     book = models.ForeignKey(Books) 
     barcode = models.CharField(max_length=80)
-    code = models.CharField(max_length=80)
     state = models.ForeignKey(Items, related_name="copies_state")  
-    room = models.ForeignKey(Items, related_name="copies_room") 
-    position = models.ForeignKey(Items, related_name="copies_position") 
-    volume_info = models.CharField(max_length=80) 
-    price = models.FloatField() 
-    reg_date = models.DateField(auto_now_add=True) 
+    volume_info = models.CharField(max_length=80,blank=True) 
+    reg_date_time = models.DateTimeField(auto_now_add=True) 
     operator = models.ForeignKey(Librarians)
     
     def __unicode__(self):
         return self.code
+admin.site.register(Copies)
     
 class LoanList(models.Model):
     copy = models.ForeignKey(Copies) 
@@ -147,10 +135,10 @@ class LoanList(models.Model):
     reader = models.ForeignKey(Readers) 
     loan_date_time = models.DateTimeField(auto_now_add=True) 
     should_return_date = models.DateField() 
-    reloan_times = models.IntegerField() 
-    reLoan_date = models.DateField() 
+    reloan_times = models.IntegerField(default=0) 
+    reLoan_date = models.DateField(blank=True) 
     is_return = models.BooleanField() 
-    fact_return_date_time = models.DateTimeField() 
+    fact_return_date_time = models.DateTimeField(blank=True) 
     loan_operator = models.ForeignKey(Librarians, related_name="loanlist_loan")
     return_operator = models.ForeignKey(Librarians, related_name="loanlist_return")
     praise = models.BooleanField()
@@ -158,33 +146,23 @@ class LoanList(models.Model):
     
     def __unicode__(self):
         return self.id
+admin.site.register(LoanList)
     
 class Comments(models.Model):
     loan = models.ForeignKey(LoanList)
     content = models.CharField(max_length=200) 
     create_date_time=models.DateTimeField(auto_now_add=True)   
-
-class Par(models.Model):
-    system_name = models.CharField(max_length=100) 
-    corp_name = models.CharField(max_length=100) 
-    is_exit_confirm = models.BooleanField() 
-    is_show_user_list_on_login = models.BooleanField()  
-    is_max_book_manager = models.BooleanField() 
-    
-    def __unicode__(self):
-        return self.system_name   
+admin.site.register(Comments)
     
 class UserFun(models.Model):
-    key = models.IntegerField() 
-    name = models.CharField(max_length=32) 
-    cate = models.IntegerField() 
-    img_index = models.IntegerField() 
-    memo = models.CharField(max_length=90) 
     code = models.IntegerField() 
+    name = models.CharField(max_length=40) 
+    memo = models.CharField(max_length=90,blank=True) 
     is_used = models.BooleanField()
     
     def __unicode__(self):
         return self.name
+admin.site.register(UserFun)
     
 class UserAccredit(models.Model):
     user = models.ForeignKey(Librarians)
@@ -192,14 +170,15 @@ class UserAccredit(models.Model):
     is_open = models.BooleanField()
     is_operate = models.BooleanField()
     is_print = models.BooleanField()
+admin.site.register(UserAccredit)
     
 class UserLog(models.Model):
     log_date_time = models.DateTimeField(auto_now_add=True) 
     fun = models.ForeignKey(UserFun) 
-    operate_content = models.CharField(max_length=8) 
-    computer_name = models.CharField(max_length=40) 
+    operate_content = models.CharField(max_length=8)  
     operator = models.ForeignKey(Librarians)
-    memo = models.CharField(max_length=100)
+    memo = models.CharField(max_length=100,blank=True)
+admin.site.register(UserLog)
     
 
     
