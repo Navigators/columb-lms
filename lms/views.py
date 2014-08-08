@@ -1,17 +1,39 @@
 # -*-coding:utf-8 -*-
+
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+
+from lms.login_view import is_login
+
 
 def reader_index(request):
     return render(request, 'lms/lib/index.html')
 
 def lib_index(request):
-    return render(request, 'lms/lib/index.html')
-
+    if not is_login(request):
+        return HttpResponseRedirect('/index/')
+    else:
+        return render(request, 'lms/lib/index.html', {'username':request.user.username})
  
-def lib_addbook(request):
+def lib_putaway(request):
     return render(request, 'lms/lib/addBook.html')
 
- 
+def lib_buybook(request):
+    return render(request, 'lms/lib/buyBook.html')
+
+def lib_retrieve(request):
+    return render(request, 'lms/lib/addBook-new.html')
+
+def lib_get_book_list(request):
+    return render(request, 'lms/lib/booksInfo.html')
+
+def lib_get_book_info(request):
+    return render(request, 'lms/lib/addBook-new.html')
+
+def lib_add_copies(request):
+    return render(request, 'lms/lib/addBook-copy.html')
+
+
 def lib_addbook_new(request):
 #     if request.method == 'POST':
 #         if request.POST['funno'] == '01':

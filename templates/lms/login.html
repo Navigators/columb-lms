@@ -1,12 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	{% load static %} 
+	{% get_static_prefix as STATIC_PREFIX %}
 	<title>登录</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-Language" content="zh-CN" />
-	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
+  	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  	<script src="{% static 'js/bootstrap.min.js' %}"></script>
 	<style type="text/css">
       body {
         padding-top: 40px;
@@ -41,7 +43,7 @@
     </style>
 	<script   type= "text/javascript">
 		function NameInvalid(){
-			var name = document.forms[0].Username.value;
+			var name = document.forms[0].username.value;
              name = name.trim();
              if (name == "")
                  document.getElementById("user").innerText = "用户名不为空！";
@@ -52,13 +54,13 @@
              return false;
 		}
 		function PwdInvalid() {
-             var pass= document.forms[0].Password.value;
+             var pass= document.forms[0].password.value;
               pass =pass.trim();
               if (pass == "")
                   document.getElementById("pwd").innerText = "密码不为空！";
               else if (pass.length > 16)
                   document.getElementById("pwd").innerText = "密码长度不大于16！";
-              else if (pass.length < 6)
+              else if (pass.length < 3)
                   document.getElementById("pwd").innerText = "密码长度不小于6！";
               else
               { document.getElementById("pwd").innerText = ""; return true; }
@@ -73,14 +75,16 @@
 </head>
 <body>
 	<div class="container-fluid content">
-      <form class="form-signin" action="index.html">
+      <form class="form-signin" method="post" action="{% url 'login' %}">
+      	{% csrf_token %}
         <h2 class="form-signin-heading">登录</h2>
-        <input name="Username" type="text" class="form-control" placeholder="用户名" onblur="NameInvalid()">
+        <input name="username" type="text" class="form-control" placeholder="用户名" onblur="NameInvalid()">
 		    <span id="user" style="color:Red"></span>
-        <input name="Password" type="password" class="form-control" placeholder="输入密码" onblur="PWDInvalid()">
+        <input name="password" type="password" class="form-control" placeholder="输入密码" onblur="PWDInvalid()">
 		    <span id="pwd" style="color:Red"></span>
-        <input class="btn btn-lg btn-primary" type="submit" value="登录" onclick="return Submit();"/>
+        <input class="btn btn-lg btn-primary" type="submit" value="登录"/>
       </form>
-    </div> <!-- /container -->
+    </div>
+    <!-- /container -->
 </body>
 </html>

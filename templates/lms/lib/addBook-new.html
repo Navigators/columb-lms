@@ -3,7 +3,8 @@
 {% block content %}
 <div class="row section-content">
 	<div class="col-md-11">
-		<form class="form-horizontal" method="post" action="addBook-copy.html">
+		<form class="form-horizontal" method="post" action="{% url 'lib:lib_addcopies' %}">
+			{% csrf_token %}
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-md-4">

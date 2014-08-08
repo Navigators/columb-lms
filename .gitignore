@@ -3,6 +3,7 @@
 ##################
 *.pyc
 *.bak
+*.sqlite3
 *.conf
 *.ini
 uwsgi_params
