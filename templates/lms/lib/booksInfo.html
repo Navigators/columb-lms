@@ -7,48 +7,38 @@
 		<div class="form-horizontal" method="post" action="#">
 			<div class="row">
 				<div class="col-sm-3 col-md-4">
-					<input type="text">
-					<button class="btn btn-primary" type="button">查找</button>
+					<input id="keyWord" type="text">
+					<button id="searchBook" class="btn btn-primary" type="button">查找</button>
 				</div>
 			</div>
 			<div class="row" style="margin-top: 10px">
 				<table class="table">
 					<tr>
-						<th>书刊条码（自编号）</th>
-						<th>索书号</th>
-						<th>所在书室</th>
-						<th>状态</th>
-						<th>书刊架位</th>
-						<th>卷期册信息</th>
-						<th>卷期册价格</th>
+						<th>书刊ISBN</th>
+						<th>书名</th>
+						<th>作者</th>
+						<th>馆藏类型</th>
+						<th>分类号</th>
+						<th>库存</th>
+						<th>价格</th>
 						<th>登记日期</th>
 						<th>操作员</th>
 						<th>详细信息</th>
 					</tr>
-					<tr class="choosen">
-						<td>NB001</td>
-						<td>001</td>
-						<td>书架一</td>
-						<td>破损</td>
-						<td>一排二列</td>
-						<td>好书</td>
-						<td>23.0</td>
-						<td>2014-08-06</td>
-						<td>admin</td>
-						<td><a href="{% url 'lib:lib_bookinfo' %}">查看</a></td>
-					</tr>
-					<tr class="choosen">
-						<td>NB002</td>
-						<td>002</td>
-						<td>书架一</td>
-						<td>遗失</td>
-						<td>一排二列</td>
-						<td>好书</td>
-						<td>23.0</td>
-						<td>2014-08-06</td>
-						<td>admin</td>
-						<td><a href="javascript:void(0)">查看</a></td>
-					</tr>
+					{% for book in book_list %}
+						<tr class="choosen">
+							<td>{{book.isbn}}</td>
+							<td>{{book.name}}</td>
+							<td>{{book.author}}</td>
+							<td>{{book.book_type}}</td>
+							<td>{{book.cate.code}}</td>
+							<td>{{book.total_count}}</td>
+							<td>{{book.price}}</td>
+							<td>{{book.reg_date}}</td>
+							<td>{{book.operator.username}}</td>
+							<td><a href="{% url 'lib:lib_bookinfo' book.isbn %}">查看</a></td>
+						</tr>
+					{% endfor %}
 				</table>
 			</div>
 			<!-- <div class="row" style="margin-top: 10px">
@@ -59,88 +49,65 @@
 		</div>
 	</div>
 </div>
-{% endblock %} 
 
-{% block modal %}
-<div class="modal fade" id="bookModal" tabindex="-1" role="dialog"
-	aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content form-horizontal">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-				</button>
-				<h4 class="modal-title" id="bookModalLabel">111</h4>
-			</div>
-			<div class="modal-body row">
-				<div class="col-md-10 col-md-offset-1">
-					<div class="form-group row">
-						<!-- 加入style="padding-top:0px"因为control-label中有padding-top:7px;会干扰两行的label使之偏下 -->
-						<label for="bookBarCode"
-							class="col-md-2 col-md-offset-1 control-label form-label"
-							style="padding-top: 0px">书刊条码<br>(自编号):
-						</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="bookBarCode"
-								placeholder="书刊条码">
-						</div>
-						<div class="col-md-12">
-							<hr />
-						</div>
+<script>
 
-						<label for="searchCode"
-							class="col-md-2 col-md-offset-1 control-label form-label">索书号:</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="searchCode"
-								placeholder="索书号">
-						</div>
-						<label for="bookRoom"
-							class="col-md-2 col-md-offset-1 control-label form-label">所在书室:</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="bookRoom"
-								placeholder="所在书室">
-						</div>
-						<label for="bookrack"
-							class="col-md-2 col-md-offset-1 control-label form-label">书刊架位:</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="bookrack"
-								placeholder="书刊架位">
-						</div>
-						<div class="col-md-12">
-							<hr />
-						</div>
-						<label for="volumeInfo" class="col-md-3 control-label form-label">卷期册信息:</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="volumeInfo"
-								placeholder="卷期册信息">
-						</div>
-						<label for="volumePrice" class="col-md-3 control-label form-label">卷册期价格:</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="volumePrice"
-								placeholder="卷册期价格">
-						</div>
-						<div class="col-md-12">
-							<hr />
-						</div>
-						<label for="status"
-							class="col-md-2 col-md-offset-1 control-label form-label">状态:</label>
-						<div class="col-md-8">
-							<select class="form-control" id="status">
-								<option value="可借">可借</option>
-								<option value="破损">破损</option>
-								<option value="遗失">遗失</option>
-								<option value="保留">保留</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				<button id="saveModal" type="button" class="btn btn-primary"></button>
-			</div>
-		</div>
-	</div>
-</div>
+$(document).ready(function(){   
+	
+	$("#searchBook").click(function(){
+		var search_url="{% url 'lib:lib_booklist' %}?json_isbn="+$("#keyWord").val()+"&json_user={{username}}";
+	    $.getJSON(
+	    search_url,  
+	    function(data){
+	    	var isbn="";
+	        var name="";
+	        var author="";
+	        var type="";
+	        var cate="";
+	        var total_count="";
+	        var price="";
+	        var reg_date="";
+	        var operator="";
+	        var detail_url="";
+	        $("tr.choosen").remove();
+	        $.each(data,function(i,item){
+	        	$.each(item,function(key,value){
+	    				if(key=="fields")
+	            		$.each(value,function(_key,_value){
+	            			if(_key=="isbn")
+	            				isbn=_value;
+	            			else if(_key=="name")
+	            				name=_value;
+	            			else if(_key=="author")
+	            				author=_value;
+	            			else if(_key=="book_type")
+	            				type=_value;
+	            			else if(_key=="cate")
+	            				cate=_value;
+	            			else if(_key=="total_count")
+	            				total_count=_value;
+	            			else if(_key=="reg_date")
+	            				reg_date=_value;
+	            			else if(_key=="price")
+	            				price=_value;
+	            			else if(_key=="operator"){
+	            				var i=0;
+	            				$.each(_value,function(__key,__value){
+	            					if(i==1)
+	            						operator=__value;
+	            					i++;
+	            				})
+	            			}
+	            		})
+	            	detail_url="/lib/bookinfo/"+isbn+"/";
+	        	})
+	    		$("table").append("<tr class='choosen'><td>"+isbn+"</td><td>"+name+"</td><td>"+author+"</td><td>"+type+"</td><td>"+cate+"</td><td>"+total_count+"</td><td>"+price+"</td><td>"+reg_date+"</td><td>"+operator+"</td><td><a href='"+detail_url+"'>查看</a></td></tr>");
+	    	});
+	        choosen();
+		});
+	});
+});
+
+</script>
 {% endblock %}
 

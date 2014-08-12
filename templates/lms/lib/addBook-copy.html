@@ -3,22 +3,15 @@
 {% block content %}
 <div class="row section-content">
 	<div class="col-md-11">
-		<div class="form-horizontal" method="post" action="#">
+		<div class="form-horizontal" method="post" action="{% url 'lib:lib_addcopies' %}">
 			<div class="row">
 				<div class="col-sm-3 col-md-4">
-					<button id="copy-add" class="btn btn-primary" type="button"
-						data-toggle="modal" data-target="#bookModal">添加复本</button>
-					<input type="text">
-					<a href="{% url 'lib:lib_bookinfo' %}">入库</a>
+					<button id="copy-add"  class="btn btn-primary" type="button">添加复本</button>
+					<input type="text" id="copyNum">
 				</div>
 				<div class="col-sm-3 col-sm-offset-4 col-md-4 col-md-offset-4">
-					<input type="text">
-					<button class="btn btn-primary" type="button">查找</button>
-					<button id="copy-update" class="btn btn-primary updateButton"
-						type="button" data-toggle="modal" data-target="#bookModal"
-						disabled="disabled">修改</button>
-					<button class="btn btn-primary updateButton" type="button"
-						disabled="disabled">删除</button>
+					<button id="copy-update" class="btn btn-primary updateButton" type="button" data-toggle="modal" data-target="#bookModal" disabled="disabled">修改</button>
+					<button id="copy-delete" class="btn btn-primary updateButton" type="button" disabled="disabled">删除</button>
 				</div>
 			</div>
 			<div class="row" style="margin-top: 10px">
@@ -26,36 +19,21 @@
 					<tr>
 						<th>书刊条码（自编号）</th>
 						<th>索书号</th>
-						<th>所在书室</th>
 						<th>状态</th>
-						<th>书刊架位</th>
-						<th>卷期册信息</th>
-						<th>卷期册价格</th>
 						<th>登记日期</th>
+						<th>操作工号</th>
 						<th>操作员</th>
 					</tr>
-					<tr class="choosen">
-						<td>NB001</td>
-						<td>001</td>
-						<td>书架一</td>
-						<td>破损</td>
-						<td>一排二列</td>
-						<td>好书</td>
-						<td>23.0</td>
-						<td>2014-08-06</td>
-						<td>admin</td>
-					</tr>
-					<tr class="choosen">
-						<td>NB002</td>
-						<td>002</td>
-						<td>书架一</td>
-						<td>遗失</td>
-						<td>一排二列</td>
-						<td>好书</td>
-						<td>23.0</td>
-						<td>2014-08-06</td>
-						<td>admin</td>
-					</tr>
+					{% for copy in copy_list %}
+						<tr class="choosen">
+							<td>{{copy.barcode}}</td>
+							<td>{{copy.book.cate.code}}</td>
+							<td>{{copy.state.name}}</td>
+							<td>{{copy.reg_date_time}}</td>
+							<td>{{copy.operator.username}}</td>
+							<td>{{copy.operator.name}}</td>
+						</tr>
+					{% endfor %}
 				</table>
 			</div>
 			<!-- <div class="row" style="margin-top: 10px">
@@ -100,30 +78,24 @@
 							<input type="text" class="form-control" id="searchCode"
 								placeholder="索书号">
 						</div>
-						<label for="bookRoom"
-							class="col-md-2 col-md-offset-1 control-label form-label">所在书室:</label>
+						<label for="regDate"
+							class="col-md-2 col-md-offset-1 control-label form-label">登记时间:</label>
 						<div class="col-md-8">
-							<input type="text" class="form-control" id="bookRoom"
-								placeholder="所在书室">
-						</div>
-						<label for="bookrack"
-							class="col-md-2 col-md-offset-1 control-label form-label">书刊架位:</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" id="bookrack"
-								placeholder="书刊架位">
+							<input type="text" class="form-control" id="regDate"
+								placeholder="登记时间">
 						</div>
 						<div class="col-md-12">
 							<hr />
 						</div>
-						<label for="volumeInfo" class="col-md-3 control-label form-label">卷期册信息:</label>
+						<label for="operatorCode" class="col-md-3 control-label form-label">操作工号:</label>
 						<div class="col-md-8">
-							<input type="text" class="form-control" id="volumeInfo"
-								placeholder="卷期册信息">
+							<input type="text" class="form-control" id="operatorCode"
+								placeholder="操作工号">
 						</div>
-						<label for="volumePrice" class="col-md-3 control-label form-label">卷册期价格:</label>
+						<label for="operatorName" class="col-md-3 control-label form-label">操作员:</label>
 						<div class="col-md-8">
-							<input type="text" class="form-control" id="volumePrice"
-								placeholder="卷册期价格">
+							<input type="text" class="form-control" id="operatorName"
+								placeholder="操作员">
 						</div>
 						<div class="col-md-12">
 							<hr />
@@ -148,5 +120,84 @@
 		</div>
 	</div>
 </div>
+
+<script>
+
+
+
+$(document).ready(function(){   
+$("#copy-add").click(function(){
+	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_add_num="+$("#copyNum").val()+"&json_user={{username}}";
+    $.getJSON(
+    add_url,  
+    function(data){
+    	parser(data);
+	});
+});
+
+$("#saveModal").click(function(){
+	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_code="+$("#bookBarCode").val()+"&json_status="+$("#status").val()+"&json_user={{username}}";
+    $.getJSON(
+    add_url,  
+    function(data){
+    	parser(data);
+	});
+});
+
+$("#copy-delete").click(function(){
+	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_code="+$(".tr-choosen-ok").find("td:eq(0)").text()+"&json_user={{username}}";
+    $.getJSON(
+    add_url,  
+    function(data){
+    	parser(data);
+	});
+});
+
+});
+
+function parser(data) {
+	var barcode="";
+    var cate="";
+    var state="";
+    var reg_date_time="";
+    var operator_code="";
+    var operator_name="";
+    $("tr.choosen").remove();
+    $.each(data,function(i,item){
+    	$.each(item,function(key,value){
+				if(key=="fields")
+        		$.each(value,function(_key,_value){
+        			if(_key=="barcode")
+        				barcode=_value;
+        			else if(_key=="state")
+        				state=_value;
+        			else if(_key=="reg_date_time")
+        				reg_date_time=_value;
+        			else if(_key=="book"){
+        				var i=0;
+        				$.each(_value,function(__key,__value){
+        					if(i==2)
+        						cate=__value;
+        					i++;
+        				})
+        			}
+        			else if(_key=="operator"){
+        				var i=0;
+        				$.each(_value,function(__key,__value){
+        					if(i==0)
+        						operator_name=__value;
+        					if(i==1)
+        						operator_code=__value;
+        					i++;
+        				})
+        			}
+        		})
+		})
+		$("table").append("<tr class='choosen'><td>"+barcode+"</td><td>"+cate+"</td><td>"+state+"</td><td>"+reg_date_time+"</td><td>"+operator_code+"</td><<td>"+operator_name+"</td>/tr>");
+	});
+    choosen();
+}
+</script>
+
 {% endblock %}
 

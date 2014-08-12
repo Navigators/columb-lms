@@ -1,11 +1,15 @@
 from django.contrib import admin
 
-from lms.models import *
+from lms.models import BookCate, ReaderCate, Librarians, Readers, Books,\
+    Bylaw, Copies, LoanList, Comments, UserFun, UserAccredit, UserLog, Company,\
+    Department, BookType, CopyState
 
 
 # Register your models here.
-admin.site.register(Items)
-admin.site.register(Publishers)
+admin.site.register(Company)
+admin.site.register(Department)
+admin.site.register(BookType)
+admin.site.register(CopyState)
 admin.site.register(BookCate)
 admin.site.register(ReaderCate)
 admin.site.register(Librarians)

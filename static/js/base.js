@@ -1,4 +1,3 @@
-$(function() {
 	$.fn.hoverDelay = function(options){
         var defaults = {
             hoverDuring: 200,
@@ -61,11 +60,10 @@ $(function() {
 			$('#bookModal #saveModal').html('修改');
 			$('#bookBarCode').attr('value', $('.tr-choosen-ok').find('td:eq(0)').text());
 			$('#searchCode').attr('value', $('.tr-choosen-ok').find('td:eq(1)').text());
-			$('#bookRoom').attr('value', $('.tr-choosen-ok').find('td:eq(2)').text());
-			$('#bookrack').attr('value', $('.tr-choosen-ok').find('td:eq(4)').text());
-			$('#volumeInfo').attr('value', $('.tr-choosen-ok').find('td:eq(5)').text());
-			$('#volumePrice').attr('value', $('.tr-choosen-ok').find('td:eq(6)').text());
-			var text = $('.tr-choosen-ok').find('td:eq(3)').text();
+			$('#regDate').attr('value', $('.tr-choosen-ok').find('td:eq(3)').text());
+			$('#operatorCode').attr('value', $('.tr-choosen-ok').find('td:eq(4)').text());
+			$('#operatorName').attr('value', $('.tr-choosen-ok').find('td:eq(5)').text());
+			var text = $('.tr-choosen-ok').find('td:eq(2)').text();
 			$('#status option[value='+text+']').attr('selected','selected');
 		});
 		$('#copy-add').on('click', function() {
@@ -100,6 +98,9 @@ $(function() {
 			$('#renewalDays').attr('value', '');
 		});
 	}
+
+$(function() {
+
 	choosen();
 	aside();
 	bookUpdate();
