@@ -1,0 +1,57 @@
+{% extends "lms/reader/readerBase.html" %}
+{% block title %}我的书评{% endblock %}
+{% block content %}
+<article class="notIndex">
+	<header>
+		<div class="alert alert-info" role="alert">我写了很多书评啊！</div>
+	</header>
+	<section>
+		<div class="tableField">
+			<fieldset>
+				<legend>我的书评</legend>
+				<table class="table">
+					<tr>
+						<th>序号</th>
+						<th>书名</th>
+						<th>借阅时间</th>
+						<th>书评</th>
+					</tr>
+					{% for comment in comments %}
+						<td>{{comment.id}}</td>
+						<td>{{comment.loan.copy.book.name}}</td>
+						<td>{{comment.create_date_time}}</td>
+						<label id="{{comment.id}}" style="display:none;" >{{comment.content}}</label>
+						<td><a href="javascript:showComment({{comment.id}})">查看</a></td>
+						<tr>
+					{% endfor %}
+				</table>
+				<!-- <div class="pages">
+							<ul class="pager">
+								<li><a href="#">上一页</a></li>
+								<li><a href="#">下一页</a></li>
+							</ul>
+						</div> -->
+			</fieldset>
+		</div>
+		<fieldset class="myComment">
+			<legend>
+				评论内容：<a href="javascript:hideComment()">收起</a>
+			</legend>
+			<textarea disabled="disabled"></textarea>
+		</fieldset>
+	</section>
+</article>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+	function showComment(id) {
+		var text = $("#"+id).text();
+		$('.myComment textarea').text(text);
+		$('.myComment').slideDown('slow');
+	}
+	function hideComment() {
+		$('.myComment').slideUp('slow');
+	}
+</script>
+{% endblock %}

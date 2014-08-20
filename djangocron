@@ -1,0 +1,1 @@
+* * * * * python /home/guoyfnst/dev/place/django/columb/manage.py mycommand > /home/guoyfnst/dev/place/django/columb/djangocron.log 2>&1

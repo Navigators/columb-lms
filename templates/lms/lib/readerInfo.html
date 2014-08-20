@@ -1,0 +1,124 @@
+{% extends "lms/lib/base.html" %} 
+{% block title %}读者信息管理{% endblock %}
+
+{% block content %}
+<div class="row section-content">
+	<div class="col-md-11">
+		<div class="form-horizontal" method="post" action="#">
+			<div class="row">
+				<div class="col-sm-3 col-md-4">
+					<input id="keyWord" type="text">
+					<button id="searchReader" class="btn btn-primary" type="button">查找</button>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<table class="table">
+					<tr>
+						<th>读者编码</th>
+						<th>读者姓名</th>
+						<th>读者类别</th>
+						<th>性别</th>
+						<th>公司</th>
+						<th>部门</th>
+						<th>邮箱</th>
+						<th>联系电话</th>
+						<th>密码重置</th>
+					</tr>
+					{% for reader in readers %}
+						<tr class="choosen">
+							<td>{{reader.username}}</td>
+							<td>{{reader.name}}</td>
+							<td>{{reader.cate.name}}</td>
+							<td>{{reader.sex}}</td>
+							<td>{{reader.corp.name}}</td>
+							<td>{{reader.dept.name}}</td>
+							<td>{{reader.email}}</td>
+							<td>{{reader.mobile_phone}}</td>
+							<td><a href="javascript:resetPassword({{reader.id}})">重置密码</a></td>
+						</tr>
+					{% endfor %}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+function resetPassword(id) {
+	var add_url="{% url 'lib:lib_readerinfo' %}?json_id="+id;
+	$.getJSON(
+	add_url,  
+	function(data){
+		console.log(data);
+	});
+}
+
+$("#searchReader").click(function(){
+	var search_url="{% url 'lib:lib_readerinfo' %}?json_username="+$("#keyWord").val();
+    $.getJSON(
+    search_url,  
+    function(data){
+   	var username="";
+	var name="";
+	var cate="";
+	var corp="";
+	var dept="";
+	var email="";
+	var mphone="";
+	var sex="";
+	var reset_url="";
+	$("tr.choosen").remove();
+	$.each(data,function(i,object){
+		if(i=="reader"){
+    		$.each(object,function(j,item){
+    			$.each(item,function(key,value){
+    					if(key=="pk")
+    						reset_url="javascript:resetPassword("+value+")";
+						if(key=="fields")
+        					$.each(value,function(_key,_value){
+        						if(_key=="username")
+        							username=_value;
+        						else if(_key=="name")
+        							name=_value;
+        						else if(_key=="cate")
+        							cate=_value;
+        						else if(_key=="corp")
+        							corp=_value;
+        						else if(_key=="dept")
+        							dept=_value;
+        						else if(_key=="email")
+        							email=_value;
+        						else if(_key=="mobile_phone")
+        							mphone=_value;
+        						else if(_key=="sex")
+        							if (_value)
+        								sex="女";
+        							else
+        								sex="男";
+        					});
+    			});
+			});
+		}
+		else if(i=="user"){
+			$.each(object,function(j,item){
+    			$.each(item,function(key,value){
+						if(key=="fields")
+        					$.each(value,function(_key,_value){
+        						if(_key=="username")
+        							username=_value;
+        						else if(_key=="email")
+        							email=_value;
+        					});
+    			});
+			});
+		}
+	});
+	$("table").append("<tr class='choosen'><td>"+username+"</td><td>"+name+"</td><td>"+cate+"</td><td>"+sex+"</td><td>"+corp+"</td><td>"+dept+"</td><td>"+email+"</td><td>"+mphone+"</td><td><a href='"+reset_url+"'>密码重置</a></td></tr>");
+    choosen();
+    });
+ });
+</script>
+{% endblock %}

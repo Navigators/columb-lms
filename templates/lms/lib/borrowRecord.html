@@ -1,5 +1,239 @@
 {% extends "lms/lib/base.html" %}
-{% block title %}借阅记录查询{% endblock %}
+{% block title %}借书及管理{% endblock %}
+
 {% block content %}
-	借阅记录查询
+	<style type="text/css">
+	th,td {
+		min-width: 100px;
+	}
+	#queryTable th,td {
+		width: 100px;
+	}
+	#queryTable td select {
+		width: 95px;
+	}
+	#queryTable td input {
+		width: 130px;
+	}
+	</style>
+				<div class="row section-content">
+					<div class="col-md-11">
+						<p>
+							<button type="button" id="queryToggle" class="btn btn-primary" style="margin-left:-15px">按条件查询</button>
+							根据不同条件进行组合查询：
+						</p>
+						<div class="row" style="display:none">
+							<table id="queryTable">
+								<tr>
+									<th>或与</th>
+									<th>项目</th>
+									<th>条件</th>
+									<th>值</th>
+								</tr>
+								<tr>
+									<td>
+										<select id="logic">
+											<option value="and">与</option>
+											<option value="or">或</option>
+										</select>
+									</td>
+									<td>
+										<select id="queryItems">
+										</select>
+									</td>
+									<td>
+										<select id="condition">
+											<option value="l">小于</option>
+											<option value="le">小于等于</option>
+											<option value="e">等于</option>
+											<option value="ge">大于等于</option>
+											<option value="g">大于</option>
+										</select>
+									</td>
+									<td>
+										<input id="value" type="date" placeholder="例：2014-01-01">
+									</td>
+									<td id="addSelectCondition" style="padding-left:10px"><button type="button" class="btn btn-info">添加</button></td>
+									<form action="{% url 'lib:lib_borrow_record' %}" method="post">
+										{% csrf_token %}
+										<td id="query" style="padding-left:10px">
+										<input id="queryJson" name="queryjson" type="text"value=""style="display:none" >
+										<button type="submit" class="btn btn-success" >查找</button></td>
+									</form>
+								</tr>
+							</table>
+							<div class="col-md-12" style="margin-top:10px;">
+								<div class="col-md-6">
+									<div id="querys" style="height: 100px;width: 100%;border: 1px solid #000000;padding: 5px 5px 5px 5px;overflow:auto;margin-left: -20px"></div>
+								</div>
+								<div class="col-md-6">
+									<button id="delete" type="button" class="btn btn-info" style="margin-top: 0px">删除</button><br>
+									<button id="empty" type="button" class="btn btn-info" style="margin-bottom: 0px">清空</button>
+								</div>
+							</div>
+						</div>
+						<div class="row" style="margin-top: 10px">
+							<div class="col-md-1">
+								<button type="button" id="customize" class="btn btn-info" style="margin-left:-15px">定制列表</button>
+							</div>
+							<div id="resultTable" class="col-md-11" style="overflow:hidden">
+								<div id="tableItems" style="display:none; white-space:nowrap">
+									<input type="checkbox">
+									<label name="1">借出日期</label>
+									<input type="checkbox">
+									<label name="2">书刊名称</label>
+									<input type="checkbox">
+									<label name="3">书刊输入码</label>
+									<input type="checkbox">
+									<label name="4">馆藏类型</label>
+									<input type="checkbox">
+									<label name="5">书刊条号</label>
+									<input type="checkbox">
+									<label name="6">索书号</label>
+									<input type="checkbox">
+									<label name="7">读者姓名</label>
+									<input type="checkbox">
+									<label name="8">读者工号</label>
+									<input type="checkbox">
+									<label name="9">读者类别</label>
+									<input type="checkbox">
+									<label name="10">读者部门</label>
+									<input type="checkbox">
+									<label name="11">应还日期</label>
+									<input type="checkbox">
+									<label name="12">续借次数</label>
+									<input type="checkbox">
+									<label name="13">借书操作员</label>
+									<input type="checkbox">
+									<label name="14">还书操作员</label>
+								</div>
+								<table class="table">
+									<tr>
+										<th>借出日期</th>
+										<th>书刊名称</th>
+										<th>书刊输入码</th>
+										<th>馆藏类型</th>
+										<th>书刊条号</th>
+										<th>索书号</th>
+										<th>读者姓名</th>
+										<th>读者工号</th>
+										<th>读者类别</th>
+										<th>读者部门</th>
+										<th>应还日期</th>
+										<th>续借次数</th>
+										<th>借书操作员</th>
+										<th>还书操作员</th>
+									</tr>
+									{%for tl in loanlist%}
+									<tr class="choosen">
+											<td>{{ tl.loan_date_time }}</td>
+											<td>{{ tl.copy.book.name }}</td>
+											<td>{{ tl.copy.book.input_code }}</td>
+											<td>{{ tl.copy.book.book_type.name }}</td>
+											<td>{{ tl.copy.barcode }}</td>
+											<td>{{ tl.copy.book.cate.name }}</td>
+											<td>{{ tl.reader.name }}</td>
+											<td>{{ tl.reader.username }}</td>
+											<td>{{ tl.reader.cate.name }}</td>
+											<td>{{ tl.reader.dept.name }}</td>
+											<td>{{ tl.should_return_date }}</td>
+											<td>{{ tl.reloan_times }}</td>
+											<td>{{ tl.loan_operator }}</td>
+											<td>{{ tl.return_operator }}</td>
+									</tr>
+									{%endfor%}
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+	<script type="text/javascript">
+	$(function() {
+		var queryArray = new Array();
+		$('#queryToggle').on('click', function() {
+			var next = $(this).parent().next();
+			if(next.css('display') == 'none') {
+				$(this).parent().next().slideDown('slow');
+			} else {
+				$(this).parent().next().slideUp('slow');
+			}
+		});
+
+		$('#tableItems label').each(function(index) { 
+			$('#queryItems').append('<option value="'+$(this).attr('name')+'">'+$(this).text()+'</option>')
+		});
+		$('#queryItems').change(function(event) {
+			var dateList = new Array(),
+			conditionList = new Array();
+			conditionValue = new Array();
+			dateList[0] = 0;dateList[1] = 12;
+			conditionList[0]='小于';conditionList[1]='小于等于';conditionList[2]='等于';
+			conditionList[3]='大于等于';conditionList[4]='大于';
+			conditionValue[0]='0';
+			conditionValue[1]='1';
+			conditionValue[2]='2';
+			conditionValue[3]='3';
+			conditionValue[4]='4';
+			var d,c;
+			var conditionDate='',conditionTime='';
+			var conditionContext = '<option value="e">等于</option><option value="contain">包含</option>';
+			$('#value').attr('type','input');
+			$('#value').val('');
+			$('#condition').html(conditionContext);
+			$('condition').append('<option value="e">等于</option><option value="contain">包含</option>');
+			for (d in dateList) {
+				if ($(this).val() == $(this).find('option:eq('+dateList[d]+')').attr('value')) {
+					for (c in conditionList) {
+						conditionDate += '<option value="'+conditionValue[c]+'">'+conditionList[c]+'</option>';
+					}
+					$('#condition').html(conditionDate);
+					$('#value').attr('type','date');
+					$('#value').attr('placeholder','例：2014-01-01');
+					conditionTime = conditionDate;
+				}
+				
+			}
+			if ($(this).val() == $(this).find('option:eq(1)').attr('value')) {
+				for (c in conditionList) {
+					conditionTime += '<option value="'+conditionValue[c]+'">'+conditionList[c]+'</option>';
+				}
+				$('#condition').html(conditionTime);
+				$('#value').attr('type','time');
+				$('#value').attr('placeholder','例：06:00');
+			}
+
+		});
+		$('#addSelectCondition').on('click', function() {
+			var str = '';
+			str += '<p>' + $('#logic').find('option:selected').get(0).innerHTML +"_"+ $('#queryItems').find('option:selected').get(0).innerHTML +"_"+ $('#condition').find('option:selected').get(0).innerHTML +"_"+$('#value').val()+'</p>';
+			var querydict = {'logic':$('#logic').find('option:selected').get(0).value,'item':$('#queryItems').find('option:selected').get(0).value,'condition':$('#condition').find('option:selected').get(0).value,'value':$('#value').val()};
+			queryArray.push(querydict);
+			var queryJson = $.toJSON(queryArray);
+			console.log(queryJson);
+			$('#queryJson').attr('value',queryJson);
+			console.log(str);
+			$('#querys').get(0).innerHTML += str;
+			$('#querys p').each(function(index) {
+				$(this).on('click', function(){
+					if($(this).css('background-color') == 'rgb(196, 196, 226)' || $(this).css('background-color') == '#c4c4e2') {
+						$(this).removeClass('choosen-ok');
+					} else {
+						$(this).parent().find('p').removeClass('choosen-ok');
+						$(this).addClass('choosen-ok');
+				}
+				});	
+			}); 
+			$('#delete').on('click', function() {
+				$('#querys .choosen-ok').remove();
+			});
+			$('#empty').on('click', function() {
+				//alert('empty');
+				$('#querys p').remove();
+				quertArray =[]
+			});
+		});
+		
+	});
+</script>
 {% endblock %}

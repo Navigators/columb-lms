@@ -1,6 +1,18 @@
 /** {
 	border: 1px solid;
 }*/
+body {
+
+}
+
+input[type="date"],input[type="time"] {
+	line-height: 1;
+}
+
+th,td {
+	min-width: 100px;
+}
+
 .title {
 	font-size: 20px;
 }
@@ -10,7 +22,8 @@
 	line-height: 80px;
 }
 body section {
-	height: 900px;
+	/*height: 900px;*/
+	margin-bottom: 100px;
 }
 .nav-child {
 	font-size: 10px;
@@ -32,4 +45,25 @@ body section {
 }
 .cursor-pointer {
 	cursor: pointer;
+}
+textarea {
+	resize: none;
+}
+.push-left{
+	height: 600px; 
+	overflow-y: hidden; 
+}
+.push-right {
+	height: 600px; 
+	overflow-y: hidden; 
+	border: 1px solid #000000;
+	
+}
+.push-ul {
+	list-style-type: none;
+}
+.push-ul li{
+	height: 150px;
+	border: 1px solid #000000;
+	-webkit-user-select: none; 
 }

@@ -1,0 +1,60 @@
+{% extends "lms/reader/readerBase.html" %}
+{% block title %}我的资料{% endblock %}
+{% block content %}
+<article class="notIndex">
+	<header>
+		<div class="alert alert-info" role="alert">下面是我的个人资料！</div>
+	</header>
+	<section>
+		<fieldset class="tableField">
+			<legend>
+				我的情况<a href="javascript:void(0)">展开</a>
+			</legend>
+			<div class="myForm">
+				<div class="form-group">
+					<label>工号：</label> <label>{{reader.username}}</label>
+				</div>
+				<div class="form-group">
+					<label>姓名：</label> <label>{{reader.name}}</label>
+				</div>
+				<div class="form-group">
+					<label>类别：</label> <label>{{reader.cate.name}}</label>
+				</div>
+				<div class="form-group">
+					<label>部门：</label> <label>{{reader.dept.name}}</label>
+				</div>
+				<div class="form-group">
+					<label>公司：</label> <label>{{reader.corp.name}}</label>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class="tableField">
+			<legend>
+				修改密码<a href="javascript:void(0)">展开</a>
+			</legend>
+			<label>{{change_pd_error}}</label>
+			<div class="myForm">
+				<form method="post" action="{% url 'rer:reader_profile' %}">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="pwd">原始密码:</label> <input id="pwd" name="oldPassword" class="form-row"type="password">
+					</div>
+					<div class="form-group">
+						<label for="newPwd">新密码:</label> <input id="newPwd" name="newPassword1" class="form-row" type="password">
+					</div>
+					<div class="form-group">
+						<label for="reNewPwd">重复密码:</label> <input id="reNewPwd" name="newPassword2" class="form-row" type="password">
+					</div>
+					<button id="submit" class="btn btn-success" type="submit">提交</button>
+				</form>
+			</div>
+		</fieldset>
+	</section>
+</article>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}

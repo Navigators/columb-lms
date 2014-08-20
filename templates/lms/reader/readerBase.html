@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load static %} 
+	{% get_static_prefix as STATIC_PREFIX %}
+	<title>{% block title %}{% endblock %}</title>
+	
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/reader.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+    <script src="{% static 'js/jquery.js' %}"></script></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/reader.js' %}"></script>
+	<script  type="text/javascript"  src="{% static 'js/headroom.min.js' %}"></script>
+	<script  type="text/javascript"  src="{% static 'js/jQuery.headroom.js' %}"></script>
+</head>
+<body>
+	<header>
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="example">
+			<div class="navbar-header">
+				<a class="navbar-brand active" href="readerBase.html">欢迎来到图书馆</a>
+			</div>
+			<div class="collapse navbar-collapse" id="tem" style="margin-left:25%">
+				<ul class="nav navbar-nav">
+					<li><a href="{% url 'rer:reader_index' %}">首页</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">个人中心</a>
+						<ul class="dropdown-menu">
+							<li><a href="{% url 'rer:reader_loan' %}">我的借阅</a></li>
+							<li><a href="{% url 'rer:reader_point' %}">我的积分</a></li>
+							<li><a href="{% url 'rer:reader_profile' %}">我的资料</a></li>
+							<li><a href="{% url 'rer:reader_review' %}">我的书评</a></li>
+						</ul>
+					</li>
+					<li><a href="{% url 'rer:reader_buy_book' %}">我要买书</a></li>
+				</ul>
+				
+				<div id="login" >
+					<input id="is_anonymous" style="display:none" value="{{username}}"/>
+					<button>{{username}}</button>
+					<a href="{% url 'login' %}">登出</a>	
+				</div>
+				
+				<div class="message">
+					<img src="{{STATIC_PREFIX}}img_sys/message.png" style="margin-top:5px">
+				</div>
+			</div>
+		</div>
+	</header>
+	<section>
+		{% block content %}{% endblock %}
+	</section>
+	<aside>
+		<p>消息1</p>
+		<p>消息2</p>
+	</aside>
+	<footer>
+		这里是footer
+	</footer>
+	
+	{% block modal %}{% endblock %}
+	{% block js %}{% endblock %}
+</body>
+<script type="text/javascript">
+    $(".navbar-fixed-top").headroom({
+        "tolerance": 5,
+        "offset": 205,
+        "classes": {
+            "initial": "animated",
+            "pinned": "bounceInLeft",
+            "unpinned": "bounceOutLeft"
+        }
+    });
+</script>
+</html>

@@ -1,0 +1,31 @@
+{% extends "lms/reader/readerBase.html" %}
+{% block title %}买书{% endblock %}
+{% block content %}
+<article class="notIndex">
+	<header>
+		<div class="alert alert-info" role="alert">请填写您想要购买的图书信息。</div>
+		<label>{{buy_book_msg}}</label>
+	</header>
+	<section>
+		<div class="myForm">
+			<form method="post" action="{% url 'rer:reader_buy_book %}">
+				<div class="form-group">
+					<label for="isbn">ISBN:</label>
+					<input id="isbn" name="isbn" class="form-row" type="text">
+				</div>
+				<div class="form-group">
+					<label for="bookName">书名:</label>
+					<input id="bookName" name="bookName" class="form-row" type="text">
+				</div>
+				<div class="form-group">
+					<div class="reasonLabel">
+						<label for="reason">购书理由:</label>
+					</div>
+					<textarea id="reason" name="reason" class="reason"></textarea>
+				</div>
+				<button class="btn btn-success" type="submit">提交</button>
+			</form>
+		</div>
+	</section>
+</article>
+{% endblock %} 

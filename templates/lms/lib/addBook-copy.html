@@ -120,14 +120,13 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
 
+{% block js %}
 <script>
-
-
-
 $(document).ready(function(){   
 $("#copy-add").click(function(){
-	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_add_num="+$("#copyNum").val()+"&json_user={{username}}";
+	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_add_num="+$("#copyNum").val();
     $.getJSON(
     add_url,  
     function(data){
@@ -136,7 +135,7 @@ $("#copy-add").click(function(){
 });
 
 $("#saveModal").click(function(){
-	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_code="+$("#bookBarCode").val()+"&json_status="+$("#status").val()+"&json_user={{username}}";
+	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_code="+$("#bookBarCode").val()+"&json_status="+$("#status").val();
     $.getJSON(
     add_url,  
     function(data){
@@ -145,7 +144,7 @@ $("#saveModal").click(function(){
 });
 
 $("#copy-delete").click(function(){
-	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_code="+$(".tr-choosen-ok").find("td:eq(0)").text()+"&json_user={{username}}";
+	var add_url="{% url 'lib:lib_addcopies' %}?json_isbn={{isbn}}&json_code="+$(".tr-choosen-ok").find("td:eq(0)").text();
     $.getJSON(
     add_url,  
     function(data){
@@ -198,6 +197,5 @@ function parser(data) {
     choosen();
 }
 </script>
-
 {% endblock %}
 

@@ -1,0 +1,204 @@
+header .message {
+	float:right;
+	margin-right: 20px;
+}
+
+body>section {
+	width: 1000px;
+	/*max-height: 2000px;*/
+	margin: 100px auto 50px;
+	border: 1px solid #000000;
+}
+
+section .recommend {
+	width: 75%;
+	height: 200px;
+	border: 1px solid #000000;
+	margin-left: 250px;
+}
+
+section nav {
+	width: 250px;
+	height: 650px;
+	border: 1px solid #000000;
+	float: left;
+}
+
+/******************************index.html页面**********************************以下*/
+section article.books {
+	width: 75%;
+	max-height: 1800px;
+	margin-left: 250px;
+	border: 1px solid #000000;
+	/*float: left;*/
+}
+
+
+
+ul.bookList {
+	list-style-type: none;
+}
+
+ul.bookList li {
+	width:200px;
+	height:150px;
+	margin-left:20px;
+	/*border: 1px solid #000000;*/
+	float: left;
+	text-align: center;
+	line-height:150px;
+}
+
+.bookRow {
+	height: 160px;
+	margin-top: 20px;
+	border: 1px solid #000000;
+}
+
+.search {
+	margin: 20px 10px;
+}
+
+.search input {
+	width: 150px;
+	float: left;
+}
+
+.search button {
+}
+/******************************index.html页面***************************以上*/
+
+
+/******************************非index.html页面*************************以下*/
+section article.notIndex {
+	width: 980px;
+	max-height: 1800px;
+	margin: 20px 10px 20px;
+}
+
+section article.notIndex header div{
+	border-radius: 10px;
+}
+
+
+aside {
+	width: 0px;
+	height: 100px;
+	max-height: 100px;
+	position: fixed;
+}
+
+footer {
+	height: 50px;
+	width: 1000px;
+	margin: 20px auto 20px;
+	border: 1px solid #000000;
+}
+
+/*myLoan.html页面**以下*/
+
+input[type="date"] {
+	line-height: 1;
+}
+
+.queryBar {
+
+}
+
+.tableField {
+	margin-top: 20px;
+}
+
+.tableField legend {
+	background-color: #4d9feb;
+	color: #ffffff;
+	border-radius: 5px;
+}
+
+.tableField legend a {
+	float: right;
+	color: #ffffff;
+}
+
+a:hover {
+	color: #ff0000;
+}
+
+table {
+	
+}
+table td,th {
+	text-align: center;
+	
+}
+
+#bookComment {
+	display: none;
+}
+
+/*myLoan.html页面**以上*/
+
+
+/*buyBook.html页面**以下*/
+
+.myForm {
+	width: 400px;
+	margin:10px auto 10px;
+}
+
+.myForm label {
+	width: 80px;
+}
+
+.myForm button {
+	margin-left:250px;
+}
+
+.form-row {
+	width: 50%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;*/
+}
+
+textarea.reason {
+	width:300px;
+	height:300px;
+	resize:none;
+}
+
+.reasonLabel {
+	float: left;
+}
+
+/*buyBook.html页面**以上*/
+
+/*myReview.html页面**以下*/
+
+.myComment {
+	display: none;
+}
+
+.myComment textarea{
+	border: 1px dotted #000000;
+	height: 150px;
+	width: 100%;
+	overflow: auto;
+}
+
+
+/*myReview.html页面**以上*/
+
+
+/******************************非index.html页面*************************以上*/

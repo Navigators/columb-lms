@@ -62,6 +62,8 @@ class ReaderCate(models.Model):
     def __unicode__(self):
         return self.name
 
+    def natural_key(self):
+        return (self.name)
     
 class Librarians(User):
     name = models.CharField(max_length=40)
@@ -79,15 +81,15 @@ class Librarians(User):
         super(Librarians, self).save()
           
     def natural_key(self):
-        return (self.name,self.username,) + (self.corp.natural_key(),) + (self.dept.natural_key(),)
-    natural_key.dependencies = ['lms.Company','lms.Department']
+        return (self.name, self.username,) + (self.corp.natural_key(),) + (self.dept.natural_key(),)
+    natural_key.dependencies = ['lms.Company', 'lms.Department']
 
     
 class Readers(User):
     name = models.CharField(max_length=40)
     cate = models.ForeignKey(ReaderCate) 
     sex = models.BooleanField() 
-    birth_date = models.DateField(blank=True) 
+    birth_date = models.DateField(blank=True, null=True) 
     corp = models.ForeignKey(Company) 
     dept = models.ForeignKey(Department) 
     work_phone = models.CharField(max_length=40, blank=True) 
@@ -103,7 +105,10 @@ class Readers(User):
     def save(self):
         self.password = make_password(self.password)
         super(Readers, self).save()
-
+        
+    def natural_key(self):
+        return (self.username,self.name)+(self.cate.natural_key(),)+(User.natural_key(self),)
+    natural_key.dependencies=['lms.ReaderCate',]
         
 class Books(models.Model):
     isbn = models.CharField(max_length=40) 
@@ -132,13 +137,15 @@ class Books(models.Model):
     reg_date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     pic_location = models.CharField(max_length=200, blank=True)
+    rating_sum=models.IntegerField(default=0)
+    rating_count=models.IntegerField(default=0)
     
     def __unicode__(self):
         return self.name
     
     def natural_key(self):
-        return (self.isbn,) + (self.book_type.natural_key(),) + (self.cate.natural_key(),)+ (self.operator.natural_key(),)
-    natural_key.dependencies = ['lms.BookType','lms.BookCate','lms.Librarians']
+        return (self.isbn, self.name) + (self.book_type.natural_key(),) + (self.cate.natural_key(),) + (self.operator.natural_key(),)
+    natural_key.dependencies = ['lms.BookType', 'lms.BookCate', 'lms.Librarians']
 
     
 class Bylaw(models.Model):
@@ -159,7 +166,10 @@ class Copies(models.Model):
     
     def __unicode__(self):
         return self.barcode
-
+    
+    def natural_key(self):
+        return (self.barcode,) + (self.book.natural_key(),) + (self.state.natural_key(),) + (self.operator.natural_key(),)
+    natural_key.dependencies = ['lms.Books', 'lms.CopyState', 'lms.Librarians']
     
 class LoanList(models.Model):
     copy = models.ForeignKey(Copies) 
@@ -167,20 +177,22 @@ class LoanList(models.Model):
     loan_date_time = models.DateTimeField(auto_now_add=True) 
     should_return_date = models.DateField() 
     reloan_times = models.IntegerField(default=0) 
-    reloan_date = models.DateField(blank=True,null=True)
+    reloan_date = models.DateField(blank=True, null=True)
     is_return = models.BooleanField(default=False) 
-    fact_return_date_time = models.DateTimeField(blank=True,null=True) 
+    fact_return_date_time = models.DateTimeField(blank=True, null=True) 
     loan_operator = models.ForeignKey(Librarians, related_name="loanlist_loan")
-    return_operator = models.ForeignKey(Librarians, related_name="loanlist_return",blank=True,null=True)
-    praise = models.BooleanField()
+    return_operator = models.ForeignKey(Librarians, related_name="loanlist_return", blank=True, null=True)
     rating_score = models.IntegerField(default=0)
     
     def __unicode__(self):
-        return self.id
-
+        return str(self.id)
+    
+    def natural_key(self):
+        return (self.rating_score,) + (self.copy.natural_key(),) + (self.reader.natural_key(),) + (self.loan_operator.natural_key(),) + (self.return_operator.natural_key(),)
+    natural_key.dependencies = ['lms.Copies', 'lms.Readers', 'lms.Librarians']
     
 class Comments(models.Model):
-    loan = models.ForeignKey(LoanList)
+    loan = models.OneToOneField(LoanList)
     content = models.CharField(max_length=200) 
     create_date_time = models.DateTimeField(auto_now_add=True)   
 
@@ -211,13 +223,33 @@ class UserLog(models.Model):
     memo = models.CharField(max_length=100, blank=True)
     
     
-# class BooksToBuy(models.Model):
-#     BookKind = models.CharField(max_length = 80)
-#     BookName = models.CharField(max_length = 200) 
-#     IsImport = models.BooleanField()
-#     Author = models.CharField(max_length = 200) 
-#     Publisher = models.ForeignKey(Publishers) 
-#     ISBNISSN = models.CharField(max_length = 40) 
-#     BookPrice = models.FloatField() 
-#     State = models.CharField(max_length = 20)
-#     Requester = models.CharField(max_length = 40)
+class BooksApply(models.Model):
+    name = models.CharField(max_length=200)
+    author = models.CharField(max_length=200) 
+    publisher = models.CharField(max_length=80)  
+    isbn = models.CharField(max_length=40)
+    price = models.CharField(max_length=40)
+    date=models.DateField(auto_now_add=True)
+    reason= models.CharField(max_length=300) 
+    requester = models.CharField(max_length=40)
+    
+class BooksBuy(models.Model):
+    name = models.CharField(max_length=200)
+    author = models.CharField(max_length=200) 
+    publisher = models.CharField(max_length=80)  
+    isbn = models.CharField(max_length=40) 
+    price = models.CharField(max_length=40,blank=True)
+    date=models.DateField(auto_now_add=True)
+    operator = models.ForeignKey(Librarians)
+    requester = models.ForeignKey(Readers)
+    
+class BooksArchive(models.Model):
+    name = models.CharField(max_length=200)
+    author = models.CharField(max_length=200) 
+    publisher = models.CharField(max_length=80)  
+    isbn = models.CharField(max_length=40) 
+    price = models.CharField(max_length=40) 
+    state = models.CharField(max_length=20)
+    date=models.DateField(auto_now_add=True)
+    operator = models.ForeignKey(Librarians)
+    requester = models.CharField(max_length=40)

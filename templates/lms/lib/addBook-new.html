@@ -133,6 +133,7 @@
 						{% if book %}
 							<img name="image" src="{{book.pic_location}}">
 						{% endif %}
+						<input type="text" id="bookimage" name="bookimage" style="display:none">
 					</div>
 				</div>
 				<hr>
@@ -186,12 +187,13 @@
 						<button class="btn btn-info" style="margin-left: 20px">帮助</button>
 					</div>
 				</div>
-
 			</div>
 		</form>
 	</div>
 </div>
+{% endblock %}
 
+{% block js %}
 <script>
 $(document).ready(function(){
     var data_url="{% url 'lib:lib_retrieve' %}?json_isbn={{isbn}}"
@@ -242,7 +244,7 @@ $(document).ready(function(){
         	$("#author").val(authors);
         });
     
-    var others_url="{% url 'lib:lib_retrieve' %}?json_others={{isbn}}"
+	 var others_url="{% url 'lib:lib_retrieve' %}?json_others={{isbn}}"
         $.getJSON(
         others_url,  
         function(others){
@@ -254,7 +256,8 @@ $(document).ready(function(){
                 		if(key=="summary")
                 			summary=value;
             		})
-        		$("#img").append("<img name='image' value='"+pic+"' src='"+pic+"'>");
+        		$("#img").append("<img src='"+pic+"'>");
+                $("#bookimage").val(pic);
                 $("#summary").val(summary);
         }); 
 });

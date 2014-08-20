@@ -4,12 +4,22 @@ from django.contrib.auth import authenticate, login as user_login, logout as use
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
+from lms.models import Librarians, Readers
+from django.conf.locale import fa
+
 
 def index(request):
     if request.method == "POST":
         if login(request):
-            # 判断是那种类型的用户，目前默认是图书管理员
-            return HttpResponseRedirect('/lib/index/')
+            # 判断是那种类型的用户
+            if Librarians.objects.filter(username=request.user.username):
+                return HttpResponseRedirect('/lib/index/')
+            elif Readers.objects.filter(username=request.user.username):
+                return HttpResponseRedirect('/rer/index/')
+            else:
+                # 超级管理员不许登录管理员端和读者端
+                user_logout(request)
+                return HttpResponseRedirect('/index/')
         else:
             return HttpResponseRedirect('/index/')
     else:
@@ -26,7 +36,7 @@ def login(request):
         del request.session['error_login']
     username = request.POST['username']  
     password = request.POST['password']
-    user = authenticate(username=username, password=password)  
+    user = authenticate(username=username, password=password)
     if user is not None:  
         if user.is_active:
             user_login(request, user)
@@ -38,8 +48,23 @@ def login(request):
         return False
     return True
 
-def is_login(request):
-    return request.user.is_authenticated()
+def is_login_lib(request):
+    if request.user.is_authenticated():
+        if Librarians.objects.filter(username=request.user.username):
+            return True
+        else: 
+            return False
+    else:
+        return False
+    
+def is_login_rer(request):
+    if request.user.is_authenticated():
+        if Readers.objects.filter(username=request.user.username):
+            return True
+        else: 
+            return False
+    else:
+        return False
 
 def get_errorlogin_session(request):
     if "error_login" in request.session:

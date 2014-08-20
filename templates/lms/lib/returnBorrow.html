@@ -119,19 +119,17 @@
 										<input type="checkbox">
 										<label>还书操作员</label>
 									</div>
-									<table class="table">
+									<table id="loanTable"class="table">
 										<tr>
-											<th>借出日期</th>
+
 											<th>借出时间</th>
 											<th>书刊名称</th>
-											<th>书刊输入码</th>
 											<th>馆藏类型</th>
 											<th>书刊条号</th>
 											<th>索书号</th>
 											<th>读者姓名</th>
-											<th>读者输入码</th>
+											<th>读者工号</th>
 											<th>读者类别</th>
-											<th>读者性别</th>
 											<th>读者部门</th>
 											<th>应还日期</th>
 											<th>续借次数</th>
@@ -163,89 +161,109 @@
 						</div>
 					</div>
 				</div>
-				<script type="text/javascript">
-				$(function() {
-					$('#code').blur(function() {
-						var text = $(this).val();
-						$.ajax({
-							url:'/lib/returnborrow',
+{% endblock %}
+
+{% block js %}
+
+<script type="text/javascript">
+	var copyid ="";
+	var readerid ="";
+		$('#code').blur(function() {
+					copyid = $(this).val();
+					$.ajax({
+						url:'{% url "lib:lib_return_borrow" %}',
 							type: 'POST',
-							data: 'funno=201&text='+text,
+							data: 'funno=201&text='+copyid,
 							dataType: 'json',
 							success: function(data) {
-								console.log(data);
+								if(data['state'] == 'getcopy success'){
+									$('#bookName').val(data['copy']['name']);
+									$('#author').val(data['copy']['author']);
+									$('#cate').val(data['copy']['cate']);
+									copyid = data['copy']['copyid'];
+									console.log(data);
+									$('#borrowCopyID').val(data['copy']['copyid']);
+									$('#returnCopyID').val(data['copy']['copyid']);
+									$('#renewCopyID').val(data['copy']['copyid']);
+								}
+								else{
+									console.log(data['state']);
+									copyid = "";
+								}
+							},
+							error: function(xhr, status, error) {
+								console.log('status:'+status+',error:'+error);
+							}
+					});
+		});
+
+		$('#workId').blur(function() {
+						readerid = $(this).val();
+						$.ajax({
+							url:'{% url "lib:lib_return_borrow" %}',
+							type: 'POST',
+							data: 'funno=202&text='+readerid,
+							dataType: 'json',
+							success: function(data) {
+								if(data['state'] == 'getreader success'){
+									$('#readerName').val(data['reader']['name']);
+									$('#depart').val(data['reader']['dept']);
+									$('#readerCategory').val(data['reader']['cate']);
+									readerid = data['reader']['readerid'];
+									console.log(data);
+									$('#borrowReaderID').val(data['reader']['readerid']);
+								}
+								else{
+									console.log(data['state']);
+									readerid = "";
+								}
 							},
 							error: function(xhr, status, error) {
 								console.log('status:'+status+',error:'+error);
 							}
 						});
-					});
-				})
-				</script>
-				<script type="text/javascript">
-				$(function() {
-					$('#workId').blur(function() {
-						var text = $(this).val();
-						$.ajax({
-							url:'/lib/returnborrow',
-							type: 'POST',
-							data: 'funno=202&text='+text,
-							dataType: 'json',
-							success: function(data) {
-								console.log(data);
-							},
-							error: function(xhr, status, error) {
-								console.log('status:'+status+',error:'+error);
-							}
-						});
-					});
-				})
-				</script>
-				<script type="text/javascript">
-				$(function() {
-					$('#borrow').click(function() {
-						var copyid = "1";
-						var readerid = "3"
-						$.ajax({
-							url:'/lib/returnborrow',
+		});
+
+		$('#borrow').click(function() {
+					$.ajax({
+							url:'{% url "lib:lib_return_borrow" %}',
 							type: 'POST',
 							data: 'funno=203&copyid='+copyid+'&readerid='+readerid,
 							dataType: 'json',
 							success: function(data) {
 								console.log(data);
+								if(data['state'] == 'borrow success'){
+									$.each(data['loanlist'],function(i,object){
+										$('#loanTable').append('<tr> <th>'+this['loandatetime']+'</th> <th>'+this['bookname']+'</th> <th>'+this['booktype']+'</th> <th>'+this['barcode']+'</th> <th>'+this['catename']+'</th> <th>'+this['readername']+'</th> <th>'+this['username']+'</th> <th>'+this['usercate']+'</th> <th>'+this['dept']+'</th> <th>'+this['shouldreturndate']+'</th> <th>'+this['reloantimes']+'</th> <th>'+this['operator']+'</th> <th>'+this['returnoperator']+'</th></tr>')
+									});
+								}
+								else{
+
+								}
 							},
 							error: function(xhr, status, error) {
 								console.log('status:'+status+',error:'+error);
 							}
-						});
 					});
-				})
-				</script>
-				<script type="text/javascript">
-				$(function() {
-					$('#return').click(function() {
-						var copyid = "1";
-						$.ajax({
-							url:'/lib/returnborrow',
-							type: 'POST',
-							data: 'funno=204&copyid='+copyid,
-							dataType: 'json',
-							success: function(data) {
-								console.log(data);
-							},
-							error: function(xhr, status, error) {
-								console.log('status:'+status+',error:'+error);
-							}
-						});
+		});
+		$('#return').click(function() {
+				$.ajax({
+						url:'{% url "lib:lib_return_borrow" %}',
+						type: 'POST',
+						data: 'funno=204&copyid='+copyid,
+						dataType: 'json',
+						success: function(data) {
+							console.log(data);
+						},
+						error: function(xhr, status, error) {
+							console.log('status:'+status+',error:'+error);
+						}
 					});
-				})
-				</script>
-				<script type="text/javascript">
-				$(function() {
-					$('#renew').click(function() {
-						var copyid = "1";
-						$.ajax({
-							url:'/lib/returnborrow',
+		});
+
+		$('#renew').click(function() {
+					$.ajax({
+							url:'{% url "lib:lib_return_borrow" %}',
 							type: 'POST',
 							data: 'funno=205&copyid='+copyid,
 							dataType: 'json',
@@ -255,9 +273,8 @@
 							error: function(xhr, status, error) {
 								console.log('status:'+status+',error:'+error);
 							}
-						});
 					});
-				})
-				</script>
+		});
+</script>
 {% endblock %}
 

@@ -1,5 +1,47 @@
-{% extends "lms/lib/base.html" %}
-{% block title %}逾期记录查询{% endblock %}
+{% extends "lms/lib/base.html" %} 
+{% block title %}逾期查询{% endblock %} 
 {% block content %}
-	逾期记录查询
-{% endblock %}
+				<div class="row section-content">
+					<div class="col-md-11">
+						<form class="form-horizontal" method="post" action="#">
+							<div class="row">
+								<p>
+									<span>应还日期从</span>
+									<input type="date" placeholder="例：2014/01/01">
+									<span>到</span>
+									<input type="date" placeholder="例：2014/01/01">
+									<span style="margin-left:20px">类别</span>
+									<select>
+										<option>类别一</option>
+										<option>类别二</option>
+										<option>类别三</option>
+									</select>
+									<button class="btn btn-primary" type="button" style="float: right">查询</button>
+								</p>
+								<table class="table">
+									<tr>
+										<th>书名</th>
+										<th>书刊条码</th>
+										<th>借出时间</th>
+										<th>续借次数</th>
+										<th>应还日期</th>
+										<th>借出操作员</th>
+										<th>读者</th>
+									</tr>
+									{% for ol in overdue_list%}
+									<tr class="choosen">
+										<td>{{ol.copy.book.name}}</td>
+										<td>{{ol.copy.barcode}}</td>
+										<td>{{ol.loan_date_time}}</td>
+										<td>{{ol.reloan_times}}</td>
+										<td>{{ol.should_return_date}}</td>
+										<td>{{ol.loan_operator}}</td>
+										<td>{{ol.reader.name}}</td>
+									</tr>
+									{% endfor %}
+								</table>
+							</div>
+						</form>
+					</div>
+				</div>
+{% endblock %} 

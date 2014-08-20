@@ -87,6 +87,16 @@
 			$('#borrowDays').attr('value', $('.tr-choosen-ok').find('td:eq(2)').text());
 			$('#renewalTimes').attr('value', $('.tr-choosen-ok').find('td:eq(3)').text());
 			$('#renewalDays').attr('value', $('.tr-choosen-ok').find('td:eq(4)').text());
+			if ($('.tr-choosen-ok').find('td:eq(5)').text() == '是')
+			{
+				$('#japBooks').get(0).checked = true;
+			}
+			else
+			{
+				$('#japBooks').get(0).checked = false;
+
+			}
+			$('#idInput').attr('value', $('.tr-choosen-ok').find('td:eq(6)').text());
 		});
 		$('#permission-add').on('click', function() {
 			$('#permissionModal #permissionModalLabel').html('添加权限');
@@ -96,6 +106,7 @@
 			$('#borrowDays').attr('value', '');
 			$('#renewalTimes').attr('value', '');
 			$('#renewalDays').attr('value', '');
+			$('#japBooks').get(0).checked = false;
 		});
 	}
 

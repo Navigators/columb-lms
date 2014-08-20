@@ -49,13 +49,14 @@
 		</div>
 	</div>
 </div>
+{% endblock %}
 
+{% block js %}
 <script>
-
 $(document).ready(function(){   
 	
 	$("#searchBook").click(function(){
-		var search_url="{% url 'lib:lib_booklist' %}?json_isbn="+$("#keyWord").val()+"&json_user={{username}}";
+		var search_url="{% url 'lib:lib_booklist' %}?json_isbn="+$("#keyWord").val();
 	    $.getJSON(
 	    search_url,  
 	    function(data){

@@ -1,0 +1,125 @@
+{% extends "lms/lib/base.html" %} 
+{% block title %}消息推送{% endblock %}
+{% block content %}
+
+<div class="row section-content">
+	<div class="col-md-11">
+		<form class="form-horizontal" method="post" action="#">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="col-md-12  push-left">
+						<ul class="push-ul" style="padding-left: 0px;">
+							<li>第1个</li>
+							<li>第2个</li>
+							<li>第3个</li>
+							<li>第4个</li>
+							<li>第5个</li>
+						</ul>
+					</div>
+					<div class="col-md-12" style="margin-top: 10px">
+						<button id="add" type="button" class="btn btn-primary">增加</button>
+						<button id="delete" type="button" class="btn btn-primary" disabled>删除</button>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="col-md-12 push-right">
+						<textarea id="push-title" class="col-md-12"
+							style="height: 50px; margin-top: 25px;"></textarea>
+						<textarea id="push-content" class="col-md-12"
+							style="height: 480px; margin: 25px auto 25px auto;"></textarea>
+					</div>
+					<div style="margin-top: 10px; float: right">
+						<button id="save" type="button" class="btn btn-primary">保存</button>
+						<button id="push" type="button" class="btn btn-primary">推送</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+		var liIndex = 0;
+		var lastIndex = 0;
+		//要保证新生成的li节点也要被each循环找到，所以多处调用colorLi()
+		function colorLi() {
+			$('.push-ul li').each(function(index) {
+				$(this).on('dblclick', function() {
+					var text = $(this).text();
+					$('#push-title').val(text);
+					liIndex = index;//双击的第几个li标签
+				});
+				$(this).on('click', function() {
+					if($(this).css('background-color') == 'rgb(196, 196, 226)' || $(this).css('background-color') == '#c4c4e2') {
+						$(this).removeClass('tr-choosen-ok');
+						$('#delete').attr('disabled','disabled');
+					} else {
+						$(this).parent().find('li').removeClass('tr-choosen-ok');
+						$(this).addClass('tr-choosen-ok');
+						$('#delete').removeAttr('disabled');
+					}
+				});
+				lastIndex = index;
+			});
+		}
+
+		//为新增li节点添加点击事件
+		function queryAddLi(index) {
+			$('.push-ul').find('li:eq('+index+')').on('dblclick', function() {
+				var text = $(this).text();
+				$('#push-title').val(text);
+					liIndex = index;//双击的第几个li标签
+				});
+			$('.push-ul').find('li:eq('+index+')').on('click', function() {
+				if($(this).css('background-color') == 'rgb(196, 196, 226)' || $(this).css('background-color') == '#c4c4e2') {
+					$(this).removeClass('tr-choosen-ok');
+					$('#delete').attr('disabled','disabled');
+				} else {
+					$(this).parent().find('li').removeClass('tr-choosen-ok');
+					$(this).addClass('tr-choosen-ok');
+					$('#delete').removeAttr('disabled');
+				}
+			});
+		}
+		$(function() {
+			colorLi();
+			$('.push-left').hoverDelay({
+				hoverEvent: function() {
+					$('.push-left').css('overflow-y','auto');
+				},
+				outEvent: function() {
+					$('.push-left').css('overflow-y','hidden');
+				}
+			});
+			$('.push-right').hoverDelay({
+				hoverEvent: function() {
+					$('.push-right').css('overflow-y','auto');
+				},
+				outEvent: function() {
+					$('.push-right').css('overflow-y','hidden');
+				}
+			});
+			$('#add').on('click', function() {
+				$('.push-ul').append('<li>新模板</li>');
+				lastIndex ++;
+				queryAddLi(lastIndex);
+				console.log(lastIndex);
+				/*colorLi();*/
+				/*add ajax*/
+			})
+			$('#delete').on('click', function() {
+				$('.push-ul').find('.tr-choosen-ok').remove();
+				/*colorLi();*/
+				/*delete ajax*/
+			})
+			$('#save').on('click', function() {
+				/*console.log(liIndex);*/
+				$('.push-ul').find('li:eq('+liIndex+')').text($('#push-title').val());
+				/*colorLi();*/
+				/*save ajax*/
+			})
+		})
+	</script>
+{% endblock %}

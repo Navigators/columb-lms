@@ -1,17 +1,20 @@
-from django.conf.urls import patterns,url
+from django.conf.urls import patterns, url
 from django.contrib import admin
 
-from lms import views
+from lms import rer_view
 
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'columb.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-#     url(r'^$', views.read_index,name="read_index"),
 
-    url(r'^$', views.reader_index,name="reader_index"),
-    url(r'^index/$', views.reader_index,name="reader_index"),
+    url(r'^$', rer_view.reader_index, name="reader_index"),
+    url(r'^index/$', rer_view.reader_index, name="reader_index"),
+    
+    url(r'^loan/$', rer_view.reader_loan, name="reader_loan"),
+    url(r'^point/$', rer_view.reader_point, name="reader_point"),
+    url(r'^profile/$', rer_view.reader_profile, name="reader_profile"),
+    url(r'^review/$', rer_view.reader_review, name="reader_review"),
+    
+    url(r'^buybook/$', rer_view.reader_buy_book, name="reader_buy_book"),
 )

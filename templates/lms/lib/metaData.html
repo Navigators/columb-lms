@@ -1,0 +1,236 @@
+{% extends "lms/lib/base.html" %} 
+{% block title %}借书及管理{% endblock %}
+{% block content %}
+<style type="text/css">
+section ul {
+	list-style-type: none;
+}
+
+section ul li {
+	height: 30px;
+	width: 40%;
+	margin: 10px auto auto -10px;
+	background-color: #91C8D3;
+	text-align: center;
+	line-height: 30px;
+}
+</style>
+<div class="row section-content">
+	<div class="col-md-11">
+		<form class="form-horizontal" method="post" action="{% url 'lib:lib_metadata' %}">
+			<div class="row">
+				<div class="col-sm-4 col-md-5">
+					<button id="add" class="btn btn-success" type="button" data-toggle="modal" data-target="#metaModal">新增</button>
+					<button id="modify" class="btn btn-success updateButton" type="button" data-toggle="modal" data-target="#metaModal" disabled="disabled">修改</button>
+					<button id="delete" class="btn btn-success updateButton" type="button" disabled="disabled">删除</button>
+					<!-- <button class="btn btn-success" type="button">查询</button> -->
+				</div>
+				<div class="col-sm-12 col-md-12">
+					<hr>
+				</div>
+				<div class="col-sm-4 col-md-4"
+					style="border-right: 1px solid #000000">
+					<ul id="dataList">
+						<li id="lili"><a href="#data1">公司</a></li>
+						<li><a href="#data2">部门</a></li>
+						<li><a href="#data3">馆藏类型</a></li>
+						<li><a href="#data4">书籍状况</a></li>
+					</ul>
+				</div>
+				<div id="dataContent" class="col-sm-4 col-md-8">
+					<div class="row" style="display: block">
+						<table class="table">
+							<tr>
+								<th>序号</th>
+								<th>公司名称</th>
+							</tr>
+							{% for company in companies %}
+								<tr class="choosen">
+									<td>{{company.id}}</td>
+									<td>{{company.name}}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+					<div class="row" style="display: none">
+						<table class="table">
+							<tr>
+								<th>序号</th>
+								<th>部门名称</th>
+							</tr>
+							{% for department in departments %}
+								<tr class="choosen">
+									<td>{{department.id}}</td>
+									<td>{{department.name}}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+					<div class="row" style="display: none">
+						<table class="table">
+							<tr>
+								<th>序号</th>
+								<th>馆藏类型</th>
+							</tr>
+							{% for type in book_types %}
+								<tr class="choosen">
+									<td>{{type.id}}</td>
+									<td>{{type.name}}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+					<div class="row" style="display: none">
+						<table class="table">
+							<tr>
+								<th>序号</th>
+								<th>书籍状况</th>
+							</tr>
+							{% for state in copy_states %}
+								<tr class="choosen">
+									<td>{{state.id}}</td>
+									<td>{{state.name}}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+				<!-- <div id="data2" class="col-sm-4 col-md-8 data" style="display:none">
+									
+								</div>
+								<div id="data3" class="col-sm-4 col-md-8 data" style="display:none">
+									
+								</div>
+								<div id="data4" class="col-sm-4 col-md-8 data" style="display:none">
+									
+								</div> -->
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+{% block modal %}
+<div class="modal fade" id="metaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="metaModalLabel">111</h4>
+			</div>
+			<div class="modal-body row">
+				<div class="col-md-10 col-md-offset-1">
+					<div class="form-group row">
+						<div class="form-group">
+							<label for="searchCode" class="col-md-2 col-md-offset-2 control-label form-label">33</label>
+							<div class="col-md-5">
+								<input type="text" class="form-control" id="searchCode" placeholder="">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button id="saveModal_add" type="button" class="btn btn-primary">确定</button>
+				<button id="saveModal_modify" type="button" class="btn btn-primary">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+	var metaType = "";
+	var liIndex = 0;
+	$(function() {
+		$('#dataList li').each(
+				function(index) {
+					$(this).on('click',function() {
+										metaType = $(this).find('a').text();
+										console.log(index);
+										$('#dataContent').find('div').css(
+												'display', 'none');
+										$('#dataContent').find(
+												'div:eq(' + index + ')').css(
+												'display', 'block');
+										$('*').removeClass('tr-choosen-ok');//去掉其他页面的选中效果
+										$('.updateButton').attr('disabled',
+												'disabled');
+										liIndex = index;
+									})
+				})
+		$('#modify').on('click',function() {
+					$('#saveModal_add').hide();
+					$('#saveModal_modify').show();
+					$('#metaModal').find('label:eq(0)').text(
+							$('#dataContent').find('div:visible').find(
+									'th:eq(1)').text());//弹窗的第二个label
+					$('#metaModal').find('label:eq(0)').next().find('input')
+							.val($('.tr-choosen-ok').find('td:eq(1)').text()); //弹窗的第二个input
+					$('#metaModalLabel').text(metaType);
+				});
+		$('#add').on('click',function() {
+					$('#saveModal_modify').hide();
+					$('#saveModal_add').show();
+					//按照$('#dataContent').find('div:visible')来区分增加哪一个
+					$('#metaModal').find('label:eq(0)').text(
+							$('#dataContent').find('div:visible').find(
+									'th:eq(1)').text());
+					$('#metaModal').find('label:eq(0)').next().find('input')
+							.val('');
+					$('#metaModalLabel').text(metaType);
+				});
+
+	});
+	
+	$("#saveModal_add").click(function(){
+		var add_url="{% url 'lib:lib_metadata' %}?json_name="+$('#searchCode').val()+"&json_item="+liIndex;
+		$.getJSON(
+	    add_url,  
+	    function(data){
+	    	parser(data);
+		});
+	});
+	
+	$("#saveModal_modify").click(function(){
+		var modify_url="{% url 'lib:lib_metadata' %}?json_id="+$('.tr-choosen-ok').find('td:eq(0)').text()+"&json_name="+$('#searchCode').val()+"&json_item="+liIndex;
+	    $.getJSON(
+	    modify_url,  
+	    function(data){
+	    	parser(data);
+		});
+	});
+	
+	$("#delete").click(function(){
+		var delete_url="{% url 'lib:lib_metadata' %}?json_id="+$('.tr-choosen-ok').find('td:eq(0)').text()+"&json_item="+liIndex;
+	    $.getJSON(
+	    delete_url,  
+	    function(data){
+	    	parser(data);
+		});
+	});
+	
+	function parser(data) {
+		var id="";
+    	var name="";
+    	$('#dataContent').find('table:eq(' + liIndex + ')').find('tr.choosen').remove();
+    	$.each(data,function(i,item){
+    		$.each(item,function(key,value){
+    			if(key=='pk')
+    				id=value;
+    			if(key=='fields')
+    				$.each(value,function(_key,_value){
+    					if(_key=='name')
+    						name=_value;
+    				});
+    		});
+    		$('#dataContent').find('table:eq(' + liIndex + ')').append("<tr class='choosen'><td>"+id+"</td><td>"+name+"</td></tr>");
+    	});
+    	choosen();
+	}
+</script>
+{% endblock %}

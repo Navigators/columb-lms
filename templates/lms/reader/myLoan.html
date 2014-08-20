@@ -1,0 +1,213 @@
+{% extends "lms/reader/readerBase.html" %}
+{% block title %}我的借阅{% endblock %}
+{% block content %}
+<article class="notIndex">
+	<header>
+		<div class="alert alert-warning" role="alert">
+			您的图书逾期，已经不能续借，也不能再借书，请尽快把书还至图书馆！
+		</div>
+	</header>
+	<section>
+		<div class="queryBar">
+			<label>书名</label> <input id="bookName" type="text"> <label>日期</label>
+			<input id="dateFrom" type="date" placeholder="例2014/01/01">-
+			<input id="dateTo" type="date" placeholder="例2014/01/01"> <label>状态</label>
+			<select id="status">
+				<option value="0">全部</option>
+				<option value="1">未还</option>
+				<option value="2">已还</option>
+				<option value="3">逾期</option>
+			</select>
+			<button id="query" class="btn btn-primary">查询</button>
+			<a href="javascript:setEmpty()">清空查询条件</a>
+		</div>
+		<div class="tableFiled">
+			<fieldset>
+				<legend>查询结果</legend>
+				<table class="table">
+					<tr>
+						<th>书名</th>
+						<th><select>
+								<option value="" selected="selected" style="display: none">类型</option>
+								<option value="">借书</option>
+								<option value="">续借</option>
+						</select></th>
+						<th>借书日期</th>
+						<th>状态</th>
+						<th>操作</th>
+						<th>续借</th>
+					</tr>
+					<tr class="bookRaw">
+						<td>代码大全</td>
+						<td>借书</td>
+						<td>2014-08-13</td>
+						<td>已还</td>
+						<td><a href="javascript:writeComment()">写书评</a></td>
+						<td>续借</td>
+					</tr>
+					<tr class="bookRaw">
+						<td>高数</td>
+						<td>借书</td>
+						<td>2014-07-30</td>
+						<td>逾期</td>
+						<td><a href="javascript:seeComment()">看书评</a></td>
+						<td>续借</td>
+					</tr>
+				</table>
+			</fieldset>
+		</div>
+	</section>
+	<div id="bookComment">
+		<textarea id="comment" style="width: 500px; height: 300px; resize: none;"></textarea>
+		<button id="comment_submit">提交书评</button>
+		<a href="javascript:commentUp()">UP</a>
+	</div>
+</article>
+{% endblock %} 
+
+{% block js %}
+<script type="text/javascript">
+	var loan_id="";
+
+	$("#comment_submit").click(function(){
+		var add_url="{% url 'rer:reader_loan' %}?json_id="+loan_id+"&json_comment="+$("#comment").val();
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    			console.log(data);
+    			prase_comment(data);
+    	});	
+	});
+	
+	function setEmpty() {
+		$('#bookName').val('');
+		$('#dateFrom').val('');
+		$('#dateTo').val('');
+		$('#status').find('option:eq(0)').attr('selected', 'selected');
+	}
+
+	function seeComment(id) {
+		$("#comment").val("");
+		var add_url="{% url 'rer:reader_loan' %}?json_id="+id;
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    		prase_comment(data);
+		});
+		
+		$('#bookComment').slideDown('slow');
+		$('#bookComment button').hide();
+		
+	}
+
+	function writeComment(id) {
+		loan_id=id;
+		
+		$("#comment").val("");
+		var add_url="{% url 'rer:reader_loan' %}?json_id="+id;
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    		console.log(data);
+    		prase_comment(data);
+		});
+		
+		$('#bookComment').slideDown('slow');
+		$('#bookComment button').show();
+		console.log(""+id);
+	}
+
+	function commentUp() {
+		$('#bookComment').slideUp('slow');
+	}
+	
+	$("#query").click(function(){
+	var add_url="{% url 'rer:reader_loan' %}?json_name="+$("#bookName").val()+"&json_date_from="+$("#dateFrom").val()+"&json_date_to="+$("#dateTo").val()+"&json_status="+$("#status").val();
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    		console.log(data);
+    		parse_all(data);
+		});
+	});
+	
+	function prase_comment(data){
+		$.each(data,function(i,item){
+			$.each(item,function(key,value){
+				if(key=="fields")
+					$.each(value,function(_key,_value){
+						if(_key=="content")
+							$("#comment").val(_value);	
+					});
+			});
+		});
+	}
+	
+	function parse_all(data){
+		var name="";
+		var is_reloan="";
+	    var is_return="";
+		var loan_date="";
+		var should_return_date=""
+		var id=""
+		$(".bookRaw").remove();
+	    $.each(data,function(i,item){
+	    	$.each(item,function(key,value){
+	    		if(key=="pk")
+	    			id=value;
+	    		if(key=="fields")
+	    			$.each(value, function (_key,_value) {
+	    				if(_key=="copy")
+	    					$.each(_value, function (__key,__value) {
+	    						if(__key=="1")
+	    							$.each(__value, function (___key,___value) {
+	    								if(___key=="1")
+	    									name=___value;
+	    							});
+	    					});
+	    				if(_key=="reloan_date")
+	    					if(_value==null)
+	    						is_reloan=false;
+	    					else
+	    						is_reloan=true;	
+	    				if(_key=="loan_date_time")
+	    					loan_date=_value;
+	    				if(_key=="is_return")
+	    					is_return=_value;
+	    				if(_key=="should_return_date")
+	    					should_return_date=_value;
+	    			});
+	    	});
+	    	if(is_reloan)
+	    		if(is_return)
+	    			$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>已还</td><td id="+id+"><a href='javascript:seeComment("+id+")'>看书评</a></td><td></td></tr>");
+	    		else {
+	    			var start=new Date(should_return_date.replace("-","/"));
+	    			var end=new Date();
+	    			if(start>=end)
+	    				if(start-end<=10)
+	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td>续借</td></tr>");
+	    				else
+	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td></td></tr>");
+	    			else
+	    				$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>逾期</td><td id="+id+"><a href='javascript:seeComment("+id+")'>看书评</a></td><td></td></tr>");
+	    		}
+	    	else{
+	    		if(is_return)
+	    			$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>已还</td><td id="+id+"><a href='javascript:seeComment("+id+")'>看书评</a></td><td></td></tr>");
+	    		else {
+	    			var start=new Date(should_return_date.replace("-","/"));
+	    			var end=new Date();
+	    			if(start>=end)
+	    				if(start-end<=10)
+	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td>续借</td></tr>");
+	    				else
+	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td></td></tr>");
+	    			else
+	    				$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>逾期</td><td id="+id+"><a href='javascript:seeComment("+id+")'>看书评</a></td><td></td></tr>");
+	    		}
+	    	}
+	    });
+	}
+</script>
+{% endblock %}

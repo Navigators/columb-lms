@@ -13,10 +13,11 @@
 	<link rel="stylesheet" href="{% static 'css/base.css' %}">
 	
 	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+	<script src="{% static 'js/jquery.js' %}"></script></script>
 	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 	<script src="{% static 'js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'js/base.js' %}"></script>
+	<script src="{% static 'js/jquery.json-2.4.min.js' %}"></script>
 </head>
 <body>
 	<header id="header" class="hvcenter title">
@@ -52,7 +53,7 @@
 						<a href="#">读者管理</a>
 						<ul class="nav nav-child">
 							<li>
-								<a href="readerInfo.html">读者信息</a>
+								<a href="{% url 'lib:lib_readerinfo' %}">读者信息</a>
 							</li>
 						</ul>
 					</li>
@@ -60,16 +61,16 @@
 						<a href="#">借阅管理</a>
 						<ul class="nav nav-child">
 							<li>
-								<a href="borrowPermission.html">借阅权限</a>
+								<a href="{% url 'lib:lib_borrow_permission' %}">借阅权限</a>
 							</li>
 							<li>
 								<a href="{% url 'lib:lib_return_borrow' %}">借书及管理</a>
 							</li>
 							<li>
-								<a href="borrowRecord.html">借阅记录查询</a>
+								<a href="{% url 'lib:lib_borrow_record' %}">借阅记录查询</a>
 							</li>
 							<li>
-								<a href="overdueRecord.html">逾期记录查询</a>
+								<a href="{% url 'lib:lib_overdue_record' %}">逾期记录查询</a>
 							</li>
 						</ul>
 					</li>
@@ -83,13 +84,13 @@
 						<a href="#">系统设置</a>
 						<ul class="nav nav-child">
 							<li>
-								<a href="metaData.html">元数据</a>
+								<a href="{% url 'lib:lib_metadata' %}">元数据</a>
 							</li>
 							<li>
-								<a href="password.html">管理员账号</a>
+								<a href="{% url 'lib:lib_password' %}">管理员账号</a>
 							</li>
 							<li>
-								<a href="push.html">推送</a>
+								<a href="{% url 'lib:lib_pushms' %}">推送</a>
 							</li>
 						</ul>
 					</li>
