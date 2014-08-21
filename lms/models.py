@@ -241,7 +241,7 @@ class BooksBuy(models.Model):
     price = models.CharField(max_length=40,blank=True)
     date=models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
-    requester = models.ForeignKey(Readers)
+    requester = models.CharField(max_length=40)
     
 class BooksArchive(models.Model):
     name = models.CharField(max_length=200)
