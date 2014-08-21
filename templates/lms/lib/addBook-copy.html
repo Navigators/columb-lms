@@ -104,10 +104,9 @@
 							class="col-md-2 col-md-offset-1 control-label form-label">状态:</label>
 						<div class="col-md-8">
 							<select class="form-control" id="status">
-								<option value="可借">可借</option>
-								<option value="破损">破损</option>
-								<option value="遗失">遗失</option>
-								<option value="保留">保留</option>
+								{% for state in state_list %}
+									<option value="{{state.name}}">{{state.name}}</option>
+								{% endfor %}
 							</select>
 						</div>
 					</div>

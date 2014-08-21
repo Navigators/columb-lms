@@ -12,7 +12,7 @@ from django.utils.datetime_safe import datetime
 from django.utils.timezone import now
 
 from lms.login_view import is_login_rer
-from lms.models import Books, BookCate, LoanList, Readers, Comments
+from lms.models import Books, BookCate, LoanList, Readers, Comments, BooksApply
 
 
 def reader_index(request):
@@ -33,7 +33,8 @@ def reader_index(request):
     
     popular_books = Books.objects.all()[0:3]
     book_cates = BookCate.objects.all()
-    return render(request, 'lms/reader/index.html', {'username':request.user.username,
+    return render(request, 'lms/reader/index.html', {
+                                                     'username':request.user.username,
                                                       'popular_books':popular_books,
                                                       'book_cates':book_cates,
                                                       }
@@ -139,30 +140,25 @@ def reader_buy_book(request):
         #缺少较完善的后台验证
         pattern = re.compile(u"^\d{10}$|^\d{13}$")
         if not pattern.search(isbn):
-            buy_book_msg="申请购买图书的ISBN号格式不正确，请重新输入！。"
-        elif 0:
-            #查找是否申请购买的图书已有
-            pass
-        else:
-            reader=Readers.objects.filter(username=request.user.username)[0]
-        
-#         data = urllib2.urlopen("http://10.167.129.109:3000/ISBNService/" + isbn).read()
-#         book=json.loads(data)
-#         reader.bookstoapply_set.create(
-#                                      name=book["bookName"],
-#                                      author=book["author"],
-#                                      publisher=book["publisher"],
-#                                      isbn=book["ISBN"],
-#                                      price=book["price"],
-#                                      reason=reason,
-#                                      )
-            reader.booksapply_set.create(
-                                     name="娃哈哈",
-                                     author="夏赟丞",
-                                     publisher="天朝出版社",
-                                     isbn="1231231231231",
-                                     price="$29",
-                                     reason="sss",
-                                     )
+            buy_book_msg="您所申请购买图书的ISBN号格式不正确，请重新输入！。"
+        elif Books.objects.filter(isbn=isbn):
+            buy_book_msg="您所申请购买图书的图书馆中已有，可选择其他图书继续申请！。"
+        else:     
+            proxy= "http://10.167.251.83:8080"
+            opener=urllib2.build_opener(urllib2.ProxyHandler({'http':proxy})).close()
+            urllib2.install_opener(opener)
+            data = urllib2.urlopen("http://10.167.129.109:3000/ISBNService/" + isbn).read()
+            book=json.loads(data)
+            book_apply=BooksApply(
+                                  name=book["bookName"],
+                                  author=book["author"],
+                                  publisher=book["publisher"],
+                                  isbn=book["ISBN"],
+                                  price=book["price"],
+                                  reason=reason,
+                                  requester=request.user.username,
+                                  )
+            book_apply.save()
             buy_book_msg="申请买书成功,请耐心等候邮件通知结果。"
+            
     return render(request, 'lms/reader/buyBook.html', {'username':request.user.username,'buy_book_msg':buy_book_msg,})

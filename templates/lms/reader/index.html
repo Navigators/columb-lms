@@ -18,23 +18,27 @@
 <div class="recommend">
 	好书推荐:
 	<ul class="bookList">
-		<!-- 		<li><a href="#"><img src="{{STATIC_PREFIX}}img_sys/cLang.jpg" title="C语言"></a></li>
-		<li><a href="#"><img src="{{STATIC_PREFIX}}img_sys/cLang.jpg" title="C语言"></a></li>
-		<li><a href="#"><img src="{{STATIC_PREFIX}}img_sys/cLang.jpg" title="C语言"></a></li> -->
 		{% for book in popular_books %}
-		<li><a href="">{{book.name}}</a></li> {% endfor %}
+		<li>
+			<a class="img" href="#"><img src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}" title="{{book.name}}"></a>
+			<p class="bookName">{{book.name}}</p>
+			<div class="stars rating">
+				<span style="display:none">{{book.rating_sum}}</span>
+				<span style="display:none">{{book.rating_count}}</span>
+				<i class="star-1">★</i>
+				<i class="star-2">★</i>
+				<i class="star-3">★</i>
+				<i class="star-4">★</i>
+				<i class="star-5">★</i>
+			</div>
+		</li>
+		{% endfor %}
 	</ul>
 </div>
 <article class="books">
 	<p style="text-align: center">搜索结果/默认新书推荐</p>
 	<div class="bookRow">
 		<ul class="bookList">
-			<!-- <li><a href="#"><img src="{{STATIC_PREFIX}}img_sys/cLang.jpg" title="C语言"></a>
-			</li>
-			<li><a href="#"><img src="img/cLang.jpg" title="C语言"></a>
-			</li>
-			<li><a href="#"><img src="img/cLang.jpg" title="C语言"></a>
-			</li> -->
 		</ul>
 		<div></div>
 	</div>
@@ -45,6 +49,43 @@
 
 {% block js %}
 <script type="text/javascript">
+	function scoreToStar(score,that) {
+		switch(score)
+		{
+		case 1:
+			that.find('div').addClass('rating-0-half');
+			break;
+		case 2:
+			that.find('div').addClass('rating-1');
+			break;
+		case 3:
+			that.find('div').addClass('rating-1-half');
+			break;
+		case 4:
+			that.find('div').addClass('rating-2');
+			break;
+		case 5:
+			that.find('div').addClass('rating-2-half');
+			break;
+		case 6:
+			that.find('div').addClass('rating-3');
+			break;
+		case 7:
+			that.find('div').addClass('rating-3-half');
+			break;
+		case 8:
+			that.find('div').addClass('rating-4');
+			break;
+		case 9:
+			that.find('div').addClass('rating-4-half');
+			break;
+		case 10:
+			that.find('div').addClass('rating-5');
+			break;
+		default:
+			break;
+		}
+	}
 	var add_url="{% url 'rer:reader_index' %}?json_new=10";
 		$.getJSON(
 	    add_url,  
@@ -73,7 +114,8 @@
 	function parser(data) {
 		var name="";
 	    var pic="";
-		var rating_score=""
+		var rating_sum="";
+		var rating_count="";
 		$(".bookRow").remove();
 		$(".pager").remove();
 	    $.each(data,function(i,item){
@@ -88,13 +130,26 @@
     						name=_value;
     					if(_key=="pic_location")
     						pic=_value;
+    					if(_key=="rating_count")
+    						rating_count=_value;
+    					if(_key=="rating_sum")
+    						rating_sum=_value;
     				});
 	    	});
-	    	$("#row"+Math.floor(i/3)).append("<li><a href=''>"+name+"</a></li>");
+	    	$("#row"+Math.floor(i/3)).append("<li><a class='img' href='#'><img src='{{STATIC_PREFIX}}img_user/"+pic+"' title='"+name+"'></a><p class='bookName'>"+name+"</p><div class='stars rating'><span style='display:none'>"+rating_sum+"</span><span style='display:none'>"+rating_count+"</span><i class='star-1'>★</i><i class='star-2'>★</i><i class='star-3'>★</i><i class='star-4'>★</i><i class='star-5'>★</i></div></li>");
 	    });
+	    drawStar();
 	    $(".books").append("<div class='pages'><ul class='pager'><li><a href='#'>上一页</a></li><li><a href='#'>下一页</a></li></ul></div>");
 	}
 	
+	function drawStar() {
+		$('.bookList li').each(function() {
+			var that = $(this);
+			var sum = $(this).find("span:eq(0)").text();
+			var num = $(this).find("span:eq(1)").text();
+			scoreToStar(Math.floor(sum/num),that);
+		})
+	}
 	
 	$(function() {
 		indexLayout();

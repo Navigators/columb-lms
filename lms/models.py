@@ -107,8 +107,8 @@ class Readers(User):
         super(Readers, self).save()
         
     def natural_key(self):
-        return (self.username,self.name)+(self.cate.natural_key(),)+(User.natural_key(self),)
-    natural_key.dependencies=['lms.ReaderCate',]
+        return (self.username, self.name) + (self.cate.natural_key(),) + (User.natural_key(self),)
+    natural_key.dependencies = ['lms.ReaderCate', ]
         
 class Books(models.Model):
     isbn = models.CharField(max_length=40) 
@@ -137,8 +137,8 @@ class Books(models.Model):
     reg_date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     pic_location = models.CharField(max_length=200, blank=True)
-    rating_sum=models.IntegerField(default=0)
-    rating_count=models.IntegerField(default=0)
+    rating_sum = models.IntegerField(default=0)
+    rating_count = models.IntegerField(default=0)
     
     def __unicode__(self):
         return self.name
@@ -229,8 +229,8 @@ class BooksApply(models.Model):
     publisher = models.CharField(max_length=80)  
     isbn = models.CharField(max_length=40)
     price = models.CharField(max_length=40)
-    date=models.DateField(auto_now_add=True)
-    reason= models.CharField(max_length=300) 
+    date = models.DateField(auto_now_add=True)
+    reason = models.CharField(max_length=300) 
     requester = models.CharField(max_length=40)
     
 class BooksBuy(models.Model):
@@ -238,8 +238,8 @@ class BooksBuy(models.Model):
     author = models.CharField(max_length=200) 
     publisher = models.CharField(max_length=80)  
     isbn = models.CharField(max_length=40) 
-    price = models.CharField(max_length=40,blank=True)
-    date=models.DateField(auto_now_add=True)
+    price = models.CharField(max_length=40, blank=True)
+    date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     requester = models.CharField(max_length=40)
     
@@ -250,20 +250,20 @@ class BooksArchive(models.Model):
     isbn = models.CharField(max_length=40) 
     price = models.CharField(max_length=40) 
     state = models.CharField(max_length=20)
-    date=models.DateField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     requester = models.CharField(max_length=40)
 
 class PermPoint(models.Model):
-    reader=models.ForeignKey(Readers)
-    value=models.IntegerField(default=0)
+    reader = models.ForeignKey(Readers)
+    value = models.IntegerField(default=0)
     
 class ExchangePoint(models.Model):
-    reader=models.ForeignKey(Readers)
-    value=models.IntegerField(default=0)
+    reader = models.ForeignKey(Readers)
+    value = models.IntegerField(default=0)
     operator = models.ForeignKey(Librarians)
     
 class MessageTemplate(models.Model):
     subject = models.CharField(max_length=100)
     content = models.CharField(max_length=2000)
-    edit_time=models.DateField(auto_now_add=True)
+    edit_time = models.DateField(auto_now_add=True)

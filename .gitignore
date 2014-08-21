@@ -7,10 +7,9 @@
 *.conf
 *.ini
 uwsgi_params
-!.gitignore
 
 ##################
 #     folder     #
 ##################
 !/static/img/
-!/media/
+

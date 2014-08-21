@@ -109,6 +109,23 @@
 			$('#japBooks').get(0).checked = false;
 		});
 	}
+	
+	function showTips(cls) {
+	    var left = $(cls).offset().left + 100;
+	    var top = $(cls).offset().top;
+	    $(cls).append('<div class="show-tip"></div>');
+	    var str = $(cls).find('span').text();
+	    $(cls).find('.show-tip').html(str);
+	    $(cls).find('.show-tip').css({
+	        'top':top,
+	        'left':left,
+	        'display':'block'
+	    });
+	}
+
+	function hideTips(cls) {
+	    $(cls).find('.show-tip').remove();
+	}
 
 $(function() {
 

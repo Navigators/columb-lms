@@ -3,33 +3,245 @@ header .message {
 	margin-right: 20px;
 }
 
+body {
+	background-color: #F7F7F7;
+}
+
 body>section {
 	width: 1000px;
 	/*max-height: 2000px;*/
 	margin: 100px auto 50px;
-	border: 1px solid #000000;
+	/*border: 1px solid #000000;*/
+	background-color: #FAFAFA;
 }
 
-section .recommend {
+body>section .recommend {
 	width: 75%;
-	height: 200px;
-	border: 1px solid #000000;
+	height: 280px;
+	/*border: 1px solid #000000;*/
 	margin-left: 250px;
+	background-color: #FFFFFF;
+}
+body>section article {
+	background-color: #FFFFFF;
 }
 
-section nav {
+body>section nav {
 	width: 250px;
-	height: 650px;
-	border: 1px solid #000000;
+	height: 450px;
+	/*border: 1px solid #000000;*/
 	float: left;
+	overflow-y: auto;
+	background-color: #FAFAFA;
 }
+
+/*.navbar {
+	background-color: #326295;
+}*/
+
+aside {
+	width: 0px;
+	/*height: 100px;*/
+	/*max-height: 100px;*/
+	position: fixed;
+	color: #fff;
+	background-color: rgba(112,112,112,1);
+	overflow-x: auto; 
+}
+
+aside p {
+	white-space:nowrap;
+}
+
+aside a {
+	color: #000;
+}
+
+
+footer {
+	height: 50px;
+	width: 1000px;
+	margin: 20px auto 20px;
+	border: 1px solid #000000;
+}
+
+.img {
+	height: 150px;
+	width: 150px;
+	display: block;
+	margin:0px auto 0px;
+}
+
+.bookName {
+	height: 40px;
+	width: 150px;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 12px;
+	color: #2B2323;
+	overflow: hidden;
+}
+.stars {
+	height: 20px;
+}
+
+/*star样式*******************************************/
+.rating {
+  margin: 10px 0;
+}
+
+.rating i {
+  display: inline-block;
+  width: 0;
+  height: 1.5em;
+  border-width: 0 0.75em;
+  border-style: solid;
+  border-color: #eee;
+  border-radius: .22em;
+  color: white;
+  background: #eee;
+  font-style: normal;
+  line-height: 1.6em;
+  text-indent: -0.5em;
+  text-shadow: 1px 0 1px #b3b3b3;
+}
+
+/** Colors */
+
+.rating-0 .star-0,
+.rating-0-half .star-0 {
+  border-color: #cc8b1f;
+  background: #cc8b1f;
+}
+
+.rating-0-half .star-1 {
+  border-left-color: #cc8b1f;
+}
+
+.rating-1 .star-0,
+.rating-1-half .star-0 {
+  border-color: #dcb228;
+  background: #dcb228;
+}
+
+.rating-1 .star-1,
+.rating-1-half .star-1 {
+  border-color: #cc8b1f;
+  background: #cc8b1f;
+}
+
+.rating-1-half .star-2 {
+  border-left-color: #cc8b1f;
+}
+
+.rating-2 .star-1,
+.rating-2-half .star-1 {
+  border-color: #dcb228;
+  background: #dcb228;
+}
+
+.rating-2 .star-2,
+.rating-2-half .star-2 {
+  border-color: #dcb228;
+  background: #dcb228;
+}
+
+.rating-2-half .star-3 {
+  border-left-color: #dcb228;
+}
+
+.rating-3 .star-1,
+.rating-3-half .star-1 {
+  border-color: #f0991e;
+  background: #f0991e;
+}
+
+.rating-3 .star-2,
+.rating-3-half .star-2 {
+  border-color: #f0991e;
+  background: #f0991e;
+}
+
+.rating-3 .star-3,
+.rating-3-half .star-3 {
+  border-color: #f0991e;
+  background: #f0991e;
+}
+
+.rating-3-half .star-4 {
+  border-left-color: #f0991e;
+}
+
+.rating-4 .star-1,
+.rating-4-half .star-1 {
+  border-color: #f26a2c;
+  background: #f26a2c;
+}
+
+.rating-4 .star-2,
+.rating-4-half .star-2 {
+  border-color: #f26a2c;
+  background: #f26a2c;
+}
+
+.rating-4 .star-3,
+.rating-4-half .star-3 {
+  border-color: #f26a2c;
+  background: #f26a2c;
+}
+
+.rating-4 .star-4,
+.rating-4-half .star-4 {
+  border-color: #f26a2c;
+  background: #f26a2c;
+}
+
+.rating-4-half .star-5 {
+  border-left-color: #f26a2c;
+}
+
+.rating-5 .star-1,
+.rating-5-half .star-1 {
+  border-color: #dd050b;
+  background: #dd050b;
+}
+
+.rating-5 .star-2,
+.rating-5-half .star-2 {
+  border-color: #dd050b;
+  background: #dd050b;
+}
+
+.rating-5 .star-3,
+.rating-5-half .star-3 {
+  border-color: #dd050b;
+  background: #dd050b;
+}
+
+.rating-5 .star-4,
+.rating-5-half .star-4 {
+  border-color: #dd050b;
+  background: #dd050b;
+}
+
+.rating-5 .star-5,
+.rating-5-half .star-5 {
+  border-color: #dd050b;
+  background: #dd050b;
+}
+
+.rating-5-half .star-6 {
+  border-left-color: #dd050b;
+}
+/*star样式*/
+
 
 /******************************index.html页面**********************************以下*/
 section article.books {
 	width: 75%;
-	max-height: 1800px;
+	/*max-height: 1800px;*/
 	margin-left: 250px;
-	border: 1px solid #000000;
+	/*border: 1px solid #000000;*/
 	/*float: left;*/
 }
 
@@ -41,19 +253,21 @@ ul.bookList {
 
 ul.bookList li {
 	width:200px;
-	height:150px;
+	height:230px;
 	margin-left:20px;
-	/*border: 1px solid #000000;*/
+	margin-bottom: 20px;
+	border: 1px solid #e8e8e8;
 	float: left;
 	text-align: center;
-	line-height:150px;
 }
 
 .bookRow {
-	height: 160px;
+	height: 250px;
 	margin-top: 20px;
-	border: 1px solid #000000;
+	/*border: 1px solid #ff0000;*/
 }
+
+
 
 .search {
 	margin: 20px 10px;
@@ -66,6 +280,11 @@ ul.bookList li {
 
 .search button {
 }
+
+.categoryList ul {
+	list-style-type: none;
+}
+
 /******************************index.html页面***************************以上*/
 
 
@@ -81,19 +300,6 @@ section article.notIndex header div{
 }
 
 
-aside {
-	width: 0px;
-	height: 100px;
-	max-height: 100px;
-	position: fixed;
-}
-
-footer {
-	height: 50px;
-	width: 1000px;
-	margin: 20px auto 20px;
-	border: 1px solid #000000;
-}
 
 /*myLoan.html页面**以下*/
 
@@ -144,6 +350,7 @@ table td,th {
 .myForm {
 	width: 400px;
 	margin:10px auto 10px;
+	display: block;
 }
 
 .myForm label {
@@ -199,6 +406,39 @@ textarea.reason {
 
 
 /*myReview.html页面**以上*/
+
+/*myPoint.html页面**以下*/
+
+.point {
+	color: #f76120;
+	font-weight: bold;
+}
+
+.exchange {
+	margin-right: 50px;
+}
+
+.total {
+	margin-right: 50px;
+}
+
+.gift {
+	background-color: #F77B09;
+	border-color: #F77B09;
+	color: #fff;
+	font-size: 20px;
+	font-weight: bold;
+	margin-right: 10px;
+}
+.gift:hover {
+	background-color: #F78B29;
+	color: #fff;
+}
+.details {
+	display: none;
+}
+
+/*myPoint.html页面**以上*/
 
 
 /******************************非index.html页面*************************以上*/

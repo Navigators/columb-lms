@@ -67,3 +67,14 @@ textarea {
 	border: 1px solid #000000;
 	-webkit-user-select: none; 
 }
+
+.show-tip {
+    position: fixed;
+    z-index: 1000;
+    display: none;
+    width: 150px;
+    height: 150px;
+    background-color: rgba(218,226,231,1);
+    overflow: auto;
+
+}

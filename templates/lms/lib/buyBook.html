@@ -1,82 +1,128 @@
-{% extends "lms/lib/base.html" %} 
+{% extends "lms/lib/base.html" %}
 {% block title %}图书购买{% endblock %}
-
 {% block content %}
-<div class="row section-content">
+<div class="row">
 	<div class="col-md-11">
-		<form class="form-horizontal" method="post" action="#">
-			<div class="row">
-				<table class="table">
-					<tr>
-						<th>NO</th>
-						<th>类别</th>
-						<th>书名</th>
-						<th>进口</th>
-						<th>作者</th>
-						<th>译者</th>
-						<th>出版社</th>
-						<th>ISBN</th>
-						<th>价格</th>
-						<th>状态</th>
-						<th>提出者</th>
-					</tr>
-					<tr class="choosen">
-						<td>1</td>
-						<td>技术</td>
-						<td>代码大全(第2版)</td>
-						<td>否</td>
-						<td>Steve McConnell</td>
-						<td>金戈</td>
-						<td>电子工业出版社</td>
-						<td>9787121022982</td>
-						<td class="price">CNY 128.00</td>
-						<td>未购入</td>
-						<td>张小强</td>
-					</tr>
-					<tr class="choosen">
-						<td>2</td>
-						<td>江湖</td>
-						<td>笑傲江湖(第4版)</td>
-						<td>否</td>
-						<td>令狐冲</td>
-						<td>无</td>
-						<td>日月神教出版社</td>
-						<td>2342432432</td>
-						<td class="price">CNY 210.00</td>
-						<td>未购入</td>
-						<td>韦小宝</td>
-					</tr>
-				</table>
-			</div>
-		</form>
+		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">读者申请列表</p>
+		<table class="table" id="apply">
+			<tr>
+				<th>NO</th>
+				<th>ISBN</th>
+				<th>书名</th>
+				<th>作者</th>
+				<th>出版社</th>
+				<th>价格</th>
+				<th>理由</th>
+				<th>申请日期</th>
+				<th>提出者</th>
+				<th>审批</th>
+			</tr>
+			{% for book in bookapply %}
+			<tr class="apply">
+				<td>{{book.id}}</td>
+				<td>{{book.isbn}}</td>
+				<td>{{book.name}}</td>
+				<td>{{book.author}}</td>
+				<td>{{book.publisher}}</td>
+				<td>{{book.price}}</td>
+				<td class="tips">查看
+    				<span style="display: none">{{book.reason}}</span>
+				</td>
+				<td>{{book.date}}</td>
+				<td>{{book.requester}}</td>
+				<td>
+					<button onclick="agree({{book.id}})">同意</button>
+					<button onclick="disagree({{book.id}})">驳回</button>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">准备购入书单</p>
+		<table class="table" id="buy">
+			<tr>
+				<th>NO</th>
+				<th>ISBN</th>
+				<th>书名</th>
+				<th>作者</th>
+				<th>出版社</th>
+				<th>价格</th>
+				<th>审批日期</th>
+				<th>提出者</th>
+				<th>操作员</th>
+			</tr>
+			{% for book in bookbuy %}
+			<tr class=" buy">
+				<td>{{book.id}}</td>
+				<td>{{book.isbn}}</td>
+				<td>{{book.name}}</td>
+				<td>{{book.author}}</td>
+				<td>{{book.publisher}}</td>
+				<td class="price">{{book.price}}</td>
+				<td>{{book.date}}</td>
+				<td>{{book.requester}}</td>
+				<td>{{book.operator.username}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<button class="btn btn-info" id="show" onclick="showArchive()">查看归档</button>
+		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">归档列表</p>
+		<table class="table" id="archive" style="display: none">
+			<tr>
+				<th>NO</th>
+				<th>ISBN</th>
+				<th>书名</th>
+				<th>作者</th>
+				<th>出版社</th>
+				<th>价格</th>
+				<th>状态</th>
+				<th>归档日期</th>
+				<th>提出者</th>
+				<th>操作员</th>
+			</tr>
+			{% for book in bookarchive %}
+			<tr class="archive">
+				<td>{{book.id}}</td>
+				<td>{{book.isbn}}</td>
+				<td>{{book.name}}</td>
+				<td>{{book.author}}</td>
+				<td>{{book.publisher}}</td>
+				<td>{{book.price}}</td>
+				<td>{{book.state}}</td>
+				<td>{{book.date}}</td>
+				<td>{{book.requester}}</td>
+				<td>{{book.operator.username}}</td>
+			</tr>
+			{% endfor %}
+		</table>
 	</div>
 </div>
 {% endblock %} 
 
-{% block modal %}
-<!-- <div class="modal fade" id="priceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content form-horizontal">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title" id="updateModalLabel">价格</h4>
-				</div>
-				<div class="modal-body row">
-					<div class="col-md-10 col-md-offset-1">
-						
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
-				</div>
-			</div>
-		</div>
-	</div> -->
-{% endblock %}
-
 {% block js %}
 <script type="text/javascript">
+	
+	var add_url="{% url 'lib:lib_buybook' %}?json_load=all";
+	$.getJSON(
+	add_url,  
+	function(data){
+		console.log(data);
+		parase(data);
+	});
+
+	function showArchive() {
+		if ($('#show').text() == '查看归档') {
+			$('#apply').hide();
+			$('#prepare').hide();
+			$('#archive').show();
+			$('#show').text('返回');
+		} else {
+			$('#apply').show();
+			$('#prepare').show();
+			$('#archive').hide();
+			$('#show').text('查看归档');
+		}
+
+	}
 	$(function() {
 		$('tr.choosen .price').each(
 				function() {
@@ -96,5 +142,147 @@
 					});
 				});
 	});
+	
+	$('.tips').each(function() {
+	    $(this).hover(
+	        function() {
+	            showTips(this);
+	        }, 
+	        function() {
+	            hideTips(this);
+	        }
+	    );
+	})
+	
+	function agree(id) {
+		var add_url="{% url 'lib:lib_buybook' %}?json_id="+id;
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    		console.log(data);
+    		parase(data);
+		});
+	}
+	
+	function disagree(id) {
+		var add_url="{% url 'lib:lib_buybook' %}?json_dis_id="+id;
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    		console.log(data);
+    		parase(data);
+		});
+	}
+	
+	function parase(data){
+		var i=0;
+		var id="";
+		var name="";
+		var author="";
+		var isbn="";
+		var publisher="";
+		var price="";
+		var date="";
+		var operator="";
+		var reuqester="";
+		var state="";
+		var reason="";
+		$("tr.buy").remove();
+		$("tr.apply").remove();
+		$.each(data,function(i,object){
+			if(i=="apply"){
+				i=0;
+	    		$.each(object,function(j,item){
+	    			$.each(item,function(key,value){
+	    					if(key=="pk")
+	    						i++;
+	    						id=value;
+							if(key=="fields")
+	        					$.each(value,function(_key,_value){
+	        						if(_key=="name")
+	        							name=_value;
+	        						else if(_key=="author")
+	        							author=_value;
+	        						else if(_key=="publisher")
+	        							publisher=_value;
+	        						else if(_key=="isbn")
+	        							isbn=_value;
+	        						else if(_key=="price")
+	        							price=_value;
+	        						else if(_key=="date")
+	        							date=_value;
+	        						else if(_key=="reason")
+	        							reason=_value;
+	        						else if(_key=="requester")
+	        							requester=_value;
+	        					});
+	    			});
+	    			$("#apply").append("<tr class='choosen apply'><td>"+i+"</td><td>"+isbn+"</td><td>"+name+"</td><td>"+author+"</td><td>"+publisher+"</td><td>"+price+"</td><td class='tips'>查看<span style='display: none'>"+reason+"</span></td><td>"+date+"</td><td>"+requester+"</td><td><button onclick='agree("+id+")'>同意</button><button onclick='disagree("+id+")'>驳回</button></td></tr>");
+				});
+			}
+			else if(i=="buy"){
+				i=0;
+				$.each(object,function(j,item){
+	    			$.each(item,function(key,value){
+	    				if(key=="pk")
+	    					i++;
+    						id=value;
+						if(key=="fields")
+        					$.each(value,function(_key,_value){
+        						if(_key=="name")
+        							name=_value;
+        						else if(_key=="author")
+        							author=_value;
+        						else if(_key=="publisher")
+        							publisher=_value;
+        						else if(_key=="isbn")
+        							isbn=_value;
+        						else if(_key=="price")
+        							price=_value;
+        						else if(_key=="date")
+        							date=_value;
+        						else if(_key=="operator")
+        							operator=_value;
+        						else if(_key=="requester")
+        							requester=_value;
+        					});
+	    			});
+	    			$("#buy").append("<tr class='choosen apply'><td>"+i+"</td><td>"+isbn+"</td><td>"+name+"</td><td>"+author+"</td><td>"+publisher+"</td><td class='price'>"+price+"</td><td>"+date+"</td><td>"+requester+"</td><td>"+operator+"</td></tr>");
+				});
+			}
+			else if(i=="archive"){
+				i=0;
+				$.each(object,function(j,item){
+	    			$.each(item,function(key,value){
+	    				if(key=="pk")
+	    					i++;
+    						id=value;
+						if(key=="fields")
+        					$.each(value,function(_key,_value){
+        						if(_key=="name")
+        							name=_value;
+        						else if(_key=="author")
+        							author=_value;
+        						else if(_key=="publisher")
+        							publisher=_value;
+        						else if(_key=="isbn")
+        							isbn=_value;
+        						else if(_key=="price")
+        							price=_value;
+        						else if(_key=="state")
+        							state=_value;
+        						else if(_key=="date")
+        							date=_value;
+        						else if(_key=="operator")
+        							operator=_value;
+        						else if(_key=="requester")
+        							requester=_value;
+        					});
+	    			});
+	    			$("#archive").append("<tr class='choosen apply'><td>"+i+"</td><td>"+isbn+"</td><td>"+name+"</td><td>"+author+"</td><td>"+publisher+"</td><td>"+price+"</td><td>"+state+"</td><td>"+date+"</td><td>"+requester+"</td><td>"+operator+"</td></tr>");
+				});
+			}
+		});
+	}
 </script>
 {% endblock %}

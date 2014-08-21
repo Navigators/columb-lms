@@ -36,15 +36,45 @@ def lib_putaway(request):
         return render(request, 'lms/lib/addBook.html', {'username':request.user.username})
 
 def lib_buybook(request):
-    book_apply = BooksApply.objects.all()
-    book_buy = BooksBuy.objects.all()
-    book_archive = BooksArchive.objects.all()
-    return render(request, 'lms/lib/buyBook.html', {'username':request.user.username,
-                                                    'bookapply':book_apply,
-                                                    'bookbuy':book_buy,
-                                                    'bookarchive':book_archive,
-                                                    }
-                  )
+    if not is_login_lib(request):
+        return HttpResponseRedirect('/index/')
+    
+    if request.GET.get("json_load"):
+        data=serialize_buybook()
+        return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
+    
+    if request.GET.get("json_id"):
+        book_apply = BooksApply.objects.get(id=request.GET.get("json_id"))
+        lib = Librarians.objects.filter(username=request.user.username)[0]
+        lib.booksbuy_set.create(
+                                name=book_apply.name,
+                                author=book_apply.author,
+                                publisher=book_apply.publisher,
+                                isbn=book_apply.isbn,
+                                price=book_apply.price,
+                                requester=book_apply.requester,
+                                )
+        book_apply.delete()     
+        data=serialize_buybook()
+        return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
+    
+    if request.GET.get("json_dis_id"):
+        book_apply = BooksApply.objects.get(id=request.GET.get("json_dis_id"))
+        lib = Librarians.objects.filter(username=request.user.username)[0]
+        lib.booksarchive_set.create(
+                                name=book_apply.name,
+                                author=book_apply.author,
+                                publisher=book_apply.publisher,
+                                isbn=book_apply.isbn,
+                                state="驳回",
+                                price=book_apply.price,
+                                requester=book_apply.requester,
+                                )
+        book_apply.delete()
+        data=serialize_buybook()
+        return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
+    
+    return render(request, 'lms/lib/buyBook.html', {'username':request.user.username,})
     
 def lib_reader_info(request):
     if not is_login_lib(request):
@@ -79,15 +109,15 @@ def lib_retrieve(request):
     
     # 返回json数据
     if request.GET.get('json_isbn'):
-        proxy= "http://10.167.251.83:8080"
-        opener=urllib2.build_opener(urllib2.ProxyHandler({'http':proxy})).close()
+        proxy = "http://10.167.251.83:8080"
+        opener = urllib2.build_opener(urllib2.ProxyHandler({'http':proxy})).close()
         urllib2.install_opener(opener)
         data = urllib2.urlopen("http://10.167.129.109:3000/ISBNService/" + request.GET.get('json_isbn')).read()
         return HttpResponse(data, content_type='json')
     
     if request.GET.get('json_others'):
-        proxy= "http://10.167.251.83:8080"
-        opener=urllib2.build_opener(urllib2.ProxyHandler({'http':proxy}))
+        proxy = "http://10.167.251.83:8080"
+        opener = urllib2.build_opener(urllib2.ProxyHandler({'http':proxy}))
         urllib2.install_opener(opener) 
         others = urllib2.urlopen("http://api.douban.com/v2/book/isbn/" + request.GET.get('json_others') + "?fields=image,summary").read()
         return HttpResponse(others, content_type='json')
@@ -152,7 +182,7 @@ def lib_add_copies(request):
     isbn_string = request.POST['isbn']
     if not Books.objects.filter(isbn=isbn_string):
         lib = Librarians.objects.get(username=request.user.username)
-        pic_path=save_image(request.POST['bookimage'],isbn_string)
+        pic_path = save_image(request.POST['bookimage'], isbn_string)
         lib.books_set.create(
                                 isbn=isbn_string,
                                 name=request.POST['bookName'],
@@ -166,7 +196,7 @@ def lib_add_copies(request):
                                 price=request.POST['bookPrice'],
                                 content_intro=request.POST['contentInfo'],
                                 memo=request.POST['memo'],
-                                pic_location =pic_path,
+                                pic_location=pic_path,
                             )
         book = Books.objects.get(isbn=isbn_string)
         book.copies_set.create(
@@ -178,23 +208,25 @@ def lib_add_copies(request):
         book.save()
         
         # 将准备购入BooksToBuy对应的表象删除，并添加至BooksToArchive表中
-#         if BooksBuy.objects.filter(isbn=isbn_string):
-#             book_buy=BooksBuy.objects.get(isbn=isbn_string)
-#             lib.bookstoarchive_set.create(
-#                                           name=book_buy.name,
-#                                           author=book_buy.author,
-#                                           publisher=book_buy.publihser,
-#                                           isbn=book_buy.isbn,
-#                                           price=book_buy.price,
-#                                           state="已购入",
-#                                           requester=book_buy.requester,
-#                                           )
-#             book_buy.delete()
+        book_list=BooksBuy.objects.filter(isbn=isbn_string)
+        if book_list:
+            for book_buy in book_list:
+                lib.booksarchive_set.create(
+                                              name=book_buy.name,
+                                              author=book_buy.author,
+                                              publisher=book_buy.publisher,
+                                              isbn=book_buy.isbn,
+                                              price=book_buy.price,
+                                              state="已购入",
+                                              requester=book_buy.requester,
+                                              )
+                book_buy.delete()
 
     # 无论是查看or保存并继续添加副本，都会有form表单
     isbn = Books.objects.get(isbn=request.POST['isbn']).isbn
     copy_list = Copies.objects.filter(book__isbn=request.POST['isbn'])
-    return render(request, 'lms/lib/addBook-copy.html', {'username':request.user.username, 'copy_list':copy_list, 'isbn':isbn, })
+    state_list=CopyState.objects.all()
+    return render(request, 'lms/lib/addBook-copy.html', {'username':request.user.username, 'copy_list':copy_list, 'isbn':isbn, 'state_list':state_list,})
     
 def lib_get_book_list(request):
     if not is_login_lib(request):
@@ -216,14 +248,14 @@ def lib_get_book_info(request, isbn):
 
 def save_image(url, isbn):
     # 保存文件时候注意类型要匹配，如要保存的图片为jpg，则打开的文件的名称必须是jpg格式，否则会产生无效图片
-    proxy= "http://10.167.251.83:8080"
-    opener=urllib2.build_opener(urllib2.ProxyHandler({'http':proxy}))
+    proxy = "http://10.167.251.83:8080"
+    opener = urllib2.build_opener(urllib2.ProxyHandler({'http':proxy}))
     urllib2.install_opener(opener) 
     data = urllib2.urlopen(url).read()  
     f = file(MEDIA_ROOT + "/" + isbn + ".jpg", "wb")
     f.write(data)  
     f.close()
-    return str(MEDIA_ROOT + "/" + isbn + ".jpg")
+    return str(isbn + ".jpg")
 
 def get_barcode_format(isbn, copies):
     if not copies:
@@ -242,6 +274,19 @@ def get_publishdate_form(date_string):
         return django.utils.datetime_safe.datetime.strptime(date_string, "%Y")
     else:
         return django.utils.datetime_safe.datetime.strptime(date_string, "%Y.%m")
+    
+def serialize_buybook():
+    data = {}
+    apply_info = serializers.serialize('json', BooksApply.objects.all(), ensure_ascii=False)
+    applybooks = json.loads(apply_info)
+    buy_info = serializers.serialize('json', BooksBuy.objects.all(), ensure_ascii=False, use_natural_keys=True)
+    buybooks = json.loads(buy_info)
+    archive_info = serializers.serialize('json', BooksArchive.objects.all(), ensure_ascii=False, use_natural_keys=True)
+    archivebooks = json.loads(archive_info)
+    data["apply"] = applybooks
+    data["buy"] = buybooks
+    data["archive"] = archivebooks
+    return data
       
 #################################借还模块##################################
 
@@ -343,10 +388,15 @@ def lib_borrow(request):
     if LoanList.objects.filter(copy=mcopy, is_return=False):
         return HttpResponse('{"state":"copy is borrowed"}') 
     if mcopy.state.name != '可借':
-        return HttpResponse('{"state":"book is '+mcopy.book.book_type.name+'borrowed"}') 
+        return HttpResponse('{"state":"book is ' + mcopy.book.book_type.name + 'borrowed"}') 
     # check if reader can borrow japanese book
-    if not mreader.cate.loan_books_jp:
-        return HttpResponse('{"state":"cant borrow japanese books"}') 
+    if mcopy.book.isbn[0:4]=="9784":
+        flag=True
+    else:
+        flag=False
+    if flag:
+        if not mreader.cate.loan_books_jp:
+            return HttpResponse('{"state":"cant borrow japanese books"}') 
     # check if reader has book that didnt return in time 
     loan_list_set = LoanList.objects.filter(reader=mreader, is_return=False)
     if loan_list_set:
@@ -356,13 +406,12 @@ def lib_borrow(request):
     # modify next line when user module added!
     mloan_operator = Librarians.objects.get(username=request.user.username)
     mis_return = False
-    mpraise = False
     if LoanList.objects.filter(copy=mcopy, is_return=False):
         return HttpResponse('{"state":"loan record not found"}') 
     else:
         mlimit_days = mreader.cate.limit_days
         mshould_return_date = timezone.now() + datetime.timedelta(days=mlimit_days)
-        LoanList.objects.create(copy=mcopy, reader=mreader, should_return_date=mshould_return_date, is_return=mis_return, loan_operator=mloan_operator, praise=mpraise)
+        LoanList.objects.create(copy=mcopy, reader=mreader, should_return_date=mshould_return_date, is_return=mis_return, loan_operator=mloan_operator)
         mbook = mcopy.book
         mbook.loan_count += 1
         mbook.save()
@@ -462,7 +511,7 @@ def lib_borrow_permission(request):
             return lib_borrow_permission_update(request)
         if request.POST['funno'] == "3":
             return lib_borrow_permission_delete(request)
-    return render(request, 'lms/lib/borrowPermission.html', {'username':request.user.username,'readercate':ReaderCate.objects.all() })
+    return render(request, 'lms/lib/borrowPermission.html', {'username':request.user.username, 'readercate':ReaderCate.objects.all() })
 
 def lib_borrow_permission_add(request):
     print("pa")
@@ -474,7 +523,7 @@ def lib_borrow_permission_add(request):
     _loan_books_jp = False
     if  request.POST.has_key('japBooks'):
         _loan_books_jp = True
-    ReaderCate.objects.create( name = _name, limit_books_count = _limit_books_count, limit_days = _limit_days, reloan_times = _reloan_times, reloan_days = _reloan_days, loan_books_jp = _loan_books_jp)
+    ReaderCate.objects.create(name=_name, limit_books_count=_limit_books_count, limit_days=_limit_days, reloan_times=_reloan_times, reloan_days=_reloan_days, loan_books_jp=_loan_books_jp)
     reader_json = serializers.serialize('json', ReaderCate.objects.all())
     return HttpResponse(reader_json)
 
@@ -538,39 +587,39 @@ def lib_borrow_record(request):
     _condition_dict['contain'] = '__contains' 
 
     kwargs = {}
-    orargs = [None,None,None,None,None,None,None,None,None,None,None,None,None,None]
+    orargs = [None, None, None, None, None, None, None, None, None, None, None, None, None, None]
     args = []
     for qobj in _query_list:
-        if qobj[u'logic']== u'and':
+        if qobj[u'logic'] == u'and':
             if qobj[u'item'] == '1': 
                 datelist = []
                 datelist = qobj[u'value'].split('-')
-                tdate = datetime.date(int(datelist[0]),int(datelist[1]),int(datelist[2]))
+                tdate = datetime.date(int(datelist[0]), int(datelist[1]), int(datelist[2]))
                 if qobj[u'condition'] == 'e':
-                    kwargs[_item_dict[qobj[u'item']]+'__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
+                    kwargs[_item_dict[qobj[u'item']] + '__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
                                                         datetime.datetime.combine(tdate, datetime.time.max))
                 if qobj[u'condition'] == 'le':
-                    kwargs[_item_dict[qobj[u'item']]+'__lt'] =  datetime.datetime.combine(tdate, datetime.time.max)
+                    kwargs[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
-                    kwargs[_item_dict[qobj[u'item']]+'__gt'] = qobj[u'value'] 
+                    kwargs[_item_dict[qobj[u'item']] + '__gt'] = qobj[u'value'] 
 
             else:
-                kwargs[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value'] 
-        if qobj[u'logic']== u'or':
+                kwargs[_item_dict[qobj[u'item']] + _condition_dict[qobj[u'condition']]] = qobj[u'value'] 
+        if qobj[u'logic'] == u'or':
             tdict = {}
             if qobj[u'item'] == '1': 
                 datelist = []
                 datelist = qobj[u'value'].split('-')
-                tdate = datetime.date(int(datelist[0]),int(datelist[1]),int(datelist[2]))
+                tdate = datetime.date(int(datelist[0]), int(datelist[1]), int(datelist[2]))
                 if qobj[u'condition'] == 'e':
-                    tdict[_item_dict[qobj[u'item']]+'__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
+                    tdict[_item_dict[qobj[u'item']] + '__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
                                                         datetime.datetime.combine(tdate, datetime.time.max))
                 if qobj[u'condition'] == 'le':
-                    tdict[_item_dict[qobj[u'item']]+'__lt'] =  datetime.datetime.combine(tdate, datetime.time.max)
+                    tdict[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
-                    tdict[_item_dict[qobj[u'item']]+'__gt'] = qobj[u'value'] 
+                    tdict[_item_dict[qobj[u'item']] + '__gt'] = qobj[u'value'] 
             else:
-                tdict[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value']
+                tdict[_item_dict[qobj[u'item']] + _condition_dict[qobj[u'condition']]] = qobj[u'value']
             print(qobj[u'value'])
             if orargs[int(qobj[u'item'])] is None:
                 orargs[int(qobj[u'item'])] = Q(**tdict) 
@@ -579,7 +628,7 @@ def lib_borrow_record(request):
     for targs in orargs:
         if targs:
             args.append(targs)
-    _loan_list = LoanList.objects.filter(*args,**kwargs)
+    _loan_list = LoanList.objects.filter(*args, **kwargs)
     _loan_list_json = serializers.serialize('json', _loan_list)
     return HttpResponse(_loan_list_json) 
 
@@ -587,10 +636,10 @@ def lib_borrow_record(request):
 def lib_overdue(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
-    _start_date = datetime.date(1970,1,1)
+    _start_date = datetime.date(1970, 1, 1)
     _end_date = timezone.now().date()
-    _overdue_list=LoanList.objects.filter(is_return = False,should_return_date__range = (_start_date,_end_date)) 
-    return render(request, 'lms/lib/overdueRecord.html', {'username':request.user.username,'overdue_list':_overdue_list })
+    _overdue_list = LoanList.objects.filter(is_return=False, should_return_date__range=(_start_date, _end_date)) 
+    return render(request, 'lms/lib/overdueRecord.html', {'username':request.user.username, 'overdue_list':_overdue_list })
 	
 #################################系统设置模块##################################
 
