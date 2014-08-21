@@ -6,10 +6,12 @@
 *.sqlite3
 *.conf
 *.ini
+*.jpg
+*.png
 uwsgi_params
 
 ##################
 #     folder     #
 ##################
 !/static/img/
-
+!/media/
