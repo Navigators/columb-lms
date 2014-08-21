@@ -253,3 +253,17 @@ class BooksArchive(models.Model):
     date=models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     requester = models.CharField(max_length=40)
+
+class PermPoint(models.Model):
+    reader=models.ForeignKey(Readers)
+    value=models.IntegerField(default=0)
+    
+class ExchangePoint(models.Model):
+    reader=models.ForeignKey(Readers)
+    value=models.IntegerField(default=0)
+    operator = models.ForeignKey(Librarians)
+    
+class MessageTemplate(models.Model):
+    subject = models.CharField(max_length=100)
+    content = models.CharField(max_length=2000)
+    edit_time=models.DateField(auto_now_add=True)
