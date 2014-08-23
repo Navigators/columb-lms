@@ -31,5 +31,5 @@ class Command(BaseCommand):
         print 'time task complete'
 
 def send_email(LoanList):
-        return os.popen('java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar '+LoanList.reader.name.decode('UTF-8')+' '+LoanList.copy.book.name.decode('UTF-8')+' '+LoanList.loan_date_time.strftime("%Y-%m-%d%H:%M:%S")+' '+LoanList.should_return_date.strftime("%Y-%m-%d")+' '+LoanList.reader.email)
+        return os.popen('java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar overdue '+LoanList.reader.name.decode('UTF-8')+' "'+LoanList.copy.book.name.decode('UTF-8')+'" '+LoanList.loan_date_time.strftime("%Y-%m-%d%H:%M:%S")+' '+LoanList.should_return_date.strftime("%Y-%m-%d")+' '+LoanList.reader.email)
         

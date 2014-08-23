@@ -39,8 +39,6 @@
 						<td>否</td>
 						{% endif %}
 						<td style="display:none">{{rc.id}}</td>
-
-
 					</tr>
 					{%endfor%}
 				</table>
@@ -54,21 +52,78 @@ $(function() {
 	$('#permission-add').click(function() {
 		$('#funnoInput').val("1");
 	});
+	
 	$('#permission-update').click(function() {
 		$('#funnoInput').val("2");
 	});
+	
 	$('#permission-delete').click(function() {
-		$.post("{% url 'lib:lib_borrow_permission' %}",
-			{
-				id:$('.tr-choosen-ok').find('td:eq(6)').text(),
-				funno:"3"
-			},
-			function(data){
-			    console.log(data);
-			      }
-		      );
-		$('.tr-choosen-ok').remove();
+		$('#funnoInput').val("3");
+		$.ajax({
+				url:'{% url "lib:lib_borrow_permission" %}',
+				type: 'POST',
+				data: 'funno='+$('#funnoInput').val()+'&id='+$('.tr-choosen-ok').find('td:eq(6)').text(),
+				dataType: 'json',
+				success: function(data) {
+					parser(data);
+				},
+				error: function(xhr, status, error) {
+					console.log('status:'+status+',error:'+error);
+				}
+		});
 	});
+	
+	$('#saveModal').click(function() {	
+		$.ajax({
+				url:'{% url "lib:lib_borrow_permission" %}',
+				type: 'POST',
+				data: 'funno='+$('#funnoInput').val()+'&id='+$('.tr-choosen-ok').find('td:eq(6)').text()+'&readerCategory='+$('#readerCategory').val()+'&borrowBooks='+$('#borrowBooks').val()+'&borrowDays='+$('#borrowDays').val()+'&renewalTimes='+$('#renewalTimes').val()+'&renewalDays='+$('#renewalDays').val()+'&japBooks='+$('#japBooks').get(0).checked,
+				dataType: 'json',
+				success: function(data) {
+					parser(data);
+				},
+				error: function(xhr, status, error) {
+					console.log('status:'+status+',error:'+error);
+				}
+		});
+	});
+	
+	function parser(data) {
+		var id="";
+		var readerCategory="";
+	    var borrowBooks="";
+	    var borrowDays="";
+	    var renewalTimes="";
+	    var renewalDays="";
+	    var japBooks="";
+	    $('.choosen').remove();
+	    $.each(data,function(i,item){
+	    	$.each(item,function(key,value){
+	    			if(key=="pk")
+	    				id=value;
+					if(key=="fields")
+	        		$.each(value,function(_key,_value){
+	        			if(_key=="limit_books_count")
+	        				borrowBooks=_value;
+	        			else if(_key=="limit_days")
+	        				borrowDays=_value;
+	        			else if(_key=="name")
+	        				readerCategory=_value;
+	        			else if(_key=="reloan_days")
+	        				renewalDays=_value;
+	        			else if(_key=="reloan_times")
+	        				renewalTimes=_value;
+	        			else if(_key=="loan_books_jp")
+	        				if(_value)
+	        					japBooks="是";
+	        				else
+	        					japBooks="否";
+	        		})
+			})
+			$("table").append("<tr class='choosen'><td>"+readerCategory+"</td><td>"+borrowBooks+"</td><td>"+borrowDays+"</td><td>"+renewalTimes+"</td><td>"+renewalDays+"</td><td>"+japBooks+"</td><td style='display:none'>"+id+"</td></tr>");
+		});
+	    choosen();
+	}
 })
 
 </script>
@@ -79,8 +134,6 @@ $(function() {
 	aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content form-horizontal">
-			<form id="modalform" action="{% url 'lib:lib_borrow_permission' %}" method="post">
-				{% csrf_token %}
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">
 					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
@@ -147,7 +200,6 @@ $(function() {
 				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 				<button id="saveModal" type="submit" class="btn btn-primary"></button>
 			</div>
-		</form>
 		</div>
 	</div>
 </div>

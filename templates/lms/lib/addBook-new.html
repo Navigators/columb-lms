@@ -131,7 +131,7 @@
 					</div>
 					<div class="col-md-3" id="img" style="border: 1px groove red; height: 400px; text-align: center; line-height: 400px;">
 						{% if book %}
-							<img name="image" src="{{book.pic_location}}">
+							<img name="image" src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}">
 						{% endif %}
 						<input type="text" id="bookimage" name="bookimage" style="display:none">
 					</div>
@@ -228,10 +228,6 @@ $(document).ready(function(){
                 			price=value;
                 		if(key=="author")
                 			authors=value;
-            			/* if(key=="author")
-            				$.each(value, function (_key,_value) {
-            					authors+=_value;
-            				}) */
             		})
         	$("#bookName").val(name);
         	$("#inputCode").val(inputCode);

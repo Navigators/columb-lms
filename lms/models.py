@@ -98,6 +98,8 @@ class Readers(User):
     memo = models.CharField(max_length=100, blank=True)
     operator = models.ForeignKey(Librarians)
     pic_location = models.CharField(max_length=200, blank=True)
+#     per_point = models.IntegerField(default=0)
+#     exc_point = models.IntegerField(default=0)
     
     def __unicode__(self):
         return self.username
@@ -107,8 +109,8 @@ class Readers(User):
         super(Readers, self).save()
         
     def natural_key(self):
-        return (self.username, self.name) + (self.cate.natural_key(),) + (User.natural_key(self),)
-    natural_key.dependencies = ['lms.ReaderCate', ]
+        return (self.username, self.name) + (self.cate.natural_key(),) + (User.natural_key(self),) + (self.dept.natural_key(),) 
+    natural_key.dependencies = ['lms.ReaderCate','lms.Department' ]
         
 class Books(models.Model):
     isbn = models.CharField(max_length=40) 
@@ -194,8 +196,10 @@ class LoanList(models.Model):
 class Comments(models.Model):
     loan = models.OneToOneField(LoanList)
     content = models.CharField(max_length=200) 
-    create_date_time = models.DateTimeField(auto_now_add=True)   
-
+    create_date_time = models.DateTimeField(auto_now_add=True)
+    
+    def __unicode__(self):
+        return str(self.id)
     
 class UserFun(models.Model):
     code = models.IntegerField() 
@@ -205,7 +209,6 @@ class UserFun(models.Model):
     
     def __unicode__(self):
         return self.name
-
     
 class UserAccredit(models.Model):
     user = models.ForeignKey(Librarians)
@@ -233,6 +236,9 @@ class BooksApply(models.Model):
     reason = models.CharField(max_length=300) 
     requester = models.CharField(max_length=40)
     
+    def __unicode__(self):
+        return self.isbn
+    
 class BooksBuy(models.Model):
     name = models.CharField(max_length=200)
     author = models.CharField(max_length=200) 
@@ -242,6 +248,9 @@ class BooksBuy(models.Model):
     date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     requester = models.CharField(max_length=40)
+    
+    def __unicode__(self):
+        return self.isbn
     
 class BooksArchive(models.Model):
     name = models.CharField(max_length=200)
@@ -253,17 +262,46 @@ class BooksArchive(models.Model):
     date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     requester = models.CharField(max_length=40)
+    
+    def __unicode__(self):
+        return self.isbn
+
+class PermCate(models.Model):
+    name = models.CharField(max_length=40)
+    value = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return self.name
+    
+class ExchangeCate(models.Model):
+    name = models.CharField(max_length=40)
+    value = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return self.name
 
 class PermPoint(models.Model):
     reader = models.ForeignKey(Readers)
+    cate = models.ForeignKey(PermCate)
     value = models.IntegerField(default=0)
-    
+    operator = models.ForeignKey(Librarians)
+
+    def __unicode__(self):
+        return self.id
+  
 class ExchangePoint(models.Model):
     reader = models.ForeignKey(Readers)
+    cate = models.ForeignKey(ExchangeCate)
     value = models.IntegerField(default=0)
     operator = models.ForeignKey(Librarians)
     
+    def __unicode__(self):
+        return self.id
+
 class MessageTemplate(models.Model):
     subject = models.CharField(max_length=100)
     content = models.CharField(max_length=2000)
     edit_time = models.DateField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.subject

@@ -1,6 +1,7 @@
 # -*-coding:utf-8 -*-
 import datetime
 import json
+import os
 import re
 import time
 import urllib2
@@ -19,7 +20,7 @@ from columb.settings import MEDIA_ROOT
 from lms.login_view import is_login_lib
 from lms.models import Books, Librarians, BookCate, BookType, Copies, CopyState, \
     Readers, LoanList, Company, Department, BooksBuy, BooksApply, \
-    BooksArchive, ReaderCate
+    BooksArchive, ReaderCate, MessageTemplate
 
 
 #################################入库模块##################################
@@ -118,7 +119,7 @@ def lib_retrieve(request):
     if request.GET.get('json_others'):
         proxy = "http://10.167.251.83:8080"
         opener = urllib2.build_opener(urllib2.ProxyHandler({'http':proxy}))
-        urllib2.install_opener(opener) 
+        urllib2.install_opener(opener)
         others = urllib2.urlopen("http://api.douban.com/v2/book/isbn/" + request.GET.get('json_others') + "?fields=image,summary").read()
         return HttpResponse(others, content_type='json')
     
@@ -143,6 +144,7 @@ def lib_retrieve(request):
                                                                  'username':request.user.username,
                                                                  'copy_list':copy_list,
                                                                  'isbn':isbn_string,
+                                                                 'state_list':CopyState.objects.all(),
                                                                  }
                           )       
 
@@ -158,6 +160,7 @@ def lib_add_copies(request):
         #
         if request.GET.get('json_add_num'):
             for i in range(int(request.GET.get('json_add_num'))):
+                i;
                 book.copies_set.create(
                                        barcode=get_barcode_format(book.isbn, book.copies_set.all().order_by('-reg_date_time')),
                                        state=CopyState.objects.get(name="可借"),
@@ -315,6 +318,7 @@ def lib_borrow_getcopy(request):
         mcopy = Copies.objects.get(barcode=mbarcode)
         r_dict['state'] = 'getcopy success'
         r_dict['copy'] = copy_to_dict(mcopy)
+        r_dict['copystate'] = get_state_list()
     else:
         r_dict['state'] = 'getcopy fail'
     r_json = simplejson.dumps(r_dict, ensure_ascii=False)
@@ -350,6 +354,17 @@ def reader_to_dict(reader):
     readerdict['dept'] = reader.dept.name
     return readerdict
 
+def get_state_list():
+    state_set = CopyState.objects.all();
+    state_list = []
+    for ts in state_set:
+        tdict = {}
+        tdict['id'] = ts.id
+        tdict['name'] = ts.name
+        state_list.append(tdict)
+    return state_list
+
+
 def loan_to_dict(loan):
     loandict = {}
     loandict['loandatetime'] = loan.loan_date_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -363,7 +378,7 @@ def loan_to_dict(loan):
     loandict['dept'] = loan.reader.dept.name
     loandict['shouldreturndate'] = loan.should_return_date.strftime("%Y-%m-%d")
     loandict['reloantimes'] = loan.reloan_times
-    loandict['operator'] = loan.loan_operator.name 
+    loandict['operator'] = loan.loan_operator.name
     if loan.return_operator:
         loandict['returnoperator'] = loan.return_operator.name 
     else:
@@ -387,8 +402,8 @@ def lib_borrow(request):
     # check if copy can be borrowed
     if LoanList.objects.filter(copy=mcopy, is_return=False):
         return HttpResponse('{"state":"copy is borrowed"}') 
-    if mcopy.state.name != '可借':
-        return HttpResponse('{"state":"book is ' + mcopy.book.book_type.name + 'borrowed"}') 
+    if mcopy.state.name != u'可借':
+        return HttpResponse('{"state":"book is '+mcopy.book.book_type.name+'"}') 
     # check if reader can borrow japanese book
     if mcopy.book.isbn[0:4]=="9784":
         flag=True
@@ -441,6 +456,9 @@ def lib_return(request):
     mreader = mloan.reader
     if mloan.is_return == False:
         mloan.is_return = True
+        _copy_state_id = int(request.POST['copystate'])
+        _copy_state = CopyState.objects.get(pk=_copy_state_id)
+        mloan.state =_copy_state
         mloan.return_operator = mreturn_operator
         mloan.fact_return_date_time = timezone.now()
         mloan.save()
@@ -501,6 +519,7 @@ def lib_reloan(request):
     r_json = simplejson.dumps(r_dict, ensure_ascii=False)
     return HttpResponse(r_json)
 
+@csrf_exempt
 def lib_borrow_permission(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
@@ -521,7 +540,7 @@ def lib_borrow_permission_add(request):
     _reloan_times = int(request.POST['renewalTimes'])
     _reloan_days = int(request.POST['renewalDays'])
     _loan_books_jp = False
-    if  request.POST.has_key('japBooks'):
+    if request.POST['japBooks']=="true":
         _loan_books_jp = True
     ReaderCate.objects.create(name=_name, limit_books_count=_limit_books_count, limit_days=_limit_days, reloan_times=_reloan_times, reloan_days=_reloan_days, loan_books_jp=_loan_books_jp)
     reader_json = serializers.serialize('json', ReaderCate.objects.all())
@@ -538,7 +557,7 @@ def lib_borrow_permission_update(request):
     _reader_cate.limit_days = int(request.POST['borrowDays'])
     _reader_cate.reloan_times = int(request.POST['renewalTimes'])
     _reader_cate.reloan_days = int(request.POST['renewalDays'])
-    if  request.POST.has_key('japBooks'):
+    if request.POST['japBooks']=="true":
         _reader_cate.loan_books_jp = True
     else:
         _reader_cate.loan_books_jp = False
@@ -552,9 +571,11 @@ def lib_borrow_permission_delete(request):
     if ReaderCate.objects.filter(pk=_id):
         _reader_cate = ReaderCate.objects.get(pk=_id)
         _reader_cate.delete()
-    return HttpResponse('{"state":"delete ok"}') 
+    reader_json = serializers.serialize('json', ReaderCate.objects.all())
+    return HttpResponse(reader_json) 
 
 
+@csrf_exempt
 def lib_borrow_record(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
@@ -565,18 +586,17 @@ def lib_borrow_record(request):
     _item_dict = {}
     _item_dict['1'] = 'loan_date_time'
     _item_dict['2'] = 'copy__book__name'
-    _item_dict['3'] = 'copy__book__input_code'
-    _item_dict['4'] = 'copy__book_type'
-    _item_dict['5'] = 'copy__barcode'
-    _item_dict['6'] = 'copy__cate__name'
+    _item_dict['3'] = 'copy__book_type'
+    _item_dict['4'] = 'copy__barcode'
+    _item_dict['5'] = 'copy__book__isbn'
+    _item_dict['6'] = 'copy__book__cate__name'
     _item_dict['7'] = 'reader__name'
     _item_dict['8'] = 'reader__username'
     _item_dict['9'] = 'reader__cate__name'
     _item_dict['10'] = 'reader__dept__name'
     _item_dict['11'] = 'should_return_date'
-    _item_dict['12'] = 'reloan_times'
-    _item_dict['13'] = 'loan_operator'
-    _item_dict['14'] = 'return_operator'
+    _item_dict['12'] = 'loan_operator'
+    _item_dict['13'] = 'return_operator'
     
     _condition_dict = {}
     _condition_dict['l'] = '__lt' 
@@ -587,39 +607,39 @@ def lib_borrow_record(request):
     _condition_dict['contain'] = '__contains' 
 
     kwargs = {}
-    orargs = [None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+    orargs = [None,None,None,None,None,None,None,None,None,None,None,None,None]
     args = []
     for qobj in _query_list:
-        if qobj[u'logic'] == u'and':
+        if qobj[u'logic']== u'and':
             if qobj[u'item'] == '1': 
                 datelist = []
                 datelist = qobj[u'value'].split('-')
-                tdate = datetime.date(int(datelist[0]), int(datelist[1]), int(datelist[2]))
+                tdate = datetime.date(int(datelist[0]),int(datelist[1]),int(datelist[2]))
                 if qobj[u'condition'] == 'e':
-                    kwargs[_item_dict[qobj[u'item']] + '__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
+                    kwargs[_item_dict[qobj[u'item']]+'__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
                                                         datetime.datetime.combine(tdate, datetime.time.max))
                 if qobj[u'condition'] == 'le':
-                    kwargs[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.max)
+                    kwargs[_item_dict[qobj[u'item']]+'__lt'] =  datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
-                    kwargs[_item_dict[qobj[u'item']] + '__gt'] = qobj[u'value'] 
+                    kwargs[_item_dict[qobj[u'item']]+'__gt'] = qobj[u'value'] 
 
             else:
-                kwargs[_item_dict[qobj[u'item']] + _condition_dict[qobj[u'condition']]] = qobj[u'value'] 
-        if qobj[u'logic'] == u'or':
+                kwargs[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value'] 
+        if qobj[u'logic']== u'or':
             tdict = {}
             if qobj[u'item'] == '1': 
                 datelist = []
                 datelist = qobj[u'value'].split('-')
-                tdate = datetime.date(int(datelist[0]), int(datelist[1]), int(datelist[2]))
+                tdate = datetime.date(int(datelist[0]),int(datelist[1]),int(datelist[2]))
                 if qobj[u'condition'] == 'e':
-                    tdict[_item_dict[qobj[u'item']] + '__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
+                    tdict[_item_dict[qobj[u'item']]+'__range'] = (datetime.datetime.combine(tdate, datetime.time.min),
                                                         datetime.datetime.combine(tdate, datetime.time.max))
                 if qobj[u'condition'] == 'le':
-                    tdict[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.max)
+                    tdict[_item_dict[qobj[u'item']]+'__lt'] =  datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
-                    tdict[_item_dict[qobj[u'item']] + '__gt'] = qobj[u'value'] 
+                    tdict[_item_dict[qobj[u'item']]+'__gt'] = qobj[u'value'] 
             else:
-                tdict[_item_dict[qobj[u'item']] + _condition_dict[qobj[u'condition']]] = qobj[u'value']
+                tdict[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value']
             print(qobj[u'value'])
             if orargs[int(qobj[u'item'])] is None:
                 orargs[int(qobj[u'item'])] = Q(**tdict) 
@@ -628,19 +648,41 @@ def lib_borrow_record(request):
     for targs in orargs:
         if targs:
             args.append(targs)
-    _loan_list = LoanList.objects.filter(*args, **kwargs)
-    _loan_list_json = serializers.serialize('json', _loan_list)
+    _loan_list = LoanList.objects.filter(*args,**kwargs)
+    _loan_list_json = serializers.serialize('json', _loan_list, ensure_ascii=False, use_natural_keys=True)
     return HttpResponse(_loan_list_json) 
 
 
 def lib_overdue(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
+
     _start_date = datetime.date(1970, 1, 1)
     _end_date = timezone.now().date()
-    _overdue_list = LoanList.objects.filter(is_return=False, should_return_date__range=(_start_date, _end_date)) 
-    return render(request, 'lms/lib/overdueRecord.html', {'username':request.user.username, 'overdue_list':_overdue_list })
-	
+    _query_list = LoanList.objects.filter(is_return=False, should_return_date__range=(_start_date, _end_date)) 
+    
+    if request.GET.get("json_type")\
+        or request.GET.get("json_date_from")\
+        or request.GET.get("json_date_to"):
+        
+        if request.GET.get("json_type"):
+            _query_list = _query_list.filter(copy__book__book_type__id=request.GET.get("json_type"))
+        if request.GET.get("json_date_from"):
+            date_time_from = django.utils.datetime_safe.datetime.strptime(request.GET.get("json_date_from"), "%Y-%m-%d")
+            _query_list = _query_list.filter(should_return_date__gte=date_time_from)
+        if request.GET.get("json_date_to"):
+            date_time_to = django.utils.datetime_safe.datetime.strptime(request.GET.get("json_date_to"), "%Y-%m-%d")
+            _query_list = _query_list.filter(should_return_date__lte=date_time_to)
+            
+        data = serializers.serialize('json', _query_list, ensure_ascii=False, use_natural_keys=True)
+        return HttpResponse(data, content_type='json')
+
+    return render(request, 'lms/lib/overdueRecord.html', {'username':request.user.username,
+                                                          'overdue_list':_query_list,
+                                                          'book_types':BookType.objects.all()
+                                                          }
+                  )
+
 #################################系统设置模块##################################
 
 def lib_meta_data(request):
@@ -692,11 +734,50 @@ def lib_manage_password(request):
 
     return render(request, 'lms/lib/password.html', {'username':request.user.username, })
     
+@csrf_exempt
 def lib_push_message(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
+    if request.method == 'POST':
+        if request.POST['funno'] == '1':
+            return lib_push_message_save(request)
+        if request.POST['funno'] == '2':
+            return lib_push_message_delete(request)
+        if request.POST['funno'] == '3':
+            return lib_push_message_all(request)
+    return render(request, 'lms/lib/push.html', {'username':request.user.username,'templates':MessageTemplate.objects.all()})
+@csrf_exempt
+def lib_push_message_save(request):
+    _id = request.POST['id']
+    _subject = request.POST['subject']
+    _content = request.POST['content']
+    if _id != '':
+        _message_template = MessageTemplate.objects.get(pk = int(_id))
+        _message_template.subject = _subject
+        _message_template.content = _content
+        _message_template.save()
     else:
-        return render(request, 'lms/lib/push.html', {'username':request.user.username})
+        MessageTemplate.objects.create(subject = _subject, content = _content)
+    msgjson = serializers.serialize('json', MessageTemplate.objects.all())
+    return HttpResponse('{"state":"save message success","templates":'+msgjson+'}')
+@csrf_exempt
+def lib_push_message_delete(request):
+    _id = request.POST['id']
+    _message_template = MessageTemplate.objects.get(pk = int(_id))
+    _message_template.delete()
+    msgjson = serializers.serialize('json', MessageTemplate.objects.all())
+    return HttpResponse('{"state":"delete message success","templates":'+msgjson+'}')
+@csrf_exempt
+def lib_push_message_all(request):
+    _subject = '"'+request.POST['subject'].replace('"',r'\"')+'"'
+    _content = '"'+request.POST['content'].replace('"',r'\"')+'"'
+    _password = request.POST['password']
+    _username_list = request.user.email.split('@')
+    _username = _username_list[0]
+    runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar push '+_subject+' '+_content+' '+_username+' '+_password
+    runparam = runparam.encode('utf8')
+    os.popen(runparam)
+    return HttpResponse('{"state":"push done"}')
 
 def lib_meta_add(request):
     item = request.GET.get("json_item")
