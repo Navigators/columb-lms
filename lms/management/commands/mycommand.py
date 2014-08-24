@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand,CommandError           
 import os
 from lms.models import Books, Librarians, BookCate, BookType, Copies, CopyState, \
-    Readers, LoanList, ReaderCate
+    Readers, LoanList, ReaderCate, PermCate, PermList
 from django.utils import timezone
 import datetime
 
@@ -20,6 +20,13 @@ class Command(BaseCommand):
         _overdue_today = LoanList.objects.filter(is_return = False,should_return_date = _now_date)
         _overdue_five_days = LoanList.objects.filter(is_return = False,should_return_date = _five_days_later) 
         for tl in _overdue_loans:
+            _str = 'ÓâÆÚ'
+            _tperm_cate = PermCate.objects.get(name=_str)
+            _treader = tl.reader
+            _treader.per_point += _tperm_cate.value
+            _treader.save()
+            PermList.objects.create(reader = _treader,cate=_tperm_cate,value = _tperm_cate.value)
+
             tdate = tl.should_return_date
             diff =  datetime.date.today() - datetime.date(tdate.year,tdate.month,tdate.day) 
             if (diff.days % 5) == 0:
@@ -31,5 +38,5 @@ class Command(BaseCommand):
         print 'time task complete'
 
 def send_email(LoanList):
-        return os.popen('java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar overdue '+LoanList.reader.name.decode('UTF-8')+' "'+LoanList.copy.book.name.decode('UTF-8')+'" '+LoanList.loan_date_time.strftime("%Y-%m-%d%H:%M:%S")+' '+LoanList.should_return_date.strftime("%Y-%m-%d")+' '+LoanList.reader.email)
+        return os.popen('java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar overdue '+LoanList.reader.name.decode('UTF-8')+' '+LoanList.copy.book.name.decode('UTF-8')+' '+LoanList.loan_date_time.strftime("%Y-%m-%d%H:%M:%S")+' '+LoanList.should_return_date.strftime("%Y-%m-%d")+' '+LoanList.reader.email)
         

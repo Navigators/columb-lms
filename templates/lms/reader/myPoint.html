@@ -1,5 +1,146 @@
 {% extends "lms/reader/readerBase.html" %}
 {% block title %}我的积分{% endblock %}
 {% block content %}
+		<article class="notIndex">
+			<header>
+				<div class="alert alert-info" role="alert">
+					下面是我的积分情况！
+				</div>
+			</header>
+			<section >
+				<div class="pointTitle">
+					<p>借阅积分:<span class="point perm">{{permpoint}}</span>可兑换积分:<span class="point exchange">{{exchangepoint}}</span><button class="btn btn-warning gift" onclick="showDetails()">兑换好礼</button><a href="javascript:hideDetails()" style="display:none">收起</a></p>
+				</div>
+				<div class="details">
+					<table class="table">
+						<tr>
+							<th>物品</th>
+							<th>数量</th>
+							<th>所需积分</th>
+							<th>兑换</th>
+						</tr>
+						<tr>
+							<td>咖啡券</td>
+							<td class="number"><select></select></td>
+							<td>50</td>
+							<td><a href="#">兑换</a></td>
+						</tr>
+						<tr>
+							<td>借书</td>
+							<td class="number"><select></select></td>
+							<td>100</td>
+							<td><a href="#">兑换</a></td>
+						</tr>
+					</table>
+				</div>
+				<div>
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="active"><a href="#detail" role="tab" data-toggle="tab">积分明细</a></li>
+						<li><a href="#record" role="tab" data-toggle="tab">兑换记录</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="detail">
+							<table class="table">
+								<tr>
+									<th>日期</th>
+									<th>来源</th>
+									<th>积分</th>
+									<th>操作员</th>
+								</tr>
+								{%for tl in permlist%}
+									<tr>
+									<td>{{tl.date}}</td>
+									<td>{{tl.cate.name}}</td>
+									<td>{{tl.value}}</td>
+									{% if tl.operater %}
+									<td>{{tl.operater.name}}</td>
+									{% else %}
+									<td>系统</td>
+									{% endif %}
+									</tr>
+								{%endfor%}
+							</table>
+						</div>
+						<div class="tab-pane" id="record">
+							<table class="table">
+								<tr>
+									<th>兑换日期</th>
+									<th>消费积分</th>
+									<th>奖品</th>
+									<th>剩余积分</th>
+								</tr>
+								<tr>
+									<td>2014-01-01</td>
+									<td>200</td>
+									<td>咖啡券2张</td>
+									<td>900</td>
+								</tr>
+								<tr>
+									<td>2014-01-01</td>
+									<td>200</td>
+									<td>咖啡券2张</td>
+									<td>900</td>
+								</tr>
+								<tr>
+									<td>2014-01-01</td>
+									<td>200</td>
+									<td>咖啡券2张</td>
+									<td>900</td>
+								</tr>
+								<tr>
+									<td>2014-01-01</td>
+									<td>200</td>
+									<td>咖啡券2张</td>
+									<td>900</td>
+								</tr>
+							</table>
+						</div>
+						<div class="pages">
+							<ul class="pager">
+								<li><a href="#">上一页</a></li>
+								<li><a href="#">下一页</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+		</article>
+{% endblock %}
 
+{% block js %}
+<script type="text/javascript">
+	function showDetails() {
+		$('.details').slideDown('slow');
+		$('.details').prev().find('a').css('display','inline');
+	}
+
+	function hideDetails() {
+		$('.details').slideUp('slow');
+		$('.details').prev().find('a').css('display','none');
+	}
+
+    $(".navbar-fixed-top").headroom({
+        "tolerance": 5,
+        "offset": 205,
+        "classes": {
+            "initial": "animated",
+            "pinned": "bounceInLeft",
+            "unpinned": "bounceOutLeft"
+        }
+    });
+    $(function() {
+    	for (var i=1; i<10; i++) {
+    		$('.number select').append('<option value='+i+'>'+i+'</option>');
+    	}
+    	var price = new Array();
+    	$('.number select').each(function(index) {
+    		price[index] = $(this).parent().next().text();//用数组把每个所需积分列的积分存起来
+    		$(this).on('change', function() {
+    			var num = $(this).val();
+    			var result = price[index] * num;
+    			$(this).parent().next().text(result);
+    		})
+    	});
+    })
+</script>
 {% endblock %}

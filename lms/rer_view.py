@@ -12,7 +12,7 @@ from django.utils.datetime_safe import datetime
 from django.utils.timezone import now
 
 from lms.login_view import is_login_rer
-from lms.models import Books, BookCate, LoanList, Readers, Comments, BooksApply
+from lms.models import Books, BookCate, LoanList, Readers, Comments, BooksApply, PermList, PermCate, ExchangeList, ExchangeCate
 
 
 def reader_index(request):
@@ -90,7 +90,14 @@ def reader_loan(request):
     return render(request, 'lms/reader/myLoan.html', {'username':request.user.username, 'error_query':error_query, })
 
 def reader_point(request):
-    return render(request, 'lms/reader/myPoint.html')
+    if not is_login_rer(request):
+        return HttpResponseRedirect('/index/')
+    
+    _reader = Readers.objects.get(username=request.user.username)
+    _perm_point = _reader.per_point
+    _exchange_point = _reader.exc_point
+    _perm_list = PermList.objects.filter(reader=_reader).order_by('-id')
+    return render(request, 'lms/reader/myPoint.html',{'username':request.user.username,'permpoint':_perm_point,'exchangepoint':_exchange_point,'permlist':_perm_list})
 
 def reader_profile(request):
     if not is_login_rer(request):

@@ -20,7 +20,7 @@ from columb.settings import MEDIA_ROOT
 from lms.login_view import is_login_lib
 from lms.models import Books, Librarians, BookCate, BookType, Copies, CopyState, \
     Readers, LoanList, Company, Department, BooksBuy, BooksApply, \
-    BooksArchive, ReaderCate, MessageTemplate
+    BooksArchive, ReaderCate, MessageTemplate, PermCate, ExchangeCate, PermList, ExchangeList
 
 
 #################################入库模块##################################
@@ -331,6 +331,7 @@ def copy_to_dict(copy):
     copydict['isbn'] = copy.book.isbn
     copydict['author'] = copy.book.author
     copydict['cate'] = copy.book.cate.name
+    copydict['state'] = copy.state.id
     return copydict
     
 def lib_borrow_getreader(request):
@@ -427,6 +428,12 @@ def lib_borrow(request):
         mlimit_days = mreader.cate.limit_days
         mshould_return_date = timezone.now() + datetime.timedelta(days=mlimit_days)
         LoanList.objects.create(copy=mcopy, reader=mreader, should_return_date=mshould_return_date, is_return=mis_return, loan_operator=mloan_operator)
+        #add point
+        _perm_cate = PermCate.objects.get(name=u'借书')
+        _perm_point = _perm_cate.value
+        PermList.objects.create(reader=mreader,cate=_perm_cate,value=_perm_point,operator=mloan_operator)
+        mreader.per_point += _perm_point
+        mreader.savereader()
         mbook = mcopy.book
         mbook.loan_count += 1
         mbook.save()
@@ -462,6 +469,15 @@ def lib_return(request):
         mloan.return_operator = mreturn_operator
         mloan.fact_return_date_time = timezone.now()
         mloan.save()
+        #add point
+        if _copy_state.name == u'可借':
+            _perm_cate = PermCate.objects.get(name=u'还书')
+        else:
+            _perm_cate = PermCate.objects.get(name=u'污损')
+        _perm_point = _perm_cate.value
+        PermList.objects.create(reader=mreader,cate=_perm_cate,value=_perm_point,operator=mreturn_operator)
+        mreader.per_point += _perm_point
+        mreader.savereader()
         mbook = mcopy.book
         mbook.loan_count -= 1
         mbook.save()
@@ -622,6 +638,10 @@ def lib_borrow_record(request):
                     kwargs[_item_dict[qobj[u'item']]+'__lt'] =  datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
                     kwargs[_item_dict[qobj[u'item']]+'__gt'] = qobj[u'value'] 
+                if qobj[u'condition'] == 'l':
+                    kwargs[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value']
+                if qobj[u'condition'] == 'g':
+                    kwargs[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value']
 
             else:
                 kwargs[_item_dict[qobj[u'item']]+_condition_dict[qobj[u'condition']]] = qobj[u'value'] 
@@ -778,6 +798,39 @@ def lib_push_message_all(request):
     runparam = runparam.encode('utf8')
     os.popen(runparam)
     return HttpResponse('{"state":"push done"}')
+
+@csrf_exempt
+def lib_point_manage(request):
+    if request.method == 'POST':
+        if request.POST['funno'] == '1':
+            return lib_perm_point_add(request)
+        if request.POST['funno'] == '2':
+            return lib_exchange_point_add(request)
+    return render(request, 'lms/lib/pointManage.html', {'username':request.user.username,'permcate':PermCate.objects.all(), 'exchangecate':ExchangeCate.objects.all(), 'permlist':PermList.objects.all().order_by('-id'), 'exchangelist':ExchangeList.objects.all().order_by('-id') })
+
+def lib_perm_point_add(request):
+    _username = request.POST['username']
+    _selectid = int(request.POST['selectid'])
+    _perm_cate = PermCate.objects.get(pk=_selectid)
+    _reader = Readers.objects.get(username = _username)
+    _reader.per_point += _perm_cate.value
+    _librarian = Librarians.objects.get(username = request.user.username)
+    PermList.objects.create(reader = _reader,cate = _perm_cate, value = _perm_cate.value,operator = _librarian)
+    _reader.savereader()
+    _perm_json = serializers.serialize('json', PermList.objects.all().order_by('-id'),use_natural_keys=True)
+    return HttpResponse(_perm_json)
+
+def lib_exchange_point_add(request):
+    _username = request.POST['username']
+    _selectid = int(request.POST['selectid'])
+    _exchange_cate = ExchangeCate.objects.get(pk=_selectid)
+    _reader = Readers.objects.get(username = _username)
+    _reader.exc_point += _exchange_cate.value
+    _librarian = Librarians.objects.get(username = request.user.username)
+    ExchangeList.objects.create(reader = _reader,cate = _exchange_cate, value = _exchange_cate.value,operator = _librarian)
+    _reader.savereader()
+    _exchange_json = serializers.serialize('json', ExchangeList.objects.all().order_by('-id'),use_natural_keys=True)
+    return HttpResponse(_exchange_json)
 
 def lib_meta_add(request):
     item = request.GET.get("json_item")

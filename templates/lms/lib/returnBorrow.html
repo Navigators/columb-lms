@@ -123,7 +123,6 @@
 											<th>已续借次数</th>
 											<th>应还日期</th>
 											<th>借书操作员</th>
-											<th>还书操作员</th>
 										</tr>
 									</table>
 								</div>
@@ -138,6 +137,7 @@
 
 <script type="text/javascript">
 	var copyid ="";
+	var stateid="";
 	var readerid ="";
 		$('#code').blur(function() {
 					copyid = $(this).val();
@@ -152,13 +152,22 @@
 									$('#author').val(data['copy']['author']);
 									$('#cate').val(data['copy']['cate']);
 									copyid = data['copy']['copyid'];
+									stateid=data['copy']['state'];
 									console.log(data);
 									$('#borrowCopyID').val(data['copy']['copyid']);
 									$('#returnCopyID').val(data['copy']['copyid']);
 									$('#renewCopyID').val(data['copy']['copyid']);
+									var str = '';
 									$.each(data['copystate'],function(i,item){
-										$('#copystate').append('<option value='+item['id']+'>'+item['name']+'</option>');
+										str += '<option value='+item['id']+'>'+item['name']+'</option>';
 									});
+									$('#copystate').html(str);
+									$('#copystate option').each(function() {
+										if ($(this).val() == stateid) {
+											$(this).attr('selected','selected');
+										}
+										
+									})
 								}
 								else{
 									console.log(data['state']);
@@ -209,8 +218,9 @@
 								if(data['state'] == 'borrow success'){
 									$('.result').remove();
 									$.each(data['loanlist'],function(i,object){
-										$('#loanTable').append('<tr class="result"><th>'+this['loandatetime']+'</th><th>'+this['bookname']+'</th><th>'+this['barcode']+'</th><th>'+this['readername']+'</th><th>'+this['username']+'</th><th>'+this['usercate']+'</th><th>'+this['reloantimes']+'</th><th>'+this['shouldreturndate']+'</th><th>'+this['operator']+'</th></tr>');
+										$('#loanTable').append('<tr class="result"><td>'+this['loandatetime']+'</td><td>'+this['bookname']+'</td><td>'+this['barcode']+'</td><td>'+this['readername']+'</td><td>'+this['username']+'</td><td>'+this['usercate']+'</td><td>'+this['reloantimes']+'</td><td>'+this['shouldreturndate']+'</td><td>'+this['operator']+'</td></tr>');
 									});
+									newTableTd();
 								}
 								else{
 
@@ -233,6 +243,7 @@
 								$.each(data['loanlist'],function(i,object){
 									$('#loanTable').append('<tr class="result"><th>'+this['loandatetime']+'</th><th>'+this['bookname']+'</th><th>'+this['barcode']+'</th><th>'+this['readername']+'</th><th>'+this['username']+'</th><th>'+this['usercate']+'</th><th>'+this['reloantimes']+'</th><th>'+this['shouldreturndate']+'</th><th>'+this['operator']+'</th></tr>');
 								});
+								newTableTd();
 							}
 							else{
 
@@ -256,6 +267,7 @@
 									$.each(data['loanlist'],function(i,object){
 										$('#loanTable').append('<tr class="result"><th>'+this['loandatetime']+'</th><th>'+this['bookname']+'</th><th>'+this['barcode']+'</th><th>'+this['readername']+'</th><th>'+this['username']+'</th><th>'+this['usercate']+'</th><th>'+this['reloantimes']+'</th><th>'+this['shouldreturndate']+'</th><th>'+this['operator']+'</th></tr>');
 									});
+									newTableTd();
 								}
 								else{
 
@@ -268,4 +280,5 @@
 		});
 </script>
 {% endblock %}
+<!-- 修改newTableTd(),使得一列可以，而不是一行 -->
 

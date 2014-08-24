@@ -31,4 +31,5 @@ urlpatterns = patterns('',
     url(r'^metadata/$', lib_view.lib_meta_data, name="lib_metadata"),
     url(r'^password/$', lib_view.lib_manage_password, name="lib_password"),
     url(r'^pushms/$', lib_view.lib_push_message, name="lib_pushms"),
+    url(r'^pointmanage/$', lib_view.lib_point_manage, name="lib_point_manage"),
 )

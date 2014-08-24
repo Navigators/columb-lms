@@ -3,7 +3,7 @@ from django.contrib import admin
 from lms.models import BookCate, ReaderCate, Librarians, Readers, Books, \
     Bylaw, Copies, LoanList, Comments, UserFun, UserAccredit, UserLog, Company, \
     Department, BookType, CopyState, BooksApply, BooksBuy, BooksArchive, \
-    PermPoint, ExchangePoint, MessageTemplate
+    PermCate, PermList, ExchangeCate, ExchangeList, MessageTemplate
 
 
 # Register your models here.
@@ -26,6 +26,9 @@ admin.site.register(UserLog)
 admin.site.register(BooksApply)
 admin.site.register(BooksBuy)
 admin.site.register(BooksArchive)
-admin.site.register(PermPoint)
-admin.site.register(ExchangePoint)
+admin.site.register(PermCate)
+admin.site.register(PermList)
+admin.site.register(ExchangeCate)
+admin.site.register(ExchangeList)
+
 admin.site.register(MessageTemplate)

@@ -98,14 +98,17 @@ class Readers(User):
     memo = models.CharField(max_length=100, blank=True)
     operator = models.ForeignKey(Librarians)
     pic_location = models.CharField(max_length=200, blank=True)
-#     per_point = models.IntegerField(default=0)
-#     exc_point = models.IntegerField(default=0)
+    per_point = models.IntegerField(default=0)
+    exc_point = models.IntegerField(default=0)
     
     def __unicode__(self):
         return self.username
     
     def save(self):
         self.password = make_password(self.password)
+        super(Readers, self).save()
+
+    def savereader(self):
         super(Readers, self).save()
         
     def natural_key(self):
@@ -272,6 +275,9 @@ class PermCate(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def natural_key(self):
+        return (self.name)
     
 class ExchangeCate(models.Model):
     name = models.CharField(max_length=40)
@@ -280,24 +286,29 @@ class ExchangeCate(models.Model):
     def __unicode__(self):
         return self.name
 
-class PermPoint(models.Model):
+    def natural_key(self):
+        return (self.name)
+
+class PermList(models.Model):
     reader = models.ForeignKey(Readers)
     cate = models.ForeignKey(PermCate)
     value = models.IntegerField(default=0)
-    operator = models.ForeignKey(Librarians)
+    date = models.DateField(auto_now_add=True)
+    operator = models.ForeignKey(Librarians,blank=True,null=True)
 
     def __unicode__(self):
-        return self.id
+        return str(self.id)
   
-class ExchangePoint(models.Model):
+class ExchangeList(models.Model):
     reader = models.ForeignKey(Readers)
     cate = models.ForeignKey(ExchangeCate)
     value = models.IntegerField(default=0)
+    date = models.DateField(auto_now_add=True)
     operator = models.ForeignKey(Librarians)
     
     def __unicode__(self):
-        return self.id
-
+        return str(self.id)
+    
 class MessageTemplate(models.Model):
     subject = models.CharField(max_length=100)
     content = models.CharField(max_length=2000)

@@ -122,10 +122,65 @@
 	        'display':'block'
 	    });
 	}
-
+	
 	function hideTips(cls) {
 	    $(cls).find('.show-tip').remove();
 	}
+	
+	function customizeTable() {
+		$('#customize').on('click', function() {
+			if ($('#tableItems').css('display') == 'none') {
+				$('#tableItems').slideDown('slow');
+				$(this).html('收起定制');
+			} else {
+				$('#tableItems').slideUp('slow');
+				$(this).html('定制列表');
+			}
+		});
+		$('#tableItems input').attr('checked','checked');
+		/*$('#tableItems input').each(function(index) {
+			$(this).click(function(){
+				if ($(this).attr('checked') == 'checked') {
+					$(this).removeAttr('checked');
+					console.log('这是第'+index+'个');
+					$(this).parent().next().find('tr th:eq('+index+')').hide();
+					$(this).parent().next().find('tr td:eq('+index+')').hide();
+				} else {
+					$(this).attr('checked','checked');
+					$(this).parent().next().find('tr th:eq('+index+')').show();
+					$(this).parent().next().find('tr td:eq('+index+')').show();
+				}
+			});
+		});*/
+		$('#resultTable').hoverDelay({
+			hoverEvent: function() {
+				$('#resultTable').css('overflow-x','scroll');
+			},
+			outEvent: function() {
+				$('#resultTable').css('overflow','hidden');
+			}
+		});
+	}
+	
+	function newTableTd() {
+		$('#tableItems input').each(function(index) {
+			$(this).click(function(){
+				if ($(this).attr('checked') == 'checked') {
+					$(this).removeAttr('checked');
+					console.log('这是第'+index+'个');
+					$(this).parent().next().find('tr th:eq('+index+')').hide();
+					$(this).parent().next().find('tr td:eq('+index+')').hide();
+				} else {
+					$(this).attr('checked','checked');
+					$(this).parent().next().find('tr th:eq('+index+')').show();
+					$(this).parent().next().find('tr td:eq('+index+')').show();
+				}
+			});
+		});
+	}
+	
+
+
 
 $(function() {
 
@@ -133,4 +188,5 @@ $(function() {
 	aside();
 	bookUpdate();
 	permissionUpdate();
+	customizeTable();
 })

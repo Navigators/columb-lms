@@ -1,0 +1,161 @@
+{% extends "lms/lib/base.html" %} 
+{% block title %}积分管理{% endblock %}
+{% block content %}
+			<ul class="nav nav-tabs" role="tablist" style="height:50px">
+				<li class="active"><a href="#loanPoint" role="tab" data-toggle="tab">借阅积分</a></li>
+				<li><a href="#exchangePoint" role="tab" data-toggle="tab">兑换积分</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="loanPoint">
+					<label>工号：</label>
+					<input id="workId1" type="text" placeholder="工号">
+					<label>类别：</label>
+					<select id="cate1">
+						{%for tpc in permcate%}
+						<option value="{{tpc.id}}">{{tpc.name}}</option>
+						{%endfor%}
+					</select>
+					<button class="btn btn-primary" id="ok1" type="button" >提交</button>
+					<table id="table1" class="table">
+						<tr>
+							<th>工号</th>
+							<th>姓名</th>
+							<th>类别</th>
+							<th>分值</th>
+							<th>日期</th>
+							<th>操作员</th>
+						</tr>
+						{%for tpl in permlist%}
+						<tr class="table1tr">
+							<td>{{tpl.reader.username}}</td>
+							<td>{{tpl.reader.name}}</td>
+							<td>{{tpl.cate.name}}</td>
+							<td>{{tpl.value}}</td>
+							<td>{{tpl.date}}</td>
+							{%if tp.operater%}
+							<td>{{tpl.operator.name}}</td>
+							{%else%}
+							<td>系统</td>
+							{%endif%}
+						</tr>
+						{%endfor%}
+					</table>
+				</div>
+				<div class="tab-pane" id="exchangePoint">
+					<label>工号：</label>
+					<input id="workId2" type="text" placeholder="工号">
+					<label>类别：</label>
+					<select id="cate2">
+						{%for tec in exchangecate%}
+						<option value="{{tec.id}}">{{tec.name}}</option>
+						{%endfor%}
+					</select>
+					<button class="btn btn-primary" id="ok2" type="button" >提交</button>
+					 <table id="table2"class="table">
+						<tr>
+							<th>工号</th>
+							<th>姓名</th>
+							<th>类别</th>
+							<th>分值</th>
+							<th>日期</th>
+							<th>操作员</th>
+						</tr>
+						{%for tel in exchangelist%}
+						<tr class="table2tr">
+							<td>{{tel.reader.username}}</td>
+							<td>{{tel.reader.name}}</td>
+							<td>{{tel.cate.name}}</td>
+							<td>{{tel.value}}</td>
+							<td>{{tel.date}}</td>
+							{%if tp.operater%}
+							<td>{{tpl.operator.name}}</td>
+							{%else%}
+							<td>系统</td>
+							{%endif%}
+						</tr>
+						{%endfor%}
+					</table>
+				</div>
+			</div>
+{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+	$(function() {
+		$('#ok1').click(function() {
+					$.ajax({
+						url:'{% url "lib:lib_point_manage" %}',
+						type: 'POST',
+						data: 'funno=1&username='+$('#workId1').val()+'&selectid='+$('#cate1').val(),
+						dataType: 'json',
+						success: function(data) {
+						console.log(data);
+						$(".table1tr").remove();
+							$.each(data,function(i,item){
+							$.each(item,function(key,value){
+								if(key=="fields"){
+									cate=value['cate'];
+									mvalue=value['value'];
+									mdate=value['date'];
+									$.each(value,function(_key,_value){
+										if(_key=="reader"){
+											readername=_value['1'];
+											username=_value['0'];
+										}
+										if(_key=="operator")
+											if(_value==null)
+												operator="系统";
+											else
+												operator=_value['1'];
+										});
+									}
+									});
+									$('#table1').append('<tr class="table1tr"> <td>'+username+'</td> <td>'+readername+'</td> <td>'+cate+'</td> <td>'+mvalue+'</td> <td>'+mdate+'</td>  <td>'+operator+'</td></tr>')
+								});
+
+						},
+						error: function(xhr, status, error) {
+							console.log('status:'+status+',error:'+error);
+						}
+					});
+		});
+		$('#ok2').click(function() {
+					$.ajax({
+						url:'{% url "lib:lib_point_manage" %}',
+						type: 'POST',
+						data: 'funno=2&username='+$('#workId2').val()+'&selectid='+$('#cate2').val(),
+						dataType: 'json',
+						success: function(data) {
+						console.log(data);
+						$(".table2tr").remove();
+							$.each(data,function(i,item){
+							$.each(item,function(key,value){
+								if(key=="fields"){
+									cate=value['cate'];
+									mvalue=value['value'];
+									mdate=value['date'];
+									$.each(value,function(_key,_value){
+										if(_key=="reader"){
+											readername=_value['1'];
+											username=_value['0'];
+										}
+										if(_key=="operator")
+											if(_value==null)
+												operator="系统";
+											else
+												operator=_value['1'];
+										});
+									}
+									});
+									$('#table2').append('<tr class="table2tr"> <td>'+username+'</td> <td>'+readername+'</td> <td>'+cate+'</td> <td>'+mvalue+'</td> <td>'+mdate+'</td>  <td>'+operator+'</td></tr>')
+								});
+
+						},
+						error: function(xhr, status, error) {
+							console.log('status:'+status+',error:'+error);
+						}
+					});
+		});
+	});
+	</script>
+{% endblock %}
