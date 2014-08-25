@@ -17,4 +17,6 @@ urlpatterns = patterns('',
     url(r'^review/$', rer_view.reader_review, name="reader_review"),
     
     url(r'^buybook/$', rer_view.reader_buy_book, name="reader_buy_book"),
+    
+    url(r'^bookdetails/(?P<book_id>\d+)$', rer_view.reader_book_detail, name="reader_book_detail"),
 )

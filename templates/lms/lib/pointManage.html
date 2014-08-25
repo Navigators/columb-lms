@@ -16,30 +16,32 @@
 						{%endfor%}
 					</select>
 					<button class="btn btn-primary" id="ok1" type="button" >提交</button>
-					<table id="table1" class="table">
-						<tr>
-							<th>工号</th>
-							<th>姓名</th>
-							<th>类别</th>
-							<th>分值</th>
-							<th>日期</th>
-							<th>操作员</th>
-						</tr>
-						{%for tpl in permlist%}
-						<tr class="table1tr">
-							<td>{{tpl.reader.username}}</td>
-							<td>{{tpl.reader.name}}</td>
-							<td>{{tpl.cate.name}}</td>
-							<td>{{tpl.value}}</td>
-							<td>{{tpl.date}}</td>
-							{%if tp.operater%}
-							<td>{{tpl.operator.name}}</td>
-							{%else%}
-							<td>系统</td>
-							{%endif%}
-						</tr>
-						{%endfor%}
-					</table>
+					<div style="height:500px;overflow:auto">
+						<table id="table1" class="table">
+							<tr>
+								<th>工号</th>
+								<th>姓名</th>
+								<th>类别</th>
+								<th>分值</th>
+								<th>日期</th>
+								<th>操作员</th>
+							</tr>
+							{%for tpl in permlist%}
+							<tr class="table1tr">
+								<td>{{tpl.reader.username}}</td>
+								<td>{{tpl.reader.name}}</td>
+								<td>{{tpl.cate.name}}</td>
+								<td>{{tpl.value}}</td>
+								<td>{{tpl.date}}</td>
+								{%if tp.operater%}
+								<td>{{tpl.operator.name}}</td>
+								{%else%}
+								<td>系统</td>
+								{%endif%}
+							</tr>
+							{%endfor%}
+						</table>
+					</div>
 				</div>
 				<div class="tab-pane" id="exchangePoint">
 					<label>工号：</label>
@@ -51,30 +53,32 @@
 						{%endfor%}
 					</select>
 					<button class="btn btn-primary" id="ok2" type="button" >提交</button>
-					 <table id="table2"class="table">
-						<tr>
-							<th>工号</th>
-							<th>姓名</th>
-							<th>类别</th>
-							<th>分值</th>
-							<th>日期</th>
-							<th>操作员</th>
-						</tr>
-						{%for tel in exchangelist%}
-						<tr class="table2tr">
-							<td>{{tel.reader.username}}</td>
-							<td>{{tel.reader.name}}</td>
-							<td>{{tel.cate.name}}</td>
-							<td>{{tel.value}}</td>
-							<td>{{tel.date}}</td>
-							{%if tp.operater%}
-							<td>{{tpl.operator.name}}</td>
-							{%else%}
-							<td>系统</td>
-							{%endif%}
-						</tr>
-						{%endfor%}
-					</table>
+					<div style="height:500px;overflow:auto">
+						<table id="table2"class="table">
+							<tr>
+								<th>工号</th>
+								<th>姓名</th>
+								<th>类别</th>
+								<th>分值</th>
+								<th>日期</th>
+								<th>操作员</th>
+							</tr>
+							{%for tel in exchangelist%}
+							<tr class="table2tr">
+								<td>{{tel.reader.username}}</td>
+								<td>{{tel.reader.name}}</td>
+								<td>{{tel.cate.name}}</td>
+								<td>{{tel.value}}</td>
+								<td>{{tel.date}}</td>
+								{%if tp.operater%}
+								<td>{{tpl.operator.name}}</td>
+								{%else%}
+								<td>系统</td>
+								{%endif%}
+							</tr>
+							{%endfor%}
+						</table>
+					</div>
 				</div>
 			</div>
 {% endblock %}

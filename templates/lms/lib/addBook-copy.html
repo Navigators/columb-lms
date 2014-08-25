@@ -1,7 +1,7 @@
 {% extends "lms/lib/base.html" %} 
 {% block title %}添加复本{% endblock %}
 {% block content %}
-<div class="row section-content">
+<div class="">
 	<div class="col-md-11">
 		<div class="form-horizontal" method="post" action="{% url 'lib:lib_addcopies' %}">
 			<div class="row">
@@ -150,7 +150,7 @@ $("#copy-delete").click(function(){
     	parser(data);
 	});
 });
-
+bookUpdate();
 });
 
 function parser(data) {

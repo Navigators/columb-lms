@@ -95,12 +95,6 @@
 								</tr>
 							</table>
 						</div>
-						<div class="pages">
-							<ul class="pager">
-								<li><a href="#">上一页</a></li>
-								<li><a href="#">下一页</a></li>
-							</ul>
-						</div>
 					</div>
 				</div>
 			</section>
@@ -119,15 +113,6 @@
 		$('.details').prev().find('a').css('display','none');
 	}
 
-    $(".navbar-fixed-top").headroom({
-        "tolerance": 5,
-        "offset": 205,
-        "classes": {
-            "initial": "animated",
-            "pinned": "bounceInLeft",
-            "unpinned": "bounceOutLeft"
-        }
-    });
     $(function() {
     	for (var i=1; i<10; i++) {
     		$('.number select').append('<option value='+i+'>'+i+'</option>');

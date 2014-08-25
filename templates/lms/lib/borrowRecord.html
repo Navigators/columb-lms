@@ -16,151 +16,147 @@
 		width: 130px;
 	}
 	</style>
-				<div class="row section-content">
-					<div class="col-md-11">
-						<p>
-							<button type="button" id="queryToggle" class="btn btn-primary" style="margin-left:-15px">按条件查询</button>
-							根据不同条件进行组合查询：
-						</p>
-						<div class="row" style="display:none">
-							<table id="queryTable">
-								<tr>
-									<th>或与</th>
-									<th>项目</th>
-									<th>条件</th>
-									<th>值</th>
-								</tr>
-								<tr>
-									<td>
-										<select id="logic">
-											<option value="and">与</option>
-											<option value="or">或</option>
-										</select>
-									</td>
-									<td>
-										<select id="queryItems">
-										</select>
-									</td>
-									<td id="conditionTd">
-										<select id="dateCondition">
-											<option value="l">小于</option>
-											<option value="le">小于等于</option>
-											<option value="e">等于</option>
-											<option value="ge">大于等于</option>
-											<option value="g">大于</option>
-										</select>
-										<select id="valueCondition" style="display: none">
-											<option value="e">等于</option>
-											<option value="contain">包含</option>
-										</select>
-									</td>
-									<td>
-										<input id="value" type="date" placeholder="例：2014-01-01">
-									</td>
-									<td id="addSelectCondition" style="padding-left:10px"><button type="button" class="btn btn-info">添加</button></td>
-									<td id="doQuery" style="padding-left:10px"><button type="button" class="btn btn-success">查找</button></td>
-									
-								</tr>
-							</table>
-							<div class="col-md-12" style="margin-top:10px;">
-								<div class="col-md-6">
-									<div id="querys" style="height: 100px;width: 100%;border: 1px solid #000000;padding: 5px 5px 5px 5px;overflow:auto;margin-left: -20px"></div>
-								</div>
-								<div class="col-md-6">
-									<button id="delete" type="button" class="btn btn-info" style="margin-top: 0px">删除</button><br>
-									<button id="empty" type="button" class="btn btn-info" style="margin-bottom: 0px">清空</button>
-								</div>
-							</div>
+	<div class="">
+		<div class="col-md-11">
+			<p>
+				<button type="button" id="queryToggle" class="btn btn-primary" style="margin-left:-15px">按条件查询</button>
+				根据不同条件进行组合查询：
+			</p>
+			<div class="row" style="display:none">
+				<table id="queryTable">
+					<tr>
+						<th>或与</th>
+						<th>项目</th>
+						<th>条件</th>
+						<th>值</th>
+					</tr>
+					<tr>
+						<td>
+							<select id="logic">
+								<option value="and">与</option>
+								<option value="or">或</option>
+							</select>
+						</td>
+						<td>
+							<select id="queryItems">
+							</select>
+						</td>
+						<td id="conditionTd">
+							<select id="dateCondition">
+								<option value="l">小于</option>
+								<option value="le">小于等于</option>
+								<option value="e">等于</option>
+								<option value="ge">大于等于</option>
+								<option value="g">大于</option>
+							</select>
+							<select id="valueCondition" style="display: none">
+								<option value="e">等于</option>
+								<option value="contain">包含</option>
+							</select>
+						</td>
+						<td>
+							<input id="value" type="date" placeholder="例：2014-01-01">
+						</td>
+						<td id="addSelectCondition" style="padding-left:10px"><button type="button" class="btn btn-info">添加</button></td>
+						<td id="doQuery" style="padding-left:10px"><button type="button" class="btn btn-success">查找</button></td>
+						</tr>
+					</table>
+					<div class="col-md-12" style="margin-top:10px;">
+						<div class="col-md-6">
+							<div id="querys" style="height: 100px;width: 100%;border: 1px solid #000000;padding: 5px 5px 5px 5px;overflow:auto;margin-left: -20px"></div>
 						</div>
-						<div class="row" style="margin-top: 10px">
-							<div class="col-md-1">
-								<button type="button" id="customize" class="btn btn-info" style="margin-left:-15px">定制列表</button>
-							</div>
-							<div id="resultTable" class="col-md-11" style="overflow:hidden">
-								<div id="tableItems" style="display:none; white-space:nowrap">
-									<input type="checkbox">
-									<label name="1">借出日期</label>
-									<input type="checkbox">
-									<label name="2">书刊名称</label>
-									<input type="checkbox">
-									<label name="3">馆藏类型</label>
-									<input type="checkbox">
-									<label name="4">书刊条号</label>
-									<input type="checkbox">
-									<label name="5">复本条号</label>
-									<input type="checkbox">
-									<label name="6">索书号</label>
-									<input type="checkbox">
-									<label name="7">读者姓名</label>
-									<input type="checkbox">
-									<label name="8">读者工号</label>
-									<input type="checkbox">
-									<label name="9">读者类别</label>
-									<input type="checkbox">
-									<label name="10">读者部门</label>
-									<input type="checkbox">
-									<label name="11">应还日期</label>
-									<input type="checkbox">
-									<label name="12">借书操作员</label>
-									<input type="checkbox">
-									<label name="13">还书操作员</label>
-								</div>
-								<table class="table">
-									<tr>
-										<th>借出日期</th>
-										<th>书刊名称</th>
-										<th>馆藏类型</th>
-										<th>书刊条号</th>
-										<th>复本条号</th>
-										<th>索书号</th>
-										<th>读者姓名</th>
-										<th>读者工号</th>
-										<th>读者类别</th>
-										<th>读者部门</th>
-										<th>应还日期</th>
-										<th>借书操作员</th>
-										<th>还书操作员</th>
-									</tr>
-								</table>
-							</div>
+						<div class="col-md-6">
+							<button id="delete" type="button" class="btn btn-info" style="margin-top: 0px">删除</button><br>
+							<button id="empty" type="button" class="btn btn-info" style="margin-bottom: 0px">清空</button>
+						</div>
 					</div>
 				</div>
-			</div>
-<script type="text/javascript">
-$(function() {
-	//隐藏和显示查询部分
-	$('#queryToggle').on('click', function() {
-		var next = $(this).parent().next();
-		if(next.css('display') == 'none') {
-			$(this).parent().next().slideDown('slow');
-		} else {
-			$(this).parent().next().slideUp('slow');
-		}
-	});
-	//为查询条件中的项目select控件添加值
-	$('#tableItems label').each(function(index) { 
-		$('#queryItems').append('<option value="'+$(this).attr('name')+'">'+$(this).text()+'</option>')
-	});
-	//当项目的select控件值改变时，改变条件和值的select控件
-	$('#queryItems').change(function(event) {
-		var dateList = new Array();
-		dateList[0] = 0;dateList[1] = 10;
-		var d,c;
-		$('#dateCondition').hide();
-		$('#valueCondition').show();
-		$('#value').attr('type','text');
-		$('#value').attr('placeholder','输入内容');
-		$('#value').val('');
-		for (d in dateList) {
-			if ($(this).val() == $(this).find('option:eq('+dateList[d]+')').attr('value')) {
-				$('#dateCondition').show();
-				$('#valueCondition').hide();
-				$('#value').attr('type','date');
-				$('#value').attr('placeholder','例：2014/01/01');
-			}
-			
-		}
+				<div class="row" style="margin-top: 10px">
+					<div class="col-md-1">
+						<button type="button" id="customize" class="btn btn-info" style="margin-left:-15px">定制列表</button>
+					</div>
+					<div id="resultTable" class="col-md-11" style="overflow:hidden">
+						<div id="tableItems" style="display:none; white-space:nowrap">
+							<input type="checkbox">
+							<label name="1">借出日期</label>
+							<input type="checkbox">
+							<label name="2">书刊名称</label>
+							<input type="checkbox">
+							<label name="3">馆藏类型</label>
+							<input type="checkbox">
+							<label name="4">书刊条号</label>
+							<input type="checkbox">
+							<label name="5">复本条号</label>
+							<input type="checkbox">
+							<label name="6">索书号</label>
+							<input type="checkbox">
+							<label name="7">读者姓名</label>
+							<input type="checkbox">
+							<label name="8">读者工号</label>
+							<input type="checkbox">
+							<label name="9">读者类别</label>
+							<input type="checkbox">
+							<label name="10">读者部门</label>
+							<input type="checkbox">
+							<label name="11">应还日期</label>
+							<input type="checkbox">
+							<label name="12">借书操作员</label>
+							<input type="checkbox">
+							<label name="13">还书操作员</label>
+						</div>
+						<table class="table">
+							<tr>
+							<th>借出日期</th>
+								<th>书刊名称</th>
+								<th>馆藏类型</th>
+								<th>书刊条号</th>
+								<th>复本条号</th>
+								<th>索书号</th>
+								<th>读者姓名</th>
+								<th>读者工号</th>
+								<th>读者类别</th>
+								<th>读者部门</th>
+								<th>应还日期</th>
+								<th>借书操作员</th>
+								<th>还书操作员</th>
+							</tr>
+						</table>
+					</div>
 
+				</div>
+			</div>
+		</div>
+	<script type="text/javascript">
+	$(function() {
+		$('#queryToggle').on('click', function() {
+			var next = $(this).parent().next();
+			if(next.css('display') == 'none') {
+				$(this).parent().next().slideDown('slow');
+			} else {
+				$(this).parent().next().slideUp('slow');
+			}
+		});
+
+		$('#tableItems label').each(function(index) { 
+			$('#queryItems').append('<option value="'+$(this).attr('name')+'">'+$(this).text()+'</option>')
+		});
+		$('#queryItems').change(function(event) {
+			var dateList = new Array();
+			dateList[0] = 0;dateList[1] = 10;
+			var d,c;
+			$('#dateCondition').hide();
+			$('#valueCondition').show();
+			$('#value').attr('type','text');
+			$('#value').attr('placeholder','输入内容');
+			$('#value').val('');
+			for (d in dateList) {
+				if ($(this).val() == $(this).find('option:eq('+dateList[d]+')').attr('value')) {
+					$('#dateCondition').show();
+					$('#valueCondition').hide();
+					$('#value').attr('type','date');
+					$('#value').attr('placeholder','例：2014/01/01');
+			 	}	
+		}
 	});
 	var queryArray = new Array(),
 		jsonArray = new Array(),

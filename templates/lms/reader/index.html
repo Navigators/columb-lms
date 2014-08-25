@@ -8,10 +8,11 @@
 		<button id="search">搜书</button>
 	</div>
 	<hr>
-	<div>
+	<div class="categoryList">
 		<ul class="cates">
 			{% for cate in book_cates %}
-			<li id="{{cate.id}}"><button>{{cate.name}}</button></li> {% endfor %}
+			<li class="cursor-pointer" id="{{cate.id}}"><a href="javascript:findCates({{cate.id}})">{{cate.name}}</a></li> 
+			{% endfor %}
 		</ul>
 	</div>
 </nav>
@@ -20,7 +21,7 @@
 	<ul class="bookList">
 		{% for book in popular_books %}
 		<li>
-			<a class="img" href="#"><img src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}" title="{{book.name}}"></a>
+			<a class="img" href="{% url 'rer:reader_book_detail' book.id %}"><img src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}" title="{{book.name}}"></a>
 			<p class="bookName">{{book.name}}</p>
 			<div class="stars rating">
 				<span style="display:none">{{book.rating_sum}}</span>
@@ -34,6 +35,7 @@
 		</li>
 		{% endfor %}
 	</ul>
+
 </div>
 <article class="books">
 	<p style="text-align: center">搜索结果/默认新书推荐</p>
@@ -49,6 +51,14 @@
 
 {% block js %}
 <script type="text/javascript">
+	function findCates(id) {
+		var add_url="{% url 'rer:reader_index' %}?json_cate="+id;
+		$.getJSON(
+		    add_url,  
+		    function(data){
+		    	parser(data);
+		});
+	}
 	function scoreToStar(score,that) {
 		switch(score)
 		{
@@ -86,21 +96,14 @@
 			break;
 		}
 	}
-	var add_url="{% url 'rer:reader_index' %}?json_new=10";
+	var add_url="{% url 'rer:reader_index' %}?json_new=12";
 		$.getJSON(
 	    add_url,  
 	    function(data){
 	    	parser(data);
 		});
 	
-	$(".cates").click(function(){
-		var add_url="{% url 'rer:reader_index' %}?json_cate=1";
-		$.getJSON(
-		    add_url,  
-		    function(data){
-		    	parser(data);
-		});
-	});	
+
 	
 	$("#search").click(function(){
 		var add_url="{% url 'rer:reader_index' %}?json_name="+$("#content").val();
@@ -116,6 +119,7 @@
 	    var pic="";
 		var rating_sum="";
 		var rating_count="";
+		var id="";
 		$(".bookRow").remove();
 		$(".pager").remove();
 	    $.each(data,function(i,item){
@@ -124,6 +128,8 @@
 	    		$(".bookRow").append("<ul class='bookList' id ='row"+Math.floor(i/3)+"'></ul>");
 	    	}
 	    	$.each(item,function(key,value){
+	    		if(key=="pk")
+	    			id=value;
 	    		if(key=="fields")
     				$.each(value, function (_key,_value) {
     					if(_key=="name")
@@ -136,10 +142,10 @@
     						rating_sum=_value;
     				});
 	    	});
-	    	$("#row"+Math.floor(i/3)).append("<li><a class='img' href='#'><img src='{{STATIC_PREFIX}}img_user/"+pic+"' title='"+name+"'></a><p class='bookName'>"+name+"</p><div class='stars rating'><span style='display:none'>"+rating_sum+"</span><span style='display:none'>"+rating_count+"</span><i class='star-1'>★</i><i class='star-2'>★</i><i class='star-3'>★</i><i class='star-4'>★</i><i class='star-5'>★</i></div></li>");
+	    	$("#row"+Math.floor(i/3)).append("<li><a class='img' href='/rer/bookdetails/"+id+"'><img src='{{STATIC_PREFIX}}img_user/"+pic+"' title='"+name+"'></a><p class='bookName'>"+name+"</p><div class='stars rating'><span style='display:none'>"+rating_sum+"</span><span style='display:none'>"+rating_count+"</span><i class='star-1'>★</i><i class='star-2'>★</i><i class='star-3'>★</i><i class='star-4'>★</i><i class='star-5'>★</i></div></li>");
 	    });
 	    drawStar();
-	    $(".books").append("<div class='pages'><ul class='pager'><li><a href='#'>上一页</a></li><li><a href='#'>下一页</a></li></ul></div>");
+	   /* $(".books").append("<div class='pages'><ul class='pager'><li><a href='#'>上一页</a></li><li><a href='#'>下一页</a></li></ul></div>");*/
 	}
 	
 	function drawStar() {
@@ -147,7 +153,7 @@
 			var that = $(this);
 			var sum = $(this).find("span:eq(0)").text();
 			var num = $(this).find("span:eq(1)").text();
-			scoreToStar(Math.floor(sum/num),that);
+			scoreToStar(Math.floor(sum*2/num),that);
 		})
 	}
 	

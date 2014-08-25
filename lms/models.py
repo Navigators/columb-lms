@@ -193,7 +193,7 @@ class LoanList(models.Model):
         return str(self.id)
     
     def natural_key(self):
-        return (self.rating_score,) + (self.copy.natural_key(),) + (self.reader.natural_key(),) + (self.loan_operator.natural_key(),) + (self.return_operator.natural_key(),)
+        return (self.rating_score,) + (self.copy.natural_key(),) + (self.reader.natural_key(),) + (self.loan_operator.natural_key(),)
     natural_key.dependencies = ['lms.Copies', 'lms.Readers', 'lms.Librarians']
     
 class Comments(models.Model):

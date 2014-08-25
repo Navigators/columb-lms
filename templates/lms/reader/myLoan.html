@@ -18,7 +18,7 @@
 				<option value="2">已还</option>
 				<option value="3">逾期</option>
 			</select>
-			<button id="query" class="btn btn-primary">查询</button>
+			<button id="query" class="btn btn-primary" onclick="queryLoan()">查询</button>
 			<a href="javascript:setEmpty()">清空查询条件</a>
 		</div>
 		<div class="tableFiled">
@@ -37,30 +37,22 @@
 						<th>操作</th>
 						<th>续借</th>
 					</tr>
-					<tr class="bookRaw">
-						<td>代码大全</td>
-						<td>借书</td>
-						<td>2014-08-13</td>
-						<td>已还</td>
-						<td><a href="javascript:writeComment()">写书评</a></td>
-						<td>续借</td>
-					</tr>
-					<tr class="bookRaw">
-						<td>高数</td>
-						<td>借书</td>
-						<td>2014-07-30</td>
-						<td>逾期</td>
-						<td><a href="javascript:seeComment()">看书评</a></td>
-						<td>续借</td>
-					</tr>
 				</table>
 			</fieldset>
 		</div>
 	</section>
 	<div id="bookComment">
-		<textarea id="comment" style="width: 500px; height: 300px; resize: none;"></textarea>
-		<button id="comment_submit">提交书评</button>
-		<a href="javascript:commentUp()">UP</a>
+		<p style="font-weight:700;background-color:#F5E8EC">我的评论：</p>
+		<textarea id="comment" style="width:400px;height:100px;resize:none;"></textarea>
+		<div class="rating rating-0 cursor-pointer" id="rating" style="width: 150px;height:30px;">
+			<i class="star-1">★</i>
+			<i class="star-2">★</i>
+			<i class="star-3">★</i>
+			<i class="star-4">★</i>
+			<i class="star-5">★</i>
+		</div>
+		<button class="btn btn-primary" id="comment_submit" onclick="submitComment()">提交书评</button>
+		<a href="javascript:commentUp()">隐藏</a>
 	</div>
 </article>
 {% endblock %} 
@@ -68,17 +60,29 @@
 {% block js %}
 <script type="text/javascript">
 	var loan_id="";
-
-	$("#comment_submit").click(function(){
-		var add_url="{% url 'rer:reader_loan' %}?json_id="+loan_id+"&json_comment="+$("#comment").val();
+	var rating="";
+	function submitComment() {
+		var add_url="{% url 'rer:reader_loan' %}?json_id="+loan_id+"&json_comment="+$("#comment").val()+"&json_rating="+rating;
 		$.getJSON(
-    	add_url,  
-    	function(data){
-    			console.log(data);
-    			prase_comment(data);
-    	});	
-	});
+			add_url,  
+			function(data){
+				console.log(data);
+				prase_comment(data);
+			}
+		);
+	}
 	
+	function queryLoan() {
+		var add_url="{% url 'rer:reader_loan' %}?json_name="+$("#bookName").val()+"&json_date_from="+$("#dateFrom").val()+"&json_date_to="+$("#dateTo").val()+"&json_status="+$("#status").val();
+		$.getJSON(
+			add_url,  
+			function(data){
+				console.log(data);
+				parse_all(data);
+			}
+		);
+	}
+
 	function setEmpty() {
 		$('#bookName').val('');
 		$('#dateFrom').val('');
@@ -88,10 +92,14 @@
 
 	function seeComment(id) {
 		$("#comment").val("");
+		for (var s = 1; s <=5; s++) {
+    		$('#rating').removeClass('rating-'+s);
+    	}
 		var add_url="{% url 'rer:reader_loan' %}?json_id="+id;
 		$.getJSON(
-    	add_url,  
+    	add_url,
     	function(data){
+    		console.log(data);
     		prase_comment(data);
 		});
 		
@@ -104,6 +112,9 @@
 		loan_id=id;
 		
 		$("#comment").val("");
+		for (var s = 1; s <=5; s++) {
+    		$('#rating').removeClass('rating-'+s);
+    	}
 		var add_url="{% url 'rer:reader_loan' %}?json_id="+id;
 		$.getJSON(
     	add_url,  
@@ -121,15 +132,6 @@
 		$('#bookComment').slideUp('slow');
 	}
 	
-	$("#query").click(function(){
-	var add_url="{% url 'rer:reader_loan' %}?json_name="+$("#bookName").val()+"&json_date_from="+$("#dateFrom").val()+"&json_date_to="+$("#dateTo").val()+"&json_status="+$("#status").val();
-		$.getJSON(
-    	add_url,  
-    	function(data){
-    		console.log(data);
-    		parse_all(data);
-		});
-	});
 	
 	function prase_comment(data){
 		$.each(data,function(i,item){
@@ -137,7 +139,11 @@
 				if(key=="fields")
 					$.each(value,function(_key,_value){
 						if(_key=="content")
-							$("#comment").val(_value);	
+							$("#comment").val(_value);
+						if(_key=="loan") {
+							console.log(""+_value['0']);
+							$('#rating').addClass('rating-'+_value['0']);
+						}
 					});
 			});
 		});
@@ -209,5 +215,21 @@
 	    	}
 	    });
 	}
+	$(function() {
+		shortPageFooter();
+		$('#bookComment i').each(function(index) {
+    		$(this).on('click', function() {
+    			var i = index + 1;
+    			for (var s = 1; s <=5; s++) {
+    				$('#bookComment').find('div').removeClass('rating-'+s);
+    			}
+    			$('#bookComment').find('div').addClass('rating-'+i);
+    			rating=i;
+    			console.log(i);
+    		})
+    	})
+
+	})
+
 </script>
 {% endblock %}

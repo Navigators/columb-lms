@@ -8,9 +8,9 @@
 	<section>
 		<fieldset class="tableField">
 			<legend>
-				我的情况<a href="javascript:void(0)">展开</a>
+				我的情况<a href="javascript:showItemOne()">隐藏</a>
 			</legend>
-			<div class="myForm">
+			<div id="myProfile" class="myForm">
 				<div class="form-group">
 					<label>工号：</label> <label>{{reader.username}}</label>
 				</div>
@@ -30,10 +30,10 @@
 		</fieldset>
 		<fieldset class="tableField">
 			<legend>
-				修改密码<a href="javascript:void(0)">展开</a>
+				修改密码<a href="javascript:showItemTwo()">隐藏</a>
 			</legend>
 			<label>{{change_pd_error}}</label>
-			<div class="myForm">
+			<div id="myAccount" class="myForm">
 				<form method="post" action="{% url 'rer:reader_profile' %}">
 					{% csrf_token %}
 					<div class="form-group">
@@ -55,6 +55,29 @@
 
 {% block js %}
 <script type="text/javascript">
+	function showItemOne() {
+		if ($('#myProfile').css('display') == 'block') {
+			$('#myProfile').slideUp('slow');
+			$('#myProfile').parent().find('a').text('展开');	
+		} else {
+			$('#myProfile').slideDown('slow');	
+			$('#myProfile').parent().find('a').text('隐藏');
+		}
+		
+	}
 
+	function showItemTwo() {
+		if ($('#myAccount').css('display') == 'block') {
+			$('#myAccount').slideUp('slow');
+			$('#myAccount').parent().find('a').text('展开');	
+		} else {
+			$('#myAccount').slideDown('slow');
+			$('#myAccount').parent().find('a').text('隐藏');	
+		}
+		
+	}
+	$(function() {
+    	shortPageFooter();
+    })
 </script>
 {% endblock %}

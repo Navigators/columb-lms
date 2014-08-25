@@ -7,130 +7,130 @@
 			min-width: 100px;
 		}
 	</style>
-				<div class="row section-content">
-					<div class="col-md-11">
-						<div class="form-horizontal" method="post" action="#">
-							<div class="row">
-								<div class="col-sm-3 col-md-4">
-									<button id="borrow" class="btn btn-primary" type="button">借书</button>
-									<button id="return" class="btn btn-primary" type="button">还书</button>
-									<button id="renew" class="btn btn-primary" type="button">续借</button>
-								</div>
+	<div class="">
+		<div class="col-md-11">
+			<div class="form-horizontal" method="post" action="#">
+				<div class="row">
+					<div class="col-sm-3 col-md-4">
+						<button id="borrow" class="btn btn-primary" type="button">借书</button>
+						<button id="return" class="btn btn-primary" type="button">还书</button>
+						<button id="renew" class="btn btn-primary" type="button">续借</button>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-md-3">
+						<div class="row">
+							<div class="col-md-11" style="border: 1px groove red; height: 250px; text-align: center; line-height: 250px;">
+								照片
 							</div>
-							<hr>
-							<div class="row">
-								<div class="col-md-3">
-									<div class="row">
-										<div class="col-md-11" style="border: 1px groove red; height: 250px; text-align: center; line-height: 250px;">
-											照片
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="code" class="col-md-4 col-sm-4 control-label">书刊自编码:</label>
-										<div class="col-md-8 col-sm-8">
-											<input id="code" type="text" class="form-control"placeholder="书刊自编码">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="bookName" class="col-md-4 col-sm-4 control-label">书刊名称:</label>
-										<div class="col-md-8 col-sm-8">
-											<input type="text" class="form-control" id="bookName" placeholder="书刊名称">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="author" class="col-md-4 col-sm-4 control-label">作者:</label>
-										<div class="col-md-8 col-sm-8">
-											<input type="text" class="form-control" id="author" placeholder="作者">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="cate" class="col-md-4 col-sm-4 control-label">分类:</label>
-										<div class="col-md-8 col-sm-8">
-											<input type="text" class="form-control" id="cate" placeholder="分类">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="cate" class="col-md-4 col-sm-4 control-label">状态:</label>
-										<div class="col-md-8 col-sm-8">
-											<select id="copystate">
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="workId" class="col-md-4 col-sm-4 control-label">员工工号:</label>
-										<div class="col-md-8 col-sm-8">
-											<input id="workId" type="text" class="form-control" placeholder="员工工号">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="readerName" class="col-md-4 col-sm-4 control-label">读者姓名:</label>
-										<div class="col-md-8 col-sm-8">
-											<input type="text" class="form-control" id="readerName" placeholder="读者姓名">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="depart" class="col-md-4 col-sm-4 control-label">部门:</label>
-										<div class="col-md-8 col-sm-8">
-											<input type="text" class="form-control" id="depart" placeholder="部门">
-										</div>
-									</div>
-									<div class="form-group">
-										<label for="readerCategory" class="col-md-4 col-sm-4 control-label">读者类别:</label>
-										<div class="col-md-8 col-sm-8">
-											<input type="text" class="form-control" id="readerCategory" placeholder="读者类别">
-										</div>
-									</div>
-								</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label for="code" class="col-md-4 col-sm-4 control-label" style="padding-left:0px">书刊自编码:</label>
+							<div class="col-md-8 col-sm-8">
+								<input id="code" type="text" class="form-control"placeholder="书刊自编码">
 							</div>
-							<hr>
-							<div class="row">
-								<div class="col-md-1">
-									<button type="button" id="customize" class="btn btn-info" style="margin-left:-15px">定制列表</button>
-								</div>
-								<div id="resultTable" class="col-md-11" style="overflow:hidden">
-									<div id="tableItems" style="display:none; white-space:nowrap">
-										<input type="checkbox">
-										<label>借出时间</label>
-										<input type="checkbox">
-										<label>书刊名称</label>
-										<input type="checkbox">
-										<label>书刊条号</label>
-										<input type="checkbox">
-										<label>读者姓名</label>
-										<input type="checkbox">
-										<label>读者工号</label>
-										<input type="checkbox">
-										<label>读者类别</label>
-										<input type="checkbox">
-										<label>已续借次数</label>
-										<input type="checkbox">
-										<label>应还日期</label>
-										<input type="checkbox">
-										<label>借书操作员</label>
-									</div>
-									<table id="loanTable"class="table">
-										<tr>
-											<th>借出时间</th>
-											<th>书刊名称</th>
-											<th>书刊条号</th>
-											<th>读者姓名</th>
-											<th>读者工号</th>
-											<th>读者类别</th>
-											<th>已续借次数</th>
-											<th>应还日期</th>
-											<th>借书操作员</th>
-										</tr>
-									</table>
-								</div>
-								
+						</div>
+						<div class="form-group">
+							<label for="bookName" class="col-md-4 col-sm-4 control-label">书刊名称:</label>
+							<div class="col-md-8 col-sm-8">
+								<input type="text" class="form-control" id="bookName" placeholder="书刊名称">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="author" class="col-md-4 col-sm-4 control-label">作者:</label>
+							<div class="col-md-8 col-sm-8">
+								<input type="text" class="form-control" id="author" placeholder="作者">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="cate" class="col-md-4 col-sm-4 control-label">分类:</label>
+							<div class="col-md-8 col-sm-8">
+								<input type="text" class="form-control" id="cate" placeholder="分类">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="cate" class="col-md-4 col-sm-4 control-label">状态:</label>
+							<div class="col-md-8 col-sm-8">
+								<select id="copystate"></select>
+							</div>
+						</div>
+						
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label for="workId" class="col-md-4 col-sm-4 control-label">员工工号:</label>
+							<div class="col-md-8 col-sm-8">
+								<input id="workId" type="text" class="form-control" placeholder="员工工号">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="readerName" class="col-md-4 col-sm-4 control-label">读者姓名:</label>
+							<div class="col-md-8 col-sm-8">
+								<input type="text" class="form-control" id="readerName" placeholder="读者姓名">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="depart" class="col-md-4 col-sm-4 control-label">部门:</label>
+							<div class="col-md-8 col-sm-8">
+								<input type="text" class="form-control" id="depart" placeholder="部门">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="readerCategory" class="col-md-4 col-sm-4 control-label">读者类别:</label>
+							<div class="col-md-8 col-sm-8">
+								<input type="text" class="form-control" id="readerCategory" placeholder="读者类别">
 							</div>
 						</div>
 					</div>
 				</div>
+				<hr>
+				<div class="row">
+					<div class="col-md-1">
+						<button type="button" id="customize" class="btn btn-info" style="margin-left:-15px">定制列表</button>
+					</div>
+					<div id="resultTable" class="col-md-11" style="overflow:hidden">
+						<div id="tableItems" style="display:none; white-space:nowrap">
+							<input type="checkbox">
+							<label>借出时间</label>
+							<input type="checkbox">
+							<label>书刊名称</label>
+							<input type="checkbox">
+							<label>书刊条号</label>
+							<input type="checkbox">
+							<label>读者姓名</label>
+							<input type="checkbox">
+							<label>读者工号</label>
+							<input type="checkbox">
+							<label>读者类别</label>
+							<input type="checkbox">
+							<label>续借次数</label>
+							<input type="checkbox">
+							<label>应还日期</label>
+							<input type="checkbox">
+							<label>借书操作员</label>
+						</div>
+						<table id="loanTable"class="table">
+							<tr>
+								<th>借出时间</th>
+								<th>书刊名称</th>
+								<th>书刊条号</th>
+								<th>读者姓名</th>
+								<th>读者工号</th>
+								<th>读者类别</th>
+								<th>应还日期</th>
+								<th>续借次数</th>
+								<th>借书操作员</th>
+							</tr>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block js %}
@@ -241,7 +241,7 @@
 							if(data['state'] == 'return success'){
 								$('.result').remove();
 								$.each(data['loanlist'],function(i,object){
-									$('#loanTable').append('<tr class="result"><th>'+this['loandatetime']+'</th><th>'+this['bookname']+'</th><th>'+this['barcode']+'</th><th>'+this['readername']+'</th><th>'+this['username']+'</th><th>'+this['usercate']+'</th><th>'+this['reloantimes']+'</th><th>'+this['shouldreturndate']+'</th><th>'+this['operator']+'</th></tr>');
+									$('#loanTable').append('<tr class="result"><td>'+this['loandatetime']+'</td><td>'+this['bookname']+'</td><td>'+this['barcode']+'</td><td>'+this['readername']+'</td><td>'+this['username']+'</td><td>'+this['usercate']+'</td><td>'+this['reloantimes']+'</td><td>'+this['shouldreturndate']+'</td><td>'+this['operator']+'</td></tr>');
 								});
 								newTableTd();
 							}
@@ -265,7 +265,7 @@
 								if(data['state'] == 'reloan success'){
 									$('.result').remove();
 									$.each(data['loanlist'],function(i,object){
-										$('#loanTable').append('<tr class="result"><th>'+this['loandatetime']+'</th><th>'+this['bookname']+'</th><th>'+this['barcode']+'</th><th>'+this['readername']+'</th><th>'+this['username']+'</th><th>'+this['usercate']+'</th><th>'+this['reloantimes']+'</th><th>'+this['shouldreturndate']+'</th><th>'+this['operator']+'</th></tr>');
+										$('#loanTable').append('<tr class="result"><td>'+this['loandatetime']+'</td><td>'+this['bookname']+'</td><td>'+this['barcode']+'</td><td>'+this['readername']+'</td><td>'+this['username']+'</td><td>'+this['usercate']+'</td><td>'+this['reloantimes']+'</td><td>'+this['shouldreturndate']+'</td><td>'+this['operator']+'</td></tr>');
 									});
 									newTableTd();
 								}

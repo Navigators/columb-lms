@@ -1,7 +1,7 @@
 {% extends "lms/lib/base.html" %}
 {% block title %}图书购买{% endblock %}
 {% block content %}
-<div class="row">
+<div class="">
 	<div class="col-md-11">
 		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">读者申请列表</p>
 		<table class="table" id="apply">
@@ -112,12 +112,12 @@
 	function showArchive() {
 		if ($('#show').text() == '查看归档') {
 			$('#apply').hide();
-			$('#prepare').hide();
+			$('#buy').hide();
 			$('#archive').show();
 			$('#show').text('返回');
 		} else {
 			$('#apply').show();
-			$('#prepare').show();
+			$('#buy').show();
 			$('#archive').hide();
 			$('#show').text('查看归档');
 		}

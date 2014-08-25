@@ -23,15 +23,15 @@
     }      
 	function aside(){
 		$('.navigation > li > ul').hide();
-		$('.navigation').css('background','#ffffff');
-		$('.navigation ul').css('background','#AACEEC');
 		$('.navigation > li > a').each(function() {
 			var that = $(this);
 			$(this).on('click',function() {
 				if (that.next().css('display') == "none") {
 					that.next().slideDown('slow');
+					that.parent().addClass('nav-active');
 				} else {
 					that.next().slideUp('slow');
+					that.parent().removeClass('nav-active');
 				}
 				
 			});
@@ -40,7 +40,7 @@
 	function choosen(){
 		$('tr.choosen').each( function() {
 			$(this).on('click', function(){
-				if($(this).css('background-color') == 'rgb(196, 196, 226)' || $(this).css('background-color') == '#c4c4e2') {
+				if($(this).css('background-color') == 'rgb(209, 227, 241)' || $(this).css('background-color') == '#D1E3F1') {
 					$(this).removeClass('tr-choosen-ok');
 					$('.updateButton').attr('disabled','disabled');
 				} else {
@@ -138,20 +138,18 @@
 			}
 		});
 		$('#tableItems input').attr('checked','checked');
-		/*$('#tableItems input').each(function(index) {
+		$('#tableItems input').each(function(index) {
 			$(this).click(function(){
 				if ($(this).attr('checked') == 'checked') {
 					$(this).removeAttr('checked');
 					console.log('这是第'+index+'个');
 					$(this).parent().next().find('tr th:eq('+index+')').hide();
-					$(this).parent().next().find('tr td:eq('+index+')').hide();
 				} else {
 					$(this).attr('checked','checked');
 					$(this).parent().next().find('tr th:eq('+index+')').show();
-					$(this).parent().next().find('tr td:eq('+index+')').show();
 				}
 			});
-		});*/
+		});
 		$('#resultTable').hoverDelay({
 			hoverEvent: function() {
 				$('#resultTable').css('overflow-x','scroll');
@@ -163,17 +161,24 @@
 	}
 	
 	function newTableTd() {
+		$('#tableItems').html('');
+		$('#tableItems').html('<input type="checkbox"><label>借出时间</label><input type="checkbox"><label>书刊名称</label><input type="checkbox"><label>书刊条号</label><input type="checkbox"><label>读者姓名</label><input type="checkbox"><label>读者工号</label><input type="checkbox"><label>读者类别</label><input type="checkbox"><label>已续借次数</label><input type="checkbox"><label>应还日期</label><input type="checkbox"><label>借书操作员</label>');
+		$('#tableItems input').attr('checked','checked');
 		$('#tableItems input').each(function(index) {
 			$(this).click(function(){
 				if ($(this).attr('checked') == 'checked') {
 					$(this).removeAttr('checked');
 					console.log('这是第'+index+'个');
-					$(this).parent().next().find('tr th:eq('+index+')').hide();
-					$(this).parent().next().find('tr td:eq('+index+')').hide();
+					var length = $(this).parent().next().find('tr').length;
+					for (var i=0; i<length; i++) {
+						$(this).parent().next().find('tr:eq('+i+')').find('td:eq('+index+')').hide();
+					}
 				} else {
 					$(this).attr('checked','checked');
-					$(this).parent().next().find('tr th:eq('+index+')').show();
-					$(this).parent().next().find('tr td:eq('+index+')').show();
+					var length = $(this).parent().next().find('tr').length;
+					for (var i=0; i<length; i++) {
+						$(this).parent().next().find('tr:eq('+i+')').find('td:eq('+index+')').show();
+					}
 				}
 			});
 		});
@@ -186,7 +191,7 @@ $(function() {
 
 	choosen();
 	aside();
-	bookUpdate();
-	permissionUpdate();
+	
+	
 	customizeTable();
 })

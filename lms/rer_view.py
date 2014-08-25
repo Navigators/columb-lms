@@ -12,7 +12,7 @@ from django.utils.datetime_safe import datetime
 from django.utils.timezone import now
 
 from lms.login_view import is_login_rer
-from lms.models import Books, BookCate, LoanList, Readers, Comments, BooksApply, PermList, PermCate, ExchangeList, ExchangeCate
+from lms.models import Books, BookCate, LoanList, Readers, Comments, BooksApply, PermList
 
 
 def reader_index(request):
@@ -20,7 +20,7 @@ def reader_index(request):
         return HttpResponseRedirect('/index/')
     
     if request.GET.get("json_new"):
-        data = serializers.serialize('json', Books.objects.all(), ensure_ascii=False, use_natural_keys=True)
+        data = serializers.serialize('json', Books.objects.all().order_by('-reg_date'), ensure_ascii=False, use_natural_keys=True)
         return HttpResponse(data, content_type='json')
     
     if request.GET.get("json_cate"):
@@ -28,7 +28,7 @@ def reader_index(request):
         return HttpResponse(data, content_type='json')
     
     if request.GET.get("json_name"):
-        data = serializers.serialize('json', Books.objects.filter(name=request.GET.get("json_name")), ensure_ascii=False, use_natural_keys=True)
+        data = serializers.serialize('json', Books.objects.filter(name__contains=request.GET.get("json_name")), ensure_ascii=False, use_natural_keys=True)
         return HttpResponse(data, content_type='json')
     
     popular_books = Books.objects.all()[0:3]
@@ -52,12 +52,25 @@ def reader_loan(request):
             if comment:
                 comment[0].content = request.GET.get("json_comment")
                 comment[0].save()
+                loan_record = comment[0].loan
+                loan_record.rating_score = int(request.GET.get("json_rating"))
+                loan_record.save()
+                book = comment[0].loan.copy.book
+                book.rating_count += 1
+                book.rating_sum += int(request.GET.get("json_rating"))
+                book.save()
             else:
                 loan_record = LoanList.objects.get(id=request.GET.get("json_id"))
+                loan_record.rating_score = int(request.GET.get("json_rating"))
+                loan_record.save()
+                book = loan_record.copy.book
+                book.rating_count += 1
+                book.rating_sum += int(request.GET.get("json_rating"))
+                book.save()
                 Comments(loan=loan_record, content=request.GET.get("json_comment")).save()
             
-        comment = Comments.objects.filter(loan__id=request.GET.get("json_id"))  
-        data = serializers.serialize('json', comment, ensure_ascii=False)
+        comment = Comments.objects.filter(loan__id=request.GET.get("json_id"))
+        data = serializers.serialize('json', comment, ensure_ascii=False, use_natural_keys=True)
         return HttpResponse(data, content_type='json')
     
     
@@ -67,7 +80,7 @@ def reader_loan(request):
         or request.GET.get("json_status"):
         
         if request.GET.get("json_name"):
-            query_list = query_list.filter(copy__book__name=request.GET.get("json_name"))
+            query_list = query_list.filter(copy__book__name__contains=request.GET.get("json_name"))
         if request.GET.get("json_date_from"):
             date_time_from = datetime.strptime(request.GET.get("json_date_from"), "%Y-%m-%d")
             query_list = query_list.filter(loan_date_time__gte=date_time_from)
@@ -97,7 +110,7 @@ def reader_point(request):
     _perm_point = _reader.per_point
     _exchange_point = _reader.exc_point
     _perm_list = PermList.objects.filter(reader=_reader).order_by('-id')
-    return render(request, 'lms/reader/myPoint.html',{'username':request.user.username,'permpoint':_perm_point,'exchangepoint':_exchange_point,'permlist':_perm_list})
+    return render(request, 'lms/reader/myPoint.html', {'username':request.user.username, 'permpoint':_perm_point, 'exchangepoint':_exchange_point, 'permlist':_perm_list})
 
 def reader_profile(request):
     if not is_login_rer(request):
@@ -139,24 +152,24 @@ def reader_buy_book(request):
     if not is_login_rer(request):
         return HttpResponseRedirect('/index/')
     
-    buy_book_msg=""
+    buy_book_msg = ""
     if request.method == "POST":
         isbn = request.POST["isbn"]
         reason = request.POST["reason"]
         
-        #缺少较完善的后台验证
+        # 缺少较完善的后台验证
         pattern = re.compile(u"^\d{10}$|^\d{13}$")
         if not pattern.search(isbn):
-            buy_book_msg="您所申请购买图书的ISBN号格式不正确，请重新输入！。"
+            buy_book_msg = "您所申请购买图书的ISBN号格式不正确，请重新输入！。"
         elif Books.objects.filter(isbn=isbn):
-            buy_book_msg="您所申请购买图书的图书馆中已有，可选择其他图书继续申请！。"
+            buy_book_msg = "您所申请购买图书的图书馆中已有，可选择其他图书继续申请！。"
         else:     
-            proxy= "http://10.167.251.83:8080"
-            opener=urllib2.build_opener(urllib2.ProxyHandler({'http':proxy})).close()
+            proxy = "http://10.167.251.83:8080"
+            opener = urllib2.build_opener(urllib2.ProxyHandler({'http':proxy})).close()
             urllib2.install_opener(opener)
             data = urllib2.urlopen("http://10.167.129.109:3000/ISBNService/" + isbn).read()
-            book=json.loads(data)
-            book_apply=BooksApply(
+            book = json.loads(data)
+            book_apply = BooksApply(
                                   name=book["bookName"],
                                   author=book["author"],
                                   publisher=book["publisher"],
@@ -166,6 +179,14 @@ def reader_buy_book(request):
                                   requester=request.user.username,
                                   )
             book_apply.save()
-            buy_book_msg="申请买书成功,请耐心等候邮件通知结果。"
+            buy_book_msg = "申请买书成功,请耐心等候邮件通知结果。"
             
-    return render(request, 'lms/reader/buyBook.html', {'username':request.user.username,'buy_book_msg':buy_book_msg,})
+    return render(request, 'lms/reader/buyBook.html', {'username':request.user.username, 'buy_book_msg':buy_book_msg, })
+
+def reader_book_detail(request, book_id):
+    if not is_login_rer(request):
+        return HttpResponseRedirect('/index/')
+    
+    book_info = Books.objects.get(id=int(book_id))
+    comments = Comments.objects.filter(loan__copy__book_id=int(book_id))
+    return render(request, 'lms/reader/bookDetail.html', {'username':request.user.username, 'book_info':book_info, 'comments':comments})
