@@ -3,8 +3,8 @@
 {% block content %}
 		<article class="notIndex" style="height:900px">
 			<header>
-				<div class="alert alert-info" role="alert">
-					下面是图书详细资料！
+				<div class="titleBar">
+					{{book_info.name}}
 				</div>
 			</header>
 			<section style="height:600px;width:600px;margin:10px auto;padding:20px;">
@@ -39,7 +39,7 @@
 						<legend>评价列表</legend>
 						<div class="scrollMore" style="width:550px;height:200px;overflow:hidden">
 							{% for comment in comments %}
-								<p><span>（{{comment.loan.reader.username}}）{{comment.loan.reader.name}}：</span><span>{{comment.content}}</span></p>
+								<p><span>{{comment.loan.reader.username}} {{comment.loan.reader.name}}：</span><span>{{comment.content}}</span></p>
 							{% endfor %}
 						</div>
 					</fieldset>
@@ -50,15 +50,6 @@
 
 {% block js %}
 <script type="text/javascript">
-    $(".navbar-fixed-top").headroom({
-        "tolerance": 5,
-        "offset": 205,
-        "classes": {
-            "initial": "animated",
-            "pinned": "bounceInLeft",
-            "unpinned": "bounceOutLeft"
-        }
-    });
     function scoreToStar(score,that) {
 		switch(score)
 		{
@@ -96,14 +87,23 @@
 			break;
 		}
 	}
+
     $(function() {
     	/*shortPageFooter();*/
+
 		var sum = {{book_info.rating_sum}};
     	console.log(sum*2);
 		var count = {{book_info.rating_count}};
 		console.log(count);
 		var score = Math.floor(sum*2/count);
 		scoreToStar(score,$('.rating'));
+		$('.scrollMore').find('p').css({
+			'height':'30px',
+			'line-height':'30px',
+			'padding':'0 10px'
+		});
+		$('.scrollMore').find('p:even').css('background-color','#E0DBDB');
+		$('.scrollMore').find('p:odd').css('background-color','#ffffff');
 		
     })
 </script>

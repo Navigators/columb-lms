@@ -113,6 +113,11 @@ footer {
 	cursor: pointer;
 }
 
+.user {
+	font-size: 20px;
+	color: #ffffff;
+}
+
 .stars {
 	height: 20px;
 }
@@ -338,8 +343,15 @@ section article.notIndex {
 	margin: 20px 10px 20px;
 }
 
-section article.notIndex header div{
-	border-radius: 10px;
+.titleBar {
+	width: 980px;
+	height: 50px;
+	line-height: 50px;
+	background-color: #fcf8e3;
+	margin: -20px -20px 20px;
+	padding-left: 20px;
+	font-weight: 800;
+	font-size: 20px;
 }
 
 

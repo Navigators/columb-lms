@@ -17,7 +17,7 @@ import django.utils
 from django.views.decorators.csrf import csrf_exempt
 
 from columb.settings import MEDIA_ROOT
-from lms.login_view import is_login_lib
+from lms.login_view import is_login_lib, get_lib_name
 from lms.models import Books, Librarians, BookCate, BookType, Copies, CopyState, \
     Readers, LoanList, Company, Department, BooksBuy, BooksApply, \
     BooksArchive, ReaderCate, MessageTemplate, PermCate, ExchangeCate, PermList, ExchangeList
@@ -28,13 +28,13 @@ def lib_index(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
     else:
-        return render(request, 'lms/lib/index.html', {'username':request.user.username})
+        return render(request, 'lms/lib/index.html', {'username':get_lib_name(request), })
  
 def lib_putaway(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
     else:
-        return render(request, 'lms/lib/addBook.html', {'username':request.user.username})
+        return render(request, 'lms/lib/addBook.html', {'username':get_lib_name(request), })
 
 def lib_buybook(request):
     if not is_login_lib(request):
@@ -75,7 +75,7 @@ def lib_buybook(request):
         data = serialize_buybook()
         return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
     
-    return render(request, 'lms/lib/buyBook.html', {'username':request.user.username, })
+    return render(request, 'lms/lib/buyBook.html', {'username':get_lib_name(request), })
     
 def lib_reader_info(request):
     if not is_login_lib(request):
@@ -86,18 +86,18 @@ def lib_reader_info(request):
         user = User.objects.get(username=reader.username)
         user.set_password(user.username) 
         user.save()
-        #ADD HERE
-        _readername = '"'+reader.name+'"'
+        # ADD HERE
+        _readername = '"' + reader.name + '"'
         _readeremail = reader.email
-        runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar pwdreset '+_readername+' '+_readeremail
+        runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar pwdreset ' + _readername + ' ' + _readeremail
         runparam = runparam.encode('utf8')
         os.popen(runparam)
         data = {'status':'success'}
         return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
     
     if request.GET.get('json_username'):
+        data = {}
         if Readers.objects.filter(username=request.GET.get("json_username")):
-            data = {}
             user_info = serializers.serialize('json', User.objects.filter(username=request.GET.get("json_username")), ensure_ascii=False)
             user = json.loads(user_info)
             reader_info = serializers.serialize('json', Readers.objects.filter(username=request.GET.get("json_username")), ensure_ascii=False, use_natural_keys=True)
@@ -105,9 +105,11 @@ def lib_reader_info(request):
             data["user"] = user
             data["reader"] = reader
             return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
+        data['state'] = 'fail'
+        return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')    
     
     readers = Readers.objects.all()
-    return render(request, 'lms/lib/readerInfo.html', {'username':request.user.username, 'readers':readers, })
+    return render(request, 'lms/lib/readerInfo.html', {'username':get_lib_name(request), 'readers':readers, })
 
 def lib_retrieve(request):
     # 验证用户登录
@@ -131,14 +133,16 @@ def lib_retrieve(request):
     
     # 正常加载
     isbn_string = request.POST['isbn']
+    error_msg = ""
     pattern = re.compile(u"^\d{10}$|^\d{13}$")
     if not pattern.search(isbn_string):
-        return render(request, 'lms/lib/addBook.html', {'username':request.user.username})
+        error_msg = '请输入正确的ISBN格式！'
+        return render(request, 'lms/lib/addBook.html', {'username':get_lib_name(request), 'error_msg':error_msg, })
     else:
         book = Books.objects.filter(isbn=isbn_string)
         if not book:
             return render(request, 'lms/lib/addBook-new.html', {
-                                                                'username':request.user.username,
+                                                                'username':get_lib_name(request),
                                                                 'isbn':isbn_string,
                                                                 'types':BookType.objects.all(),
                                                                 'date':time.strftime('%Y-%m-%d', time.localtime(time.time()))
@@ -147,7 +151,7 @@ def lib_retrieve(request):
         else:
             copy_list = Copies.objects.filter(book__isbn=isbn_string)
             return render(request, 'lms/lib/addBook-copy.html', {
-                                                                 'username':request.user.username,
+                                                                 'username':get_lib_name(request),
                                                                  'copy_list':copy_list,
                                                                  'isbn':isbn_string,
                                                                  'state_list':CopyState.objects.all(),
@@ -192,14 +196,14 @@ def lib_add_copies(request):
     if not Books.objects.filter(isbn=isbn_string):
         lib = Librarians.objects.get(username=request.user.username)
         pic_path = save_image(request.POST['bookimage'], isbn_string)
-        str = request.POST['categoryID']
+        _cate_id = request.POST['categoryID']
         lib.books_set.create(
                                 isbn=isbn_string,
                                 name=request.POST['bookName'],
                                 input_code=request.POST['inputCode'],
                                 author=request.POST['author'],
                                 book_type=BookType.objects.get(name=request.POST['bookType']),
-                                cate=BookCate.objects.get(code=str[0:1]),
+                                cate=BookCate.objects.get(code=_cate_id[0:1]),
                                 publisher=request.POST['publisher'],
                                 publish_date=get_publishdate_form(request.POST['publishDate']),
                                 publish_addr=request.POST['publishAddr'],
@@ -230,13 +234,13 @@ def lib_add_copies(request):
                                               state="已购入",
                                               requester=book_buy.requester,
                                               )
-                #ADD HERE
+                # ADD HERE
                 _username = book_buy.requester
-                reader = Readers.objects.get(username = _username)
-                _readername = '"'+reader.name+'"'
+                reader = Readers.objects.get(username=_username)
+                _readername = '"' + reader.name + '"'
                 _readeremail = reader.email
-                _bookname = book_buy.name.replace('"',r'\"')
-                runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar newbook '+_readername+' '+_bookname+' '+_readeremail
+                _bookname = book_buy.name.replace('"', r'\"')
+                runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar newbook ' + _readername + ' ' + _bookname + ' ' + _readeremail
                 runparam = runparam.encode('utf8')
                 os.popen(runparam)
                 data = {'status':'success'}
@@ -246,7 +250,7 @@ def lib_add_copies(request):
     isbn = Books.objects.get(isbn=request.POST['isbn']).isbn
     copy_list = Copies.objects.filter(book__isbn=request.POST['isbn'])
     state_list = CopyState.objects.all()
-    return render(request, 'lms/lib/addBook-copy.html', {'username':request.user.username, 'copy_list':copy_list, 'isbn':isbn, 'state_list':state_list, })
+    return render(request, 'lms/lib/addBook-copy.html', {'username':get_lib_name(request), 'copy_list':copy_list, 'isbn':isbn, 'state_list':state_list, })
     
 def lib_get_book_list(request):
     if not is_login_lib(request):
@@ -259,12 +263,15 @@ def lib_get_book_list(request):
         if pattern.search(isbn_string):
             data = serializers.serialize('json', Books.objects.filter(isbn=request.GET.get('json_isbn')), ensure_ascii=False, use_natural_keys=True)
             return HttpResponse(data, content_type='json')
-    
-    return render(request, 'lms/lib/booksInfo.html', {'username':request.user.username, 'book_list':Books.objects.all()})
+        else:
+            data = {}
+            data['state'] = 'fail'
+            return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json') 
+    return render(request, 'lms/lib/booksInfo.html', {'username':get_lib_name(request), 'book_list':Books.objects.all()})
 
 def lib_get_book_info(request, isbn):
     book_info = Books.objects.get(isbn=int(isbn))
-    return render(request, 'lms/lib/addBook-new.html', {'username':request.user.username, 'book':book_info})
+    return render(request, 'lms/lib/addBook-new.html', {'username':get_lib_name(request), 'book':book_info})
 
 def save_image(url, isbn):
     # 保存文件时候注意类型要匹配，如要保存的图片为jpg，则打开的文件的名称必须是jpg格式，否则会产生无效图片
@@ -327,7 +334,7 @@ def lib_return_borrow(request):
         if request.POST['funno'] == '205':
             return lib_reloan(request)
     else:
-        return render(request, 'lms/lib/returnBorrow.html', {'username':request.user.username, })
+        return render(request, 'lms/lib/returnBorrow.html', {'username':get_lib_name(request), })
 def lib_borrow_getcopy(request):
     mbarcode = request.POST['text']
     r_dict = {}
@@ -563,7 +570,7 @@ def lib_borrow_permission(request):
             return lib_borrow_permission_update(request)
         if request.POST['funno'] == "3":
             return lib_borrow_permission_delete(request)
-    return render(request, 'lms/lib/borrowPermission.html', {'username':request.user.username, 'readercate':ReaderCate.objects.all() })
+    return render(request, 'lms/lib/borrowPermission.html', {'username':get_lib_name(request), 'readercate':ReaderCate.objects.all() })
 
 def lib_borrow_permission_add(request):
     print("pa")
@@ -613,7 +620,7 @@ def lib_borrow_record(request):
     if not is_login_lib(request):
         return HttpResponseRedirect('/index/')
     if request.method != 'POST':
-        return render(request, 'lms/lib/borrowRecord.html', {'username':request.user.username })
+        return render(request, 'lms/lib/borrowRecord.html', {'username':get_lib_name(request) })
     _query_json = request.POST['queryjson']
     _query_list = json.loads(_query_json)
     _item_dict = {}
@@ -654,11 +661,11 @@ def lib_borrow_record(request):
                 if qobj[u'condition'] == 'le':
                     kwargs[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
-                    kwargs[_item_dict[qobj[u'item']]+'__gt'] = datetime.datetime.combine(tdate, datetime.time.min)
+                    kwargs[_item_dict[qobj[u'item']] + '__gt'] = datetime.datetime.combine(tdate, datetime.time.min)
                 if qobj[u'condition'] == 'l':
-                    kwargs[_item_dict[qobj[u'item']]+'__lt'] = datetime.datetime.combine(tdate, datetime.time.min)
+                    kwargs[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.min)
                 if qobj[u'condition'] == 'g':
-                    kwargs[_item_dict[qobj[u'item']]+'__gt'] = datetime.datetime.combine(tdate, datetime.time.max)
+                    kwargs[_item_dict[qobj[u'item']] + '__gt'] = datetime.datetime.combine(tdate, datetime.time.max)
 
             else:
                 kwargs[_item_dict[qobj[u'item']] + _condition_dict[qobj[u'condition']]] = qobj[u'value'] 
@@ -674,11 +681,11 @@ def lib_borrow_record(request):
                 if qobj[u'condition'] == 'le':
                     tdict[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.max)
                 if qobj[u'condition'] == 'ge':
-                    tdict[_item_dict[qobj[u'item']]+'__gt'] =  datetime.datetime.combine(tdate, datetime.time.min)
+                    tdict[_item_dict[qobj[u'item']] + '__gt'] = datetime.datetime.combine(tdate, datetime.time.min)
                 if qobj[u'condition'] == 'l':
-                    tdict[_item_dict[qobj[u'item']]+'__lt'] =  datetime.datetime.combine(tdate, datetime.time.min)
+                    tdict[_item_dict[qobj[u'item']] + '__lt'] = datetime.datetime.combine(tdate, datetime.time.min)
                 if qobj[u'condition'] == 'g':
-                    tdict[_item_dict[qobj[u'item']]+'__gt'] =  datetime.datetime.combine(tdate, datetime.time.max)
+                    tdict[_item_dict[qobj[u'item']] + '__gt'] = datetime.datetime.combine(tdate, datetime.time.max)
             else:
                 tdict[_item_dict[qobj[u'item']] + _condition_dict[qobj[u'condition']]] = qobj[u'value']
             print(qobj[u'value'])
@@ -718,7 +725,7 @@ def lib_overdue(request):
         data = serializers.serialize('json', _query_list, ensure_ascii=False, use_natural_keys=True)
         return HttpResponse(data, content_type='json')
 
-    return render(request, 'lms/lib/overdueRecord.html', {'username':request.user.username,
+    return render(request, 'lms/lib/overdueRecord.html', {'username':get_lib_name(request),
                                                           'overdue_list':_query_list,
                                                           'book_types':BookType.objects.all()
                                                           }
@@ -739,7 +746,7 @@ def lib_meta_data(request):
             return lib_meta_delete(request)
     else:
         return render(request, 'lms/lib/metaData.html', {
-                                                         'username':request.user.username,
+                                                         'username':get_lib_name(request),
                                                          'companies':Company.objects.all(),
                                                          'departments':Department.objects.all(),
                                                          'book_types':BookType.objects.all(),
@@ -764,16 +771,16 @@ def lib_manage_password(request):
                     change_pd_error = ""
                     return HttpResponseRedirect('/index/')
                 else:
-                    change_pd_error = "Enter the new password twice inconsistent!"
-                    return render(request, 'lms/lib/password.html', {'username':request.user.username, 'change_pd_error':change_pd_error, })
+                    change_pd_error = "两次输入的新密码不一致!"
+                    return render(request, 'lms/lib/password.html', {'username':get_lib_name(request), 'change_pd_error':change_pd_error, })
             else:
-                change_pd_error = "Enter the old password is incorrect!"
-                return render(request, 'lms/lib/password.html', {'username':request.user.username, 'change_pd_error':change_pd_error, })
+                change_pd_error = "输入的原密码不正确!"
+                return render(request, 'lms/lib/password.html', {'username':get_lib_name(request), 'change_pd_error':change_pd_error, })
         else:
-            change_pd_error = "Please complete the form!"
-            return render(request, 'lms/lib/password.html', {'username':request.user.username, 'change_pd_error':change_pd_error, })
+            change_pd_error = "请先完成表单填写!"
+            return render(request, 'lms/lib/password.html', {'username':get_lib_name(request), 'change_pd_error':change_pd_error, })
 
-    return render(request, 'lms/lib/password.html', {'username':request.user.username, })
+    return render(request, 'lms/lib/password.html', {'username':get_lib_name(request), })
     
 @csrf_exempt
 def lib_push_message(request):
@@ -786,7 +793,7 @@ def lib_push_message(request):
             return lib_push_message_delete(request)
         if request.POST['funno'] == '3':
             return lib_push_message_all(request)
-    return render(request, 'lms/lib/push.html', {'username':request.user.username, 'templates':MessageTemplate.objects.all()})
+    return render(request, 'lms/lib/push.html', {'username':get_lib_name(request), 'templates':MessageTemplate.objects.all()})
 @csrf_exempt
 def lib_push_message_save(request):
     _id = request.POST['id']
@@ -827,7 +834,7 @@ def lib_point_manage(request):
             return lib_perm_point_add(request)
         if request.POST['funno'] == '2':
             return lib_exchange_point_add(request)
-    return render(request, 'lms/lib/pointManage.html', {'username':request.user.username, 'permcate':PermCate.objects.all(), 'exchangecate':ExchangeCate.objects.all(), 'permlist':PermList.objects.all().order_by('-id'), 'exchangelist':ExchangeList.objects.all().order_by('-id') })
+    return render(request, 'lms/lib/pointManage.html', {'username':get_lib_name(request), 'permcate':PermCate.objects.all(), 'exchangecate':ExchangeCate.objects.all(), 'permlist':PermList.objects.all().order_by('-id'), 'exchangelist':ExchangeList.objects.all().order_by('-id') })
 
 def lib_perm_point_add(request):
     _username = request.POST['username']

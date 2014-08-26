@@ -9,6 +9,8 @@
 	</style>
 	<div class="">
 		<div class="col-md-11">
+			<div class="alert alert-warning" role="alert" style="display:none">
+			</div>
 			<div class="form-horizontal" method="post" action="#">
 				<div class="row">
 					<div class="col-sm-3 col-md-4">
@@ -120,8 +122,8 @@
 								<th>读者姓名</th>
 								<th>读者工号</th>
 								<th>读者类别</th>
-								<th>应还日期</th>
 								<th>续借次数</th>
+								<th>应还日期</th>
 								<th>借书操作员</th>
 							</tr>
 						</table>
@@ -139,6 +141,7 @@
 	var copyid ="";
 	var stateid="";
 	var readerid ="";
+	var errorMsg = "";
 		$('#code').blur(function() {
 					copyid = $(this).val();
 					$.ajax({
@@ -208,6 +211,7 @@
 		});
 
 		$('#borrow').click(function() {
+			$('.alert').hide();
 					$.ajax({
 							url:'{% url "lib:lib_return_borrow" %}',
 							type: 'POST',
@@ -223,7 +227,9 @@
 									newTableTd();
 								}
 								else{
-
+									errorMsg = data['state'];
+									console.log(errorMsg);
+									$('.alert').html('这本书已经被借掉了').show();
 								}
 							},
 							error: function(xhr, status, error) {
@@ -232,6 +238,7 @@
 					});
 		});
 		$('#return').click(function() {
+			$('.alert').hide();
 				$.ajax({
 						url:'{% url "lib:lib_return_borrow" %}',
 						type: 'POST',
@@ -246,7 +253,9 @@
 								newTableTd();
 							}
 							else{
-
+								errorMsg = data['state'];
+								console.log(errorMsg);
+								$('.alert').html('这本书已经被归还了').show();
 							}
 						},
 						error: function(xhr, status, error) {
@@ -256,6 +265,7 @@
 		});
 
 		$('#renew').click(function() {
+			$('.alert').hide();
 					$.ajax({
 							url:'{% url "lib:lib_return_borrow" %}',
 							type: 'POST',
@@ -270,7 +280,9 @@
 									newTableTd();
 								}
 								else{
-
+									errorMsg = data['state'];
+									console.log(errorMsg);
+									$('.alert').html('这本书已经被续借了').show();
 								}
 							},
 							error: function(xhr, status, error) {

@@ -56,6 +56,7 @@
 $(document).ready(function(){   
 	
 	$("#searchBook").click(function(){
+		$("table").next('p').remove();
 		var search_url="{% url 'lib:lib_booklist' %}?json_isbn="+$("#keyWord").val();
 	    $.getJSON(
 	    search_url,  
@@ -70,8 +71,10 @@ $(document).ready(function(){
 	        var reg_date="";
 	        var operator="";
 	        var detail_url="";
+	        var isFailed=data['state'];
 	        $("tr.choosen").remove();
 	        $.each(data,function(i,item){
+	        	if(i!='state')
 	        	$.each(item,function(key,value){
 	    				if(key=="fields")
 	            		$.each(value,function(_key,_value){
@@ -104,9 +107,18 @@ $(document).ready(function(){
 	        	})
 	    		$("table").append("<tr class='choosen'><td>"+isbn+"</td><td>"+name+"</td><td>"+author+"</td><td>"+type+"</td><td>"+cate+"</td><td>"+total_count+"</td><td>"+price+"</td><td>"+reg_date+"</td><td>"+operator+"</td><td><a href='"+detail_url+"'>查看</a></td></tr>");
 	    	});
+			noData(isFailed);
+			console.log(isFailed);
 	        choosen();
 		});
 	});
+
+	function noData(isFailed) {
+		if (isFailed.length != 0) {
+			$('table').find('tr.choosen').remove();
+			$('table').after('<p style="text-align:center;font-size:20px;">查无数据</p>');
+		}
+	}
 });
 
 </script>

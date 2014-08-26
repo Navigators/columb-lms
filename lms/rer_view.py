@@ -11,7 +11,7 @@ from django.shortcuts import render
 from django.utils.datetime_safe import datetime
 from django.utils.timezone import now
 
-from lms.login_view import is_login_rer
+from lms.login_view import is_login_rer, get_rer_name
 from lms.models import Books, BookCate, LoanList, Readers, Comments, BooksApply, PermList
 
 
@@ -34,7 +34,7 @@ def reader_index(request):
     popular_books = Books.objects.all()[0:3]
     book_cates = BookCate.objects.all()
     return render(request, 'lms/reader/index.html', {
-                                                     'username':request.user.username,
+                                                     'username':get_rer_name(request),
                                                       'popular_books':popular_books,
                                                       'book_cates':book_cates,
                                                       }
@@ -100,7 +100,7 @@ def reader_loan(request):
     else:
         error_query = "请先选择查询条件后再进行查询"
     
-    return render(request, 'lms/reader/myLoan.html', {'username':request.user.username, 'error_query':error_query, })
+    return render(request, 'lms/reader/myLoan.html', {'username':get_rer_name(request), 'error_query':error_query, })
 
 def reader_point(request):
     if not is_login_rer(request):
@@ -110,7 +110,7 @@ def reader_point(request):
     _perm_point = _reader.per_point
     _exchange_point = _reader.exc_point
     _perm_list = PermList.objects.filter(reader=_reader).order_by('-id')
-    return render(request, 'lms/reader/myPoint.html', {'username':request.user.username, 'permpoint':_perm_point, 'exchangepoint':_exchange_point, 'permlist':_perm_list})
+    return render(request, 'lms/reader/myPoint.html', {'username':get_rer_name(request), 'permpoint':_perm_point, 'exchangepoint':_exchange_point, 'permlist':_perm_list})
 
 def reader_profile(request):
     if not is_login_rer(request):
@@ -130,23 +130,23 @@ def reader_profile(request):
                     change_pd_error = ""
                     return HttpResponseRedirect('/index/')
                 else:
-                    change_pd_error = "Enter the new password twice inconsistent!"
-                    return render(request, 'lms/reader/myProfile.html', {'username':request.user.username, 'reader':reader, 'change_pd_error':change_pd_error, })
+                    change_pd_error = "两次输入的新密码不一致!"
+                    return render(request, 'lms/reader/myProfile.html', {'username':get_rer_name(request), 'reader':reader, 'change_pd_error':change_pd_error, })
             else:
-                change_pd_error = "Enter the old password is incorrect!"
-                return render(request, 'lms/reader/myProfile.html', {'username':request.user.username, 'reader':reader, 'change_pd_error':change_pd_error, })
+                change_pd_error = "输入的原密码不正确!"
+                return render(request, 'lms/reader/myProfile.html', {'username':get_rer_name(request), 'reader':reader, 'change_pd_error':change_pd_error, })
         else:
-            change_pd_error = "Please complete the form!"     
-            return render(request, 'lms/reader/myProfile.html' , {'username':request.user.username, 'reader':reader, 'change_pd_error':change_pd_error, })  
+            change_pd_error = "请先完成表单填写!"     
+            return render(request, 'lms/reader/myProfile.html' , {'username':get_rer_name(request), 'reader':reader, 'change_pd_error':change_pd_error, })  
     
-    return render(request, 'lms/reader/myProfile.html' , {'username':request.user.username, 'reader':reader, })
+    return render(request, 'lms/reader/myProfile.html' , {'username':get_rer_name(request), 'reader':reader, })
 
 def reader_review(request):
     if not is_login_rer(request):
         return HttpResponseRedirect('/index/')
     
     comments = Comments.objects.filter(loan__reader__username=request.user.username)
-    return render(request, 'lms/reader/myReview.html', {'username':request.user.username, 'comments':comments, })
+    return render(request, 'lms/reader/myReview.html', {'username':get_rer_name(request), 'comments':comments, })
 
 def reader_buy_book(request):
     if not is_login_rer(request):
@@ -181,7 +181,7 @@ def reader_buy_book(request):
             book_apply.save()
             buy_book_msg = "申请买书成功,请耐心等候邮件通知结果。"
             
-    return render(request, 'lms/reader/buyBook.html', {'username':request.user.username, 'buy_book_msg':buy_book_msg, })
+    return render(request, 'lms/reader/buyBook.html', {'username':get_rer_name(request), 'buy_book_msg':buy_book_msg, })
 
 def reader_book_detail(request, book_id):
     if not is_login_rer(request):
@@ -189,4 +189,4 @@ def reader_book_detail(request, book_id):
     
     book_info = Books.objects.get(id=int(book_id))
     comments = Comments.objects.filter(loan__copy__book_id=int(book_id))
-    return render(request, 'lms/reader/bookDetail.html', {'username':request.user.username, 'book_info':book_info, 'comments':comments})
+    return render(request, 'lms/reader/bookDetail.html', {'username':get_rer_name(request), 'book_info':book_info, 'comments':comments})

@@ -2,6 +2,9 @@
 {% block title %}图书入库{% endblock %} 
 {% block content %}
 <div class="">
+	<div class="alert alert-warning" role="alert" style="display:none">
+		{{error_msg}}
+	</div>
 	<div class="row searchISBN">
 		<form method="post" action="{% url 'lib:lib_retrieve' %}">
 			{% csrf_token %}
@@ -9,6 +12,7 @@
 				<span class="input-group-addon">ISBN</span> 
 				<input name="isbn" type="text" class="form-control" placeholder="扫码或输入">
 			</div>
+			
 			<div class="col-sm-1 col-md-1">
 				<button type="submit" class="btn btn-primary">检测</button>
 			</div>
@@ -16,4 +20,10 @@
 		<a class="btn btn-info" href="{% url 'lib:lib_booklist' %}">入库信息</a> 
 	</div>
 </div>
+<script type="text/javascript">
+var length = $('.alert').html().trim().length;
+if (length > 0) {
+	$('.alert').show();
+}
+</script>
 {% endblock %}

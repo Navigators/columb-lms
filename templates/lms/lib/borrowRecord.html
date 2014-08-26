@@ -22,7 +22,7 @@
 				<button type="button" id="queryToggle" class="btn btn-primary" style="margin-left:-15px">按条件查询</button>
 				根据不同条件进行组合查询：
 			</p>
-			<div class="row" style="display:none">
+			<div class="row">
 				<table id="queryTable">
 					<tr>
 						<th>或与</th>
@@ -58,24 +58,20 @@
 							<input id="value" type="date" placeholder="例：2014-01-01">
 						</td>
 						<td id="addSelectCondition" style="padding-left:10px"><button type="button" class="btn btn-info">添加</button></td>
-						<td id="doQuery" style="padding-left:10px"><button type="button" class="btn btn-success">查找</button></td>
+						<td><button id="delete" type="button" class="btn btn-info" style="margin-top: 0px">删除</button></td>
+						<td><button id="empty" type="button" class="btn btn-default" style="margin-bottom: 0px">清空</button></td>
 						</tr>
 					</table>
-					<div class="col-md-12" style="margin-top:10px;">
-						<div class="col-md-6">
-							<div id="querys" style="height: 100px;width: 100%;border: 1px solid #000000;padding: 5px 5px 5px 5px;overflow:auto;margin-left: -20px"></div>
-						</div>
-						<div class="col-md-6">
-							<button id="delete" type="button" class="btn btn-info" style="margin-top: 0px">删除</button><br>
-							<button id="empty" type="button" class="btn btn-info" style="margin-bottom: 0px">清空</button>
-						</div>
+					<div style="margin:10px 25px;width:700px">
+						<div id="querys" style="height: 150px;width: 100%;border: 1px solid #000000;padding: 5px 5px 5px 5px;overflow:auto;margin-left: -20px"></div>
+						<button id="doQuery" type="button" class="btn btn-success" style="margin:20px 600px">查找</button>
 					</div>
 				</div>
 				<div class="row" style="margin-top: 10px">
 					<div class="col-md-1">
 						<button type="button" id="customize" class="btn btn-info" style="margin-left:-15px">定制列表</button>
 					</div>
-					<div id="resultTable" class="col-md-11" style="overflow:hidden">
+					<div id="resultTable" class="col-md-11" style="max-height:500px;overflow:hidden">
 						<div id="tableItems" style="display:none; white-space:nowrap">
 							<input type="checkbox">
 							<label name="1">借出日期</label>
@@ -104,9 +100,9 @@
 							<input type="checkbox">
 							<label name="13">还书操作员</label>
 						</div>
-						<table class="table">
+						<table id="dataTable" class="table" style="">
 							<tr>
-							<th>借出日期</th>
+								<th>借出日期</th>
 								<th>书刊名称</th>
 								<th>馆藏类型</th>
 								<th>书刊条号</th>
@@ -200,6 +196,7 @@
 	});
 
 	$('#doQuery').on('click', function() {
+		$("#dataTable").next('p').remove();
 		var str = '['+jsonArray.toString()+']';
 		console.log(str);
 			$.ajax({
@@ -254,6 +251,8 @@
 						});
 						$(".table").append("<tr class='choosen'><td>"+loan_date+"</td><td>"+name+"</td><td>"+type+"</td><td>"+isbn+"</td><td>"+barcode+"</td><td>"+cate+"</td><td>"+readername+"</td><td>"+username+"</td><td>"+readercate+"</td><td>"+readerdept+"</td><td>"+should_return_date+"</td><td>"+loan_operator+"</td><td>"+return_operator+"</td></tr>");
 					});
+					noData();
+					newTableTd();
 				},
 				error: function(xhr, status, error) {
 					console.log('status:'+status+',error:'+error);
@@ -282,6 +281,14 @@
 				str += queryArray[i];
 			}
 			$('#querys').get(0).innerHTML = str;
+		}
+
+		function noData() {
+			var length = $('#dataTable tr').length;
+			if (length == 1) {
+				$("#dataTable").after('<p style="text-align:center;font-size:20px;">查无数据</p>');
+				return;
+			}
 		}
 
 		

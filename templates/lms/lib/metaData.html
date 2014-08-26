@@ -8,40 +8,45 @@ section ul {
 
 section ul li {
 	height: 30px;
-	width: 40%;
+	width: 100px;
 	margin: 10px auto auto -10px;
-	background-color: #91C8D3;
+	background-color: #3971AC;
 	text-align: center;
 	line-height: 30px;
+	border-radius: 5px;
+	-moz-box-shadow: 1px 1px 5px #3971AC;/*firefox*/
+	-webkit-box-shadow: 1px 1px 5px #3971AC;/*safari或chrome*/
+	box-shadow: 1px 1px 5px #3971AC;/*opera或ie9*/
 }
 a {
-	color: #000000;
+	color: #ffffff;
 	font-weight: 500px;
 }
+
+
 </style>
 <div class="">
 	<div class="col-md-11">
-		<form class="form-horizontal" method="post" action="{% url 'lib:lib_metadata' %}">
-			<div class="row">
-				<div class="col-md-5 col-md-offset-2">
-					<button id="add" class="btn btn-success" type="button" data-toggle="modal" data-target="#metaModal">新增</button>
-					<button id="modify" class="btn btn-success updateButton" type="button" data-toggle="modal" data-target="#metaModal" disabled="disabled">修改</button>
-					<button id="delete" class="btn btn-success updateButton" type="button" disabled="disabled">删除</button>
-					<!-- <button class="btn btn-success" type="button">查询</button> -->
+		<form class="form-horizontal" method="post" action="{% url 'lib:lib_metadata' %}" style="width:900px;margin:10px auto">
+				<div style="width:900px">
+					<button id="add" class="btn btn-primary" type="button" data-toggle="modal" data-target="#metaModal">新增</button>
+					<button id="modify" class="btn btn-primary updateButton" type="button" data-toggle="modal" data-target="#metaModal" disabled="disabled">修改</button>
+					<button id="delete" class="btn btn-primary updateButton" type="button" disabled="disabled">删除</button>
+					<!-- <button class="btn btn-primary" type="button">查询</button> -->
 				</div>
-				<div class="col-md-8 col-md-offset-2">
+				<div style="width:900px">
 					<hr>
 				</div>
-				<div class="col-md-3 col-md-offset-2" style="border-right: 1px solid #000000">
+				<div style="border-right: 1px solid #000000;width:150px;float:left;position: relative">
 					<ul id="dataList">
-						<li id="lili"><a href="#data1">公司</a></li>
+						<li><a href="#data1">公司</a></li>
 						<li><a href="#data2">部门</a></li>
 						<li><a href="#data3">馆藏类型</a></li>
 						<li><a href="#data4">书籍状况</a></li>
 					</ul>
 				</div>
-				<div id="dataContent" class="col-md-4">
-					<div class="row" style="display: block">
+				<div id="dataContent" style="width:600px;float:left">
+					<div style="display: block">
 						<table class="table">
 							<tr>
 								<th>序号</th>
@@ -55,7 +60,7 @@ a {
 							{% endfor %}
 						</table>
 					</div>
-					<div class="row" style="display: none">
+					<div style="display: none">
 						<table class="table">
 							<tr>
 								<th>序号</th>
@@ -69,7 +74,7 @@ a {
 							{% endfor %}
 						</table>
 					</div>
-					<div class="row" style="display: none">
+					<div style="display: none">
 						<table class="table">
 							<tr>
 								<th>序号</th>
@@ -83,7 +88,7 @@ a {
 							{% endfor %}
 						</table>
 					</div>
-					<div class="row" style="display: none">
+					<div style="display: none">
 						<table class="table">
 							<tr>
 								<th>序号</th>
@@ -98,7 +103,6 @@ a {
 						</table>
 					</div>
 				</div>
-			</div>
 		</form>
 	</div>
 </div>
@@ -128,8 +132,8 @@ a {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				<button id="saveModal_add" type="button" class="btn btn-primary">确定</button>
-				<button id="saveModal_modify" type="button" class="btn btn-primary">确定</button>
+				<button id="saveModal_add" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+				<button id="saveModal_modify" type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
 			</div>
 		</div>
 	</div>
@@ -142,21 +146,19 @@ a {
 	var liIndex = 0;
 	$(function() {
 		$('#dataList li').each(
-				function(index) {
-					$(this).on('click',function() {
-										metaType = $(this).find('a').text();
-										console.log(index);
-										$('#dataContent').find('div').css(
-												'display', 'none');
-										$('#dataContent').find(
-												'div:eq(' + index + ')').css(
-												'display', 'block');
-										$('*').removeClass('tr-choosen-ok');//去掉其他页面的选中效果
-										$('.updateButton').attr('disabled',
-												'disabled');
-										liIndex = index;
-									})
+			function(index) {
+				$(this).on('click',function() {
+					$('#dataList li').css('background-color','#3971AC');
+					$(this).css('background-color','rgb(0, 184, 255)');
+					metaType = $(this).find('a').text();
+					console.log(index);
+					$('#dataContent').find('div').css('display', 'none');
+					$('#dataContent').find('div:eq(' + index + ')').css('display', 'block');
+					$('*').removeClass('tr-choosen-ok');//去掉其他页面的选中效果
+					$('.updateButton').attr('disabled','disabled');
+					liIndex = index;
 				})
+			})
 		$('#modify').on('click',function() {
 					$('#saveModal_add').hide();
 					$('#saveModal_modify').show();

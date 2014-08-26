@@ -6,11 +6,11 @@
 			<div class="row">
 				<label>{{error_query}}</label>
 				<p>
-					<span>应还日期从</span>
+					<span style="font-weight:900">应还日期从</span>
 					<input id="dateFrom" type="date" placeholder="例：2014/01/01">
-					<span>到</span>
+					<span style="font-weight:900">到</span>
 					<input id="dateTo" type="date" placeholder="例：2014/01/01">
-					<span style="margin-left:20px">馆藏类型</span>
+					<span style="margin-left:20px;font-weight:900">馆藏类型</span>
 					<select id="types">
 						{% for type in book_types %}
 							<option value="{{type.id}}">{{type.name}}</option>
@@ -18,7 +18,7 @@
 					</select>
 					<button id="query" class="btn btn-primary" type="button" style="float: right">查询</button>
 				</p>
-				<table class="table">
+				<table class="table" id="dataTable">
 					<tr>
 						<th>书名</th>
 						<th>书刊条码</th>
@@ -49,13 +49,15 @@
 <script type="text/javascript">
 
 	$("#query").click(function(){
-	var add_url="{% url 'lib:lib_overdue_record' %}?json_type="+$("#types").val()+"&json_date_from="+$("#dateFrom").val()+"&json_date_to="+$("#dateTo").val();
+		$("#dataTable").next('p').remove();
+		var add_url="{% url 'lib:lib_overdue_record' %}?json_type="+$("#types").val()+"&json_date_from="+$("#dateFrom").val()+"&json_date_to="+$("#dateTo").val();
 		$.getJSON(
     	add_url,  
     	function(data){
     		console.log(data);
     		parase(data);
 		});
+		noData();
 	});
 	
 	function parase(data){
@@ -89,6 +91,14 @@
 	    	});
 	    	$(".table").append("<tr class='choosen'><td>"+name+"</td><td>"+barcode+"</td><td>"+loan_date+"</td><td>"+reloan_count+"</td><td>"+should_return_date+"</td><td>"+operator+"</td><td>"+reader+"</td></tr>");
 	    });
+	}
+
+	function noData() {
+		var length = $('#dataTable tr').length;
+		if (length == 1) {
+			$("#dataTable").after('<p style="text-align:center;font-size:20px;">查无数据</p>');
+			return;
+		}
 	}
 </script>
 {% endblock %}

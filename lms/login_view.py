@@ -5,7 +5,6 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
 from lms.models import Librarians, Readers
-from django.conf.locale import fa
 
 
 def index(request):
@@ -71,3 +70,9 @@ def get_errorlogin_session(request):
         return request.session['error_login']
     else:
         return None
+
+def get_lib_name(request):
+    return Librarians.objects.get(username=request.user.username).name
+
+def get_rer_name(request):
+    return Readers.objects.get(username=request.user.username).name

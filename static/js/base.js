@@ -152,7 +152,7 @@
 		});
 		$('#resultTable').hoverDelay({
 			hoverEvent: function() {
-				$('#resultTable').css('overflow-x','scroll');
+				$('#resultTable').css('overflow','auto');
 			},
 			outEvent: function() {
 				$('#resultTable').css('overflow','hidden');
@@ -162,7 +162,7 @@
 	
 	function newTableTd() {
 		$('#tableItems').html('');
-		$('#tableItems').html('<input type="checkbox"><label>借出时间</label><input type="checkbox"><label>书刊名称</label><input type="checkbox"><label>书刊条号</label><input type="checkbox"><label>读者姓名</label><input type="checkbox"><label>读者工号</label><input type="checkbox"><label>读者类别</label><input type="checkbox"><label>已续借次数</label><input type="checkbox"><label>应还日期</label><input type="checkbox"><label>借书操作员</label>');
+		$('#tableItems').html('<input type="checkbox"><label>借出时间</label><input type="checkbox"><label>书刊名称</label><input type="checkbox"><label>书刊条号</label><input type="checkbox"><label>读者姓名</label><input type="checkbox"><label>读者工号</label><input type="checkbox"><label>读者类别</label><input type="checkbox"><label>续借次数</label><input type="checkbox"><label>应还日期</label><input type="checkbox"><label>借书操作员</label>');
 		$('#tableItems input').attr('checked','checked');
 		$('#tableItems input').each(function(index) {
 			$(this).click(function(){
@@ -185,13 +185,17 @@
 	}
 	
 
-
+function showTdContent(){
+	$('.table tr').addClass('cursor-pointer');
+	$('.table td').each(function() {
+		var title = $(this).text();
+		$(this).attr('title',title);
+	})
+}
 
 $(function() {
-
+	showTdContent();
 	choosen();
 	aside();
-	
-	
 	customizeTable();
 })

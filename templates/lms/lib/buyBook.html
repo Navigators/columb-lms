@@ -1,9 +1,9 @@
 {% extends "lms/lib/base.html" %}
 {% block title %}图书购买{% endblock %}
 {% block content %}
-<div class="">
 	<div class="col-md-11">
-		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">读者申请列表</p>
+		<p id="applyBar" class="bookListBar">读者申请列表</p>
+		<div class="nextTable">
 		<table class="table" id="apply">
 			<tr>
 				<th>NO</th>
@@ -37,7 +37,9 @@
 			</tr>
 			{% endfor %}
 		</table>
-		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">准备购入书单</p>
+		</div>
+		<div class="nextTable">
+		<p id="buyBar" class="bookListBar">准备购入书单</p>
 		<table class="table" id="buy">
 			<tr>
 				<th>NO</th>
@@ -64,8 +66,10 @@
 			</tr>
 			{% endfor %}
 		</table>
-		<button class="btn btn-info" id="show" onclick="showArchive()">查看归档</button>
-		<p style="background-color: #B8CDD8; height: 40px; line-height: 40px">归档列表</p>
+		</div>
+		<button class="btn btn-primary" id="show" onclick="showArchive()">查看归档</button>
+		<p id="archiveBar" class="bookListBar" style="background-color:#72ACE9">归档列表</p>
+		<div class="nextTable">
 		<table class="table" id="archive" style="display: none">
 			<tr>
 				<th>NO</th>
@@ -95,7 +99,7 @@
 			{% endfor %}
 		</table>
 	</div>
-</div>
+	</div>
 {% endblock %} 
 
 {% block js %}
@@ -113,34 +117,51 @@
 		if ($('#show').text() == '查看归档') {
 			$('#apply').hide();
 			$('#buy').hide();
+			$('#applyBar').css('background-color','#72ACE9');
+			$('#buyBar').css('background-color','#72ACE9');
 			$('#archive').show();
+			$('#archiveBar').css('background-color','#3971AC');
 			$('#show').text('返回');
 		} else {
 			$('#apply').show();
 			$('#buy').show();
+			$('#applyBar').css('background-color','#3971AC');
+			$('#buyBar').css('background-color','#3971AC');
 			$('#archive').hide();
+			$('#archiveBar').css('background-color','#72ACE9');
 			$('#show').text('查看归档');
 		}
 
 	}
 	$(function() {
 		$('tr.choosen .price').each(
-				function() {
-					var that = $(this);
-					that.hoverDelay({
-						hoverEvent : function() {
-							that.addClass('cursor-pointer');
-							var text = that.parent().find('td:eq(2)').text();
-							text = that.parent().find('td:eq(7)').text()
-									+ "——《" + text + "》";
-							console.log(text);
-							alert('添加' + text + '的比价');
-						},
-						outEvent : function() {
-							that.removeClass('cursor-pointer');
-						}
-					});
+			function() {
+				var that = $(this);
+				that.hoverDelay({
+					hoverEvent : function() {
+						that.addClass('cursor-pointer');
+						var text = that.parent().find('td:eq(2)').text();
+						text = that.parent().find('td:eq(7)').text()
+						+ "——《" + text + "》";
+						console.log(text);
+						alert('添加' + text + '的比价');
+					},
+					outEvent : function() {
+						that.removeClass('cursor-pointer');
+					}
 				});
+			}
+		);
+		var width = $('p').width();
+		$('table').css('width',width);
+		$('.nextTable').css('overflow','auto');
+		$(window).resize(function() {
+			width = $('p').width();
+			$('table').css('width',width);
+			if ($('table').width() <= 1100 ) {
+				$('.nextTable').css('overflow','auto');
+			}
+		});
 	});
 	
 	$('.tips').each(function() {

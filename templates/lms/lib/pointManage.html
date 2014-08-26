@@ -1,6 +1,11 @@
 {% extends "lms/lib/base.html" %} 
 {% block title %}积分管理{% endblock %}
 {% block content %}
+<style type="text/css">
+	a {
+		color: #000000;
+	}
+</style>
 			<ul class="nav nav-tabs" role="tablist" style="height:50px">
 				<li class="active"><a href="#loanPoint" role="tab" data-toggle="tab">借阅积分</a></li>
 				<li><a href="#exchangePoint" role="tab" data-toggle="tab">兑换积分</a></li>
@@ -16,6 +21,7 @@
 						{%endfor%}
 					</select>
 					<button class="btn btn-primary" id="ok1" type="button" >提交</button>
+					<span id="verify1" style="color:red;display:none">请输入6位工号</span>
 					<div style="height:500px;overflow:auto">
 						<table id="table1" class="table">
 							<tr>
@@ -31,7 +37,11 @@
 								<td>{{tpl.reader.username}}</td>
 								<td>{{tpl.reader.name}}</td>
 								<td>{{tpl.cate.name}}</td>
-								<td>{{tpl.value}}</td>
+								{% ifequal tpl.value -1 %}
+									<td>{{tpl.value}}</td>
+								{% else %}
+									<td>+{{tpl.value}}</td>
+								{% endifequal %}
 								<td>{{tpl.date}}</td>
 								{%if tp.operater%}
 								<td>{{tpl.operator.name}}</td>
@@ -53,6 +63,7 @@
 						{%endfor%}
 					</select>
 					<button class="btn btn-primary" id="ok2" type="button" >提交</button>
+					<span id="verify2" style="color:red;display:none">请输入6位工号</span>
 					<div style="height:500px;overflow:auto">
 						<table id="table2"class="table">
 							<tr>
@@ -87,6 +98,12 @@
 	<script type="text/javascript">
 	$(function() {
 		$('#ok1').click(function() {
+					var length = $('#workId1').val().length;
+					if (length != 6) {
+						$('#verify1').show();
+						$('.table1tr').remove();
+						return;
+					}
 					$.ajax({
 						url:'{% url "lib:lib_point_manage" %}',
 						type: 'POST',
@@ -124,6 +141,12 @@
 					});
 		});
 		$('#ok2').click(function() {
+					var length = $('#workId2').val().length;
+					if (length != 6) {
+						$('#verify2').show();
+						$('.table2tr').remove();
+						return;
+					}
 					$.ajax({
 						url:'{% url "lib:lib_point_manage" %}',
 						type: 'POST',
@@ -160,6 +183,7 @@
 						}
 					});
 		});
+
 	});
 	</script>
 {% endblock %}

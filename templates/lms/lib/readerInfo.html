@@ -29,7 +29,11 @@
 							<td>{{reader.username}}</td>
 							<td>{{reader.name}}</td>
 							<td>{{reader.cate.name}}</td>
-							<td>{{reader.sex}}</td>
+							{% if reader.sex %}
+								<td>男</td>
+							{% else %}
+								<td>女</td>
+							{% endif %}
 							<td>{{reader.corp.name}}</td>
 							<td>{{reader.dept.name}}</td>
 							<td>{{reader.email}}</td>
@@ -57,6 +61,7 @@ function resetPassword(id) {
 }
 
 $("#searchReader").click(function(){
+	$("table").next('p').remove();
 	var search_url="{% url 'lib:lib_readerinfo' %}?json_username="+$("#keyWord").val();
     $.getJSON(
     search_url,  
@@ -70,6 +75,7 @@ $("#searchReader").click(function(){
 	var mphone="";
 	var sex="";
 	var reset_url="";
+	var isFailed = data['state'];
 	$("tr.choosen").remove();
 	$.each(data,function(i,object){
 		if(i=="reader"){
@@ -93,11 +99,13 @@ $("#searchReader").click(function(){
         							email=_value;
         						else if(_key=="mobile_phone")
         							mphone=_value;
-        						else if(_key=="sex")
+        						else if(_key=="sex") {
         							if (_value)
         								sex="女";
         							else
         								sex="男";
+        						}
+        							
         					});
     			});
 			});
@@ -117,8 +125,17 @@ $("#searchReader").click(function(){
 		}
 	});
 	$("table").append("<tr class='choosen'><td>"+username+"</td><td>"+name+"</td><td>"+cate+"</td><td>"+sex+"</td><td>"+corp+"</td><td>"+dept+"</td><td>"+email+"</td><td>"+mphone+"</td><td><a href='"+reset_url+"'>密码重置</a></td></tr>");
+	noData(isFailed)
     choosen();
     });
  });
+
+function noData(isFailed) {
+	if (isFailed == 'fail') {
+		$('table').find('tr.choosen').remove();
+		$('table').after('<p style="text-align:center;font-size:20px;">查无数据</p>');
+	}
+
+}
 </script>
 {% endblock %}

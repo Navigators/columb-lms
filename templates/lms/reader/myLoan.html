@@ -3,9 +3,12 @@
 {% block content %}
 <article class="notIndex">
 	<header>
-		<div class="alert alert-warning" role="alert">
-			您的图书逾期，已经不能续借，也不能再借书，请尽快把书还至图书馆！
+		<div class="titleBar">
+			我的借阅
 		</div>
+		<!-- <div class="alert alert-warning" role="alert">
+			您的图书逾期，已经不能续借，也不能再借书，请尽快把书还至图书馆！
+		</div> -->
 	</header>
 	<section>
 		<div class="queryBar">
@@ -27,8 +30,8 @@
 				<table class="table">
 					<tr>
 						<th>书名</th>
-						<th><select>
-								<option value="" selected="selected" style="display: none">类型</option>
+						<th><select id="cateFilter">
+								<option value="" selected="selected">类型</option>
 								<option value="">借书</option>
 								<option value="">续借</option>
 						</select></th>
@@ -70,9 +73,11 @@
 				prase_comment(data);
 			}
 		);
+		$('#bookComment').slideUp('slow');
 	}
 	
 	function queryLoan() {
+		$(".table").next('p').remove();
 		var add_url="{% url 'rer:reader_loan' %}?json_name="+$("#bookName").val()+"&json_date_from="+$("#dateFrom").val()+"&json_date_to="+$("#dateTo").val()+"&json_status="+$("#status").val();
 		$.getJSON(
 			add_url,  
@@ -91,6 +96,9 @@
 	}
 
 	function seeComment(id) {
+		$('#bookComment i').each(function(index) {
+			$(this).unbind('click');
+		});
 		$("#comment").val("");
 		for (var s = 1; s <=5; s++) {
     		$('#rating').removeClass('rating-'+s);
@@ -105,10 +113,12 @@
 		
 		$('#bookComment').slideDown('slow');
 		$('#bookComment button').hide();
-		
+		$("#comment").attr('disabled','disabled');
 	}
 
 	function writeComment(id) {
+		$("#comment").removeAttr('disabled','disabled');
+		starClick();
 		loan_id=id;
 		
 		$("#comment").val("");
@@ -191,7 +201,7 @@
 	    			var start=new Date(should_return_date.replace("-","/"));
 	    			var end=new Date();
 	    			if(start>=end)
-	    				if(start-end<=10)
+	    				if(start-end<=5)
 	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td>续借</td></tr>");
 	    				else
 	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td></td></tr>");
@@ -214,9 +224,58 @@
 	    		}
 	    	}
 	    });
+		setTdWidth();
+		cateFilter();
 	}
-	$(function() {
-		shortPageFooter();
+
+	function setThWidth() {
+		$('table').find('th:eq(0)').css('width','260px');
+		$('table').find('th:eq(1)').css('width','105px');
+		$('table').find('th:eq(2)').css('width','260px');
+		$('table').find('th:eq(3)').css('width','105px');
+		$('table').find('th:eq(4)').css('width','105px');
+		$('table').find('th:eq(5)').css('width','105px');
+	}
+
+	function setTdWidth() {
+		$('.bookRaw').find('td:eq(0)').css('width','260px');
+		$('.bookRaw').find('td:eq(1)').css('width','105px');
+		$('.bookRaw').find('td:eq(2)').css('width','260px');
+		$('.bookRaw').find('td:eq(3)').css('width','105px');
+		$('.bookRaw').find('td:eq(4)').css('width','105px');
+		$('.bookRaw').find('td:eq(5)').css('width','105px');
+	}
+
+	function cateFilter(){
+		var length = $('.bookRaw').length;
+		if (length == 0) {
+			$(".table").after('<p style="text-align:center;font-size:20px;">查无数据</p>');
+			return;
+		}
+		$("#cateFilter").change(function() {
+			var cate = $("#cateFilter").find('option:selected').text();
+			if (cate == '类型') {
+				$(".bookRaw").show();
+			} else if (cate == '借书') {
+				$(".bookRaw").hide();
+				$(".bookRaw").each(function() {
+					if ($(this).find('td:eq(1)').text() == '借书') {
+						$(this).show();
+					}
+				})
+			} else if (cate == '续借') {
+				$(".bookRaw").hide();
+				$(".bookRaw").each(function() {
+					if ($(this).find('td:eq(1)').text() == '续借') {
+						$(this).show();
+					}
+				})
+			}
+		});
+	}
+
+
+	function starClick() {
 		$('#bookComment i').each(function(index) {
     		$(this).on('click', function() {
     			var i = index + 1;
@@ -228,6 +287,22 @@
     			console.log(i);
     		})
     	})
+	}
+
+	$(function() {
+		shortPageFooter();
+		setThWidth();
+		/*$('#bookComment i').each(function(index) {
+    		$(this).on('click', function() {
+    			var i = index + 1;
+    			for (var s = 1; s <=5; s++) {
+    				$('#bookComment').find('div').removeClass('rating-'+s);
+    			}
+    			$('#bookComment').find('div').addClass('rating-'+i);
+    			rating=i;
+    			console.log(i);
+    		})
+    	})*/
 
 	})
 

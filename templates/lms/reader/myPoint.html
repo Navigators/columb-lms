@@ -3,8 +3,8 @@
 {% block content %}
 		<article class="notIndex">
 			<header>
-				<div class="alert alert-info" role="alert">
-					下面是我的积分情况！
+				<div class="titleBar">
+					我的积分
 				</div>
 			</header>
 			<section >
@@ -51,11 +51,15 @@
 									<tr>
 									<td>{{tl.date}}</td>
 									<td>{{tl.cate.name}}</td>
-									<td>{{tl.value}}</td>
-									{% if tl.operater %}
-									<td>{{tl.operater.name}}</td>
+									{% ifequal tl.value -1 %}
+										<td>{{tl.value}}</td>
 									{% else %}
-									<td>系统</td>
+										<td>+{{tl.value}}</td>
+									{% endifequal %}
+									{% if tl.operater %}
+										<td>{{tl.operater.name}}</td>
+									{% else %}
+										<td>系统</td>
 									{% endif %}
 									</tr>
 								{%endfor%}

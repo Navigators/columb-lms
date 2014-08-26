@@ -21,9 +21,9 @@
 </head>
 <body>
 	<header id="header">
-		<div class="user title">
+		<div class="user">
 			<input id="is_anonymous" style="display:none" value="{{username}}"/>
-			<button>{{username}}</button>
+			<span>你好，{{username}}</span>
 			<a href="{% url 'login' %}">登出</a>
 		</div>
 		<div class="title">
@@ -70,7 +70,12 @@
 						</ul>
 					</li>
 					<li>
-						<a href="{% url 'lib:lib_point_manage' %}">积分管理</a>
+						<a href="#">积分管理</a>
+						<ul class="nav nav-child">
+							<li>
+								<a href="{% url 'lib:lib_point_manage' %}">积分信息</a>
+							</li>
+						</ul>
 					</li>
 					<li>
 						<a href="#">统计报表</a>
