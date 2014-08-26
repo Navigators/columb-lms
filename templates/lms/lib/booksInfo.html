@@ -11,7 +11,7 @@
 					<button id="searchBook" class="btn btn-primary" type="button">查找</button>
 				</div>
 			</div>
-			<div class="row" style="margin-top: 10px">
+			<div id="resultTable" class="col-md-12" style="margin-top: 10px;">
 				<table class="table">
 					<tr>
 						<th>书刊ISBN</th>
@@ -53,7 +53,8 @@
 
 {% block js %}
 <script>
-$(document).ready(function(){   
+$(document).ready(function(){
+	hoverTable();   
 	
 	$("#searchBook").click(function(){
 		$("table").next('p').remove();

@@ -2,7 +2,7 @@
 {% block title %}首页{%endblock %}
 {% block content %}
 <nav>
-	图书分类
+	<div class="titleBar" style="width:240px;margin:-10px">图书分类</div>
 	<div class="search">
 		<input id="content" type="text">
 		<button id="search">搜书</button>
@@ -17,8 +17,8 @@
 	</div>
 </nav>
 <div class="recommend">
-	好书推荐:
-	<ul class="bookList">
+	<div class="titleBar" style="width:750px;margin:-20px">好书推荐</div>
+	<ul class="bookList" style="margin-top:30px">
 		{% for book in popular_books %}
 		<li>
 			<a class="img" href="{% url 'rer:reader_book_detail' book.id %}"><img src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}" title="{{book.name}}"></a>
@@ -38,11 +38,13 @@
 
 </div>
 <article class="books">
-	<p style="text-align: center">搜索结果/默认新书推荐</p>
-	<div class="bookRow">
-		<ul class="bookList">
-		</ul>
-		<div></div>
+	<div class="titleBar" style="width:750px;margin:-20px;float:left">新书推荐</div>
+	<div style="margin-top:50px">
+		<div class="bookRow">
+			<ul class="bookList">
+			</ul>
+			<div></div>
+		</div>
 	</div>
 
 
@@ -52,6 +54,7 @@
 {% block js %}
 <script type="text/javascript">
 	function findCates(id) {
+		$('article .titleBar').html('搜索结果');
 		var add_url="{% url 'rer:reader_index' %}?json_cate="+id;
 		$.getJSON(
 		    add_url,  
@@ -106,6 +109,7 @@
 
 	
 	$("#search").click(function(){
+		$('article .titleBar').html('搜索结果');
 		var add_url="{% url 'rer:reader_index' %}?json_name="+$("#content").val();
 		$.getJSON(
 			add_url,  

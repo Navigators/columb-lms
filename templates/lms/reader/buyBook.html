@@ -6,7 +6,9 @@
 		<div class="titleBar">
 			我要买书
 		</div>
-		<label>{{buy_book_msg}}</label>
+		<div class="alert alert-danger" role="alert" style="display:none">
+			{{buy_book_msg}}
+		</div>
 	</header>
 	<section>
 		<div class="myForm">
@@ -31,4 +33,10 @@
 		</div>
 	</section>
 </article>
+<script type="text/javascript">
+var length = $('.alert').html().trim().length;
+if (length > 0) {
+	$('.alert').show();
+}
+</script>
 {% endblock %} 

@@ -5,6 +5,7 @@ header .message {
 
 body {
 	background-color: #F7F7F7;
+	min-width: 1300px;
 }
 
 body>section {
@@ -17,7 +18,7 @@ body>section {
 
 body>section .recommend {
 	width: 75%;
-	height: 280px;
+	height: 300px;
 	/*border: 1px solid #000000;*/
 	margin-left: 250px;
 	padding: 20px;
@@ -321,7 +322,7 @@ ul.bookList li {
 
 .categoryList ul {
 	list-style-type: none;
-	margin-left: -40px;
+	margin-left: -20px;
 }
 
 .categoryList li {
@@ -332,6 +333,7 @@ ul.bookList li {
 	color: #745F34;
 	text-decoration: none;
 }
+
 
 /******************************index.html页面***************************以上*/
 

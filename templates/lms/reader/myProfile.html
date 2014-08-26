@@ -9,7 +9,7 @@
 	</header>
 	<section>
 		<fieldset class="tableField">
-			<legend>
+			<legend style="padding:0 10px">
 				我的情况<a href="javascript:showItemOne()">隐藏</a>
 			</legend>
 			<div id="myProfile" class="myForm">
@@ -31,10 +31,12 @@
 			</div>
 		</fieldset>
 		<fieldset class="tableField">
-			<legend>
+			<div class="alert alert-danger" role="alert" style="display:none">
+				{{change_pd_error}}
+			</div>
+			<legend style="padding:0 10px">
 				修改密码<a href="javascript:showItemTwo()">隐藏</a>
 			</legend>
-			<label>{{change_pd_error}}</label>
 			<div id="myAccount" class="myForm">
 				<form method="post" action="{% url 'rer:reader_profile' %}">
 					{% csrf_token %}
@@ -79,7 +81,10 @@
 		
 	}
 	$(function() {
-    	shortPageFooter();
+		var length = $('.alert').html().trim().length;
+		if (length > 0) {
+			$('.alert').show();
+		}
     })
 </script>
 {% endblock %}

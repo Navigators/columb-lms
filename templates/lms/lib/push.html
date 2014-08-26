@@ -1,6 +1,7 @@
 {% extends "lms/lib/base.html" %} 
 {% block title %}消息推送{% endblock %}
 {% block content %}
+<div style="overflow:auto">
 <div class="push">
 	<div class="push-left">
 		<ul class="push-ul" style="padding-left:0px;">
@@ -18,9 +19,10 @@
 	<p style="width: 1000px;margin-top: 20px">
 		<button id="add" type="button" class="btn btn-primary">增加</button>
 		<button id="delete" type="button" class="btn btn-primary" disabled>删除</button>
-		<button id="save" type="button" class="btn btn-primary" style="margin-left:700px">保存</button>
+		<button id="save" type="button" class="btn btn-primary" style="margin-left:770px">保存</button>
 		<button id="prePush" type="button" class="btn btn-primary" data-toggle="modal" data-target="#passwordModal">推送</button>
 	</p>
+</div>
 </div>
 <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="position: fixed;top:250px">
 	<div class="modal-dialog">

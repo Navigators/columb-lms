@@ -27,83 +27,86 @@ a {
 </style>
 <div class="">
 	<div class="col-md-11">
-		<form class="form-horizontal" method="post" action="{% url 'lib:lib_metadata' %}" style="width:900px;margin:10px auto">
-				<div style="width:900px">
-					<button id="add" class="btn btn-primary" type="button" data-toggle="modal" data-target="#metaModal">新增</button>
-					<button id="modify" class="btn btn-primary updateButton" type="button" data-toggle="modal" data-target="#metaModal" disabled="disabled">修改</button>
-					<button id="delete" class="btn btn-primary updateButton" type="button" disabled="disabled">删除</button>
-					<!-- <button class="btn btn-primary" type="button">查询</button> -->
+		<div id="resultContent" style="overflow:auto">
+		<form class="form-horizontal" method="post" action="{% url 'lib:lib_metadata' %}" style="width:700px;margin:10px auto">
+			<div style="width:700px">
+				<button id="add" class="btn btn-primary" type="button" data-toggle="modal" data-target="#metaModal">新增</button>
+				<button id="modify" class="btn btn-primary updateButton" type="button" data-toggle="modal" data-target="#metaModal" disabled="disabled">修改</button>
+				<button id="delete" class="btn btn-primary updateButton" type="button" disabled="disabled">删除</button>
+				<!-- <button class="btn btn-primary" type="button">查询</button> -->
+			</div>
+			<div style="width:700px">
+				<hr>
+			</div>
+			<div style="border-right: 1px solid #000000;width:150px;float:left;position: relative">
+				<ul id="dataList">
+					<li><a href="#data1">公司</a></li>
+					<li><a href="#data2">部门</a></li>
+					<li><a href="#data3">馆藏类型</a></li>
+					<li><a href="#data4">书籍状况</a></li>
+				</ul>
+			</div>
+
+			<div id="dataContent" style="width:500px;float:left">
+				<div style="display: block">
+					<table class="table">
+						<tr>
+							<th>序号</th>
+							<th>公司名称</th>
+						</tr>
+						{% for company in companies %}
+						<tr class="choosen">
+							<td>{{company.id}}</td>
+							<td>{{company.name}}</td>
+						</tr>
+						{% endfor %}
+					</table>
 				</div>
-				<div style="width:900px">
-					<hr>
+				<div style="display: none">
+					<table class="table">
+						<tr>
+							<th>序号</th>
+							<th>部门名称</th>
+						</tr>
+						{% for department in departments %}
+						<tr class="choosen">
+							<td>{{department.id}}</td>
+							<td>{{department.name}}</td>
+						</tr>
+						{% endfor %}
+					</table>
 				</div>
-				<div style="border-right: 1px solid #000000;width:150px;float:left;position: relative">
-					<ul id="dataList">
-						<li><a href="#data1">公司</a></li>
-						<li><a href="#data2">部门</a></li>
-						<li><a href="#data3">馆藏类型</a></li>
-						<li><a href="#data4">书籍状况</a></li>
-					</ul>
+				<div style="display: none">
+					<table class="table">
+						<tr>
+							<th>序号</th>
+							<th>馆藏类型</th>
+						</tr>
+						{% for type in book_types %}
+						<tr class="choosen">
+							<td>{{type.id}}</td>
+							<td>{{type.name}}</td>
+						</tr>
+						{% endfor %}
+					</table>
 				</div>
-				<div id="dataContent" style="width:600px;float:left">
-					<div style="display: block">
-						<table class="table">
-							<tr>
-								<th>序号</th>
-								<th>公司名称</th>
-							</tr>
-							{% for company in companies %}
-								<tr class="choosen">
-									<td>{{company.id}}</td>
-									<td>{{company.name}}</td>
-								</tr>
-							{% endfor %}
-						</table>
-					</div>
-					<div style="display: none">
-						<table class="table">
-							<tr>
-								<th>序号</th>
-								<th>部门名称</th>
-							</tr>
-							{% for department in departments %}
-								<tr class="choosen">
-									<td>{{department.id}}</td>
-									<td>{{department.name}}</td>
-								</tr>
-							{% endfor %}
-						</table>
-					</div>
-					<div style="display: none">
-						<table class="table">
-							<tr>
-								<th>序号</th>
-								<th>馆藏类型</th>
-							</tr>
-							{% for type in book_types %}
-								<tr class="choosen">
-									<td>{{type.id}}</td>
-									<td>{{type.name}}</td>
-								</tr>
-							{% endfor %}
-						</table>
-					</div>
-					<div style="display: none">
-						<table class="table">
-							<tr>
-								<th>序号</th>
-								<th>书籍状况</th>
-							</tr>
-							{% for state in copy_states %}
-								<tr class="choosen">
-									<td>{{state.id}}</td>
-									<td>{{state.name}}</td>
-								</tr>
-							{% endfor %}
-						</table>
-					</div>
+				<div style="display: none">
+					<table class="table">
+						<tr>
+							<th>序号</th>
+							<th>书籍状况</th>
+						</tr>
+						{% for state in copy_states %}
+						<tr class="choosen">
+							<td>{{state.id}}</td>
+							<td>{{state.name}}</td>
+						</tr>
+						{% endfor %}
+					</table>
 				</div>
+			</div>
 		</form>
+	</div>
 	</div>
 </div>
 {% endblock %}
@@ -145,6 +148,7 @@ a {
 	var metaType = "";
 	var liIndex = 0;
 	$(function() {
+		$('#dataList').find('li:eq(0)').css('background-color','rgb(0, 184, 255)');
 		$('#dataList li').each(
 			function(index) {
 				$(this).on('click',function() {

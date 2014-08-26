@@ -3,6 +3,7 @@
 }*/
 body {
 	height: 1000px;
+	min-width: 1350px;
 }
 
 input[type="date"],input[type="time"] {
@@ -11,8 +12,10 @@ input[type="date"],input[type="time"] {
 
 th,td {
 	min-width: 100px;
+	max-width: 200px;
 	text-align: center;
-	/*white-space:nowrap;*/
+	white-space:nowrap;
+	overflow-x:hidden; 
 }
 
 a {color: #428bca;}
@@ -63,7 +66,7 @@ section {
 	/*height: 900px;*/
 	height: 900px;
 	margin-left: 300px;
-	padding: 20px 30px 20px 30px;
+	padding: 40px 30px;
 }
 
 footer {
@@ -165,27 +168,27 @@ textarea {
 	width: 500px;
 	overflow-y: hidden; 
 	float: left;
-	background-color: rgb(159, 212, 233);
+	/* background-color: #C5CACA; */
 	border-radius: 5px;
-	-moz-box-shadow: 1px 1px 5px #3971AC;/*firefox*/
-	-webkit-box-shadow: 1px 1px 5px #3971AC;/*safari或chrome*/
-	box-shadow: 1px 1px 5px #3971AC;/*opera或ie9*/
+	-moz-box-shadow: 2px 2px 2px 2px #C5CACA;/*firefox*/
+	-webkit-box-shadow: 2px 2px 2px 2px#C5CACA;/*safari或chrome*/
+	box-shadow: 2px 2px 3px 2px #C5CACA;/*opera或ie9*/
 }
 .push-right {
 	height: 600px; 
 	width: 500px;
 	overflow-y: hidden; 
 	/*border: 1px solid #000000;*/
-	background-color: rgb(159, 212, 233);
+	/* background-color: #C5CACA; */
 	border-radius: 5px;
-	-moz-box-shadow: 1px 1px 5px #3971AC;/*firefox*/
-	-webkit-box-shadow: 1px 1px 5px #3971AC;/*safari或chrome*/
-	box-shadow: 1px 1px 5px #3971AC;/*opera或ie9*/
+	-moz-box-shadow: 2px 2px 2px 2px #C5CACA;/*firefox*/
+	-webkit-box-shadow: 2px 2px 2px 2px#C5CACA;/*safari或chrome*/
+	box-shadow: 2px 2px 3px 2px #C5CACA;/*opera或ie9*/
 	
 }
 
 .push-right textarea {
-	border: 0px;
+	border: 1px solid #C5CACA;
 }
 
 .push-ul {
@@ -194,10 +197,14 @@ textarea {
 .push-ul li{
 	height: 150px;
 	line-height: 150px;
+	margin-bottom:3px;
 	border: 1px solid #ffffff;
 	font-size: 25px;
 	text-align: center;
 	-webkit-user-select: none; 
+	-moz-box-shadow: 2px 2px 2px 2px #C5CACA;/*firefox*/
+	-webkit-box-shadow: 2px 2px 2px 2px#C5CACA;/*safari或chrome*/
+	box-shadow: 1px 1px 1px #C5CACA;/*opera或ie9*/
 }
 
 .push-title {

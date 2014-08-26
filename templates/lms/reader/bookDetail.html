@@ -1,17 +1,17 @@
 {% extends "lms/reader/readerBase.html" %}
 {% block title %}图书详细信息{% endblock %}
 {% block content %}
-		<article class="notIndex" style="height:900px">
+		<article class="notIndex">
 			<header>
 				<div class="titleBar">
 					{{book_info.name}}
 				</div>
 			</header>
-			<section style="height:600px;width:600px;margin:10px auto;padding:20px;">
+			<section style="width:600px;margin:10px auto;padding:20px;">
 				<div style="width:150px;height:200px;border:1px solid #ff0000;float:left;line-height:200px;text-align:center">
 					<img name="image" src="{{STATIC_PREFIX}}img_user/{{book_info.pic_location}}">
 				</div>
-				<div style="width:250px;height:200px;float:left;margin-left:100px">
+				<div style="width:250px;height:200px;float:left;margin-left:130px">
 					<p>书名：{{book_info.name}}</p>
 					<p>作者：{{book_info.author}}</p>
 					<p>出版时间：{{book_info.publish_date}}</p>
@@ -26,7 +26,7 @@
 						<i class="star-5">★</i>
 					</p>
 				</div>
-				<div style="margin-top:230px;">
+				<div style="margin-top:230px;width:600px">
 					<fieldset>
 						<legend>内容简介</legend>
 						<div class="scrollMore" style="width:550px;height:150px;overflow:hidden">
@@ -34,12 +34,20 @@
 						</div>
 					</fieldset>
 				</div>
-				<div style="margin-top:10px;">
+				<div style="margin-top:10px;width:600px">
 					<fieldset>
 						<legend>评价列表</legend>
-						<div class="scrollMore" style="width:550px;height:200px;overflow:hidden">
+						<div class="scrollMore" style="width:550px;max-height:400px;overflow:hidden">
 							{% for comment in comments %}
-								<p><span>{{comment.loan.reader.username}} {{comment.loan.reader.name}}：</span><span>{{comment.content}}</span></p>
+								<div style="margin-bottom:20px">
+									<div class="headFace" style="width:55px;height:55px;line-height:50px;text-align:center;float:left">
+										<img src="{{STATIC_PREFIX}}img_sys/head.jpg" alt="head" width="55px" height="55px">
+									</div>
+									<div style="width:490px;height:30px;line-height:30px;margin-left:60px;padding:0px 10px;background-color:#FAF0BC">
+										<span>{{comment.create_date_time}} {{comment.loan.reader.name}}：</span>
+									</div>
+									<div style="width:490px;min-height:30px;line-height:30px;margin-left:60px;padding:10px;background-color:#FFFFFF"><span>{{comment.content}}</span></div>
+								</div>
 							{% endfor %}
 						</div>
 					</fieldset>
@@ -97,13 +105,17 @@
 		console.log(count);
 		var score = Math.floor(sum*2/count);
 		scoreToStar(score,$('.rating'));
-		$('.scrollMore').find('p').css({
+		/*$('.scrollMore').find('div').css({
 			'height':'30px',
 			'line-height':'30px',
-			'padding':'0 10px'
-		});
-		$('.scrollMore').find('p:even').css('background-color','#E0DBDB');
-		$('.scrollMore').find('p:odd').css('background-color','#ffffff');
+			'padding':'0 10px',
+			'width':'550px',
+			'white-space':'normal',
+			'word-break':'break-all',
+			'overflow':'hidden'
+		});*/
+		/*$('.scrollMore').find('div:even').css('background-color','#E0DBDB');
+		$('.scrollMore').find('div:odd').css('background-color','#ffffff');*/
 		
     })
 </script>

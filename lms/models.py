@@ -63,7 +63,7 @@ class ReaderCate(models.Model):
         return self.name
 
     def natural_key(self):
-        return (self.name)
+        return (self.name,self.reloan_times)
     
 class Librarians(User):
     name = models.CharField(max_length=40)

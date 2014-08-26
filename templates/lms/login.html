@@ -17,9 +17,9 @@
       }
 
       .form-signin {
-        max-width: 300px;
+        max-width: 500px;
         padding: 19px 29px 29px;
-        margin: 0 auto 20px;
+        margin: 100px auto 20px;
         background-color: #fff;
         border: 1px solid #e5e5e5;
         -webkit-border-radius: 5px;
@@ -29,16 +29,16 @@
            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
                 box-shadow: 0 1px 2px rgba(0,0,0,.05);
       }
-      .form-signin .form-signin-heading,
-      .form-signin .checkbox {
-        margin-bottom: 10px;
-      }
       .form-signin input[type="text"],
       .form-signin input[type="password"] {
         font-size: 16px;
         height: auto;
         margin-bottom: 15px;
         padding: 7px 9px;
+      }
+      .offset {
+        width:300px;
+        margin-left:80px;
       }
     </style>
 	<script   type= "text/javascript">
@@ -77,12 +77,12 @@
 	<div class="container-fluid content">
       <form class="form-signin" method="post" action="{% url 'login' %}">
       	{% csrf_token %}
-        <h2 class="form-signin-heading">登录</h2>
-        <input name="username" type="text" class="form-control" placeholder="用户名" onblur="NameInvalid()">
-		    <span id="user" style="color:Red"></span>
-        <input name="password" type="password" class="form-control" placeholder="输入密码" onblur="PwdInvalid()">
-		    <span id="pwd" style="color:Red"></span>
-        <input class="btn btn-lg btn-primary" type="submit" value="登录"/>
+        <img src="{{STATIC_PREFIX}}img_sys/fujitsu.png" class="offset" height="180px">
+        <input name="username" type="text" class="form-control offset" placeholder="用户名" onblur="NameInvalid()">
+		    <span class="offset" id="user" style="color:Red"></span>
+        <input name="password" type="password" class="form-control offset" placeholder="输入密码" onblur="PwdInvalid()">
+		    <span class="offset" id="pwd" style="color:Red"></span>
+        <p><input class="btn btn-lg btn-primary" style="margin-left:280px" type="submit" value="登录"/></p>
       </form>
     </div>
     <!-- /container -->

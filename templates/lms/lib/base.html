@@ -27,7 +27,7 @@
 			<a href="{% url 'login' %}">登出</a>
 		</div>
 		<div class="title">
-			<span><a href="index.html" style="color:#ffffff">FNST图书管理系统</a></span>
+			<span><a href="{% url 'lib:lib_putaway' %}" style="color:#ffffff">FNST图书管理系统</a></span>
 		</div>
 	</header>
 	<div class="content">
@@ -78,9 +78,6 @@
 						</ul>
 					</li>
 					<li>
-						<a href="#">统计报表</a>
-					</li>
-					<li>
 						<a href="#">系统设置</a>
 						<ul class="nav nav-child">
 							<li>
@@ -89,8 +86,13 @@
 							<li>
 								<a href="{% url 'lib:lib_password' %}">管理员账号</a>
 							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">邮件推送</a>
+						<ul class="nav nav-child">
 							<li>
-								<a href="{% url 'lib:lib_pushms' %}">推送</a>
+								<a href="{% url 'lib:lib_pushms' %}">邮件推送</a>
 							</li>
 						</ul>
 					</li>

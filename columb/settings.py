@@ -59,11 +59,11 @@ WSGI_APPLICATION = 'columb.wsgi.application'
 # DATABASES = {
 # 'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'pcms',
+#         'NAME': 'columb',
 #         'USER': 'root',
 #         'PASSWORD': '980723',
 #         'HOST': '',  
-#         'PORT': '',  
+#         'PORT': '3306',  
 #     }
 # }
 

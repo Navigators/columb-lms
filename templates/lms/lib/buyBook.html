@@ -38,8 +38,8 @@
 			{% endfor %}
 		</table>
 		</div>
-		<div class="nextTable">
 		<p id="buyBar" class="bookListBar">准备购入书单</p>
+		<div class="nextTable">
 		<table class="table" id="buy">
 			<tr>
 				<th>NO</th>
@@ -154,7 +154,9 @@
 		);
 		var width = $('p').width();
 		$('table').css('width',width);
-		$('.nextTable').css('overflow','auto');
+		$('.nextTable').each(function() {
+			hoverTable(this);
+		})
 		$(window).resize(function() {
 			width = $('p').width();
 			$('table').css('width',width);

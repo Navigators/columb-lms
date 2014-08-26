@@ -192,6 +192,7 @@
 {% block js %}
 <script>
 $(document).ready(function(){
+
     var data_url="{% url 'lib:lib_retrieve' %}?json_isbn={{isbn}}"
         $.getJSON(
         data_url,  

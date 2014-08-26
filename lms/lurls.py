@@ -8,9 +8,11 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    url(r'^$', lib_view.lib_index),
-    url(r'^index/$', lib_view.lib_index, name="lib_index"),
+#     url(r'^$', lib_view.lib_index),
+#     url(r'^index/$', lib_view.lib_index, name="lib_index"),
     
+    url(r'^$', lib_view.lib_putaway),
+    url(r'^index/$', lib_view.lib_putaway),
     url(r'^putaway/$', lib_view.lib_putaway, name="lib_putaway"),
     url(r'^retrieve/$', lib_view.lib_retrieve, name="lib_retrieve"),
     url(r'^booklist/$', lib_view.lib_get_book_list, name="lib_booklist"),

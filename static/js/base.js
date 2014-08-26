@@ -150,12 +150,25 @@
 				}
 			});
 		});
-		$('#resultTable').hoverDelay({
+		/*$('#resultTable').hoverDelay({
 			hoverEvent: function() {
 				$('#resultTable').css('overflow','auto');
 			},
 			outEvent: function() {
 				$('#resultTable').css('overflow','hidden');
+			}
+		});*/
+	}
+
+	//idcls为table外层的div，参数为'.class'或者'#id'，使过长的table首次加载看起来没有异样，hover操作才会有滚动条
+	function hoverTable(idcls) {
+		$(idcls).css('overflow','hidden');
+		$(idcls).hoverDelay({
+			hoverEvent: function() {
+				$(idcls).css('overflow','auto');
+			},
+			outEvent: function() {
+				$(idcls).css('overflow','hidden');
 			}
 		});
 	}
@@ -193,9 +206,11 @@ function showTdContent(){
 	})
 }
 
+
 $(function() {
 	showTdContent();
 	choosen();
 	aside();
 	customizeTable();
+	hoverTable('#resultTable');
 })

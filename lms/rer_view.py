@@ -1,5 +1,6 @@
 # -*-coding:utf-8 -*-
 from datetime import timedelta
+import datetime
 import json
 import re
 import urllib2
@@ -8,7 +9,8 @@ from django.contrib.auth import authenticate
 from django.core import serializers
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.utils.datetime_safe import datetime
+from django.utils import timezone
+import django.utils
 from django.utils.timezone import now
 
 from lms.login_view import is_login_rer, get_rer_name
@@ -82,10 +84,10 @@ def reader_loan(request):
         if request.GET.get("json_name"):
             query_list = query_list.filter(copy__book__name__contains=request.GET.get("json_name"))
         if request.GET.get("json_date_from"):
-            date_time_from = datetime.strptime(request.GET.get("json_date_from"), "%Y-%m-%d")
+            date_time_from = django.utils.datetime_safe.datetime.strptime(request.GET.get("json_date_from"), "%Y-%m-%d")
             query_list = query_list.filter(loan_date_time__gte=date_time_from)
         if request.GET.get("json_date_to"):
-            date_time_to = datetime.strptime(request.GET.get("json_date_to"), "%Y-%m-%d")
+            date_time_to = django.utils.datetime_safe.datetime.strptime(request.GET.get("json_date_to"), "%Y-%m-%d")
             query_list = query_list.filter(loan_date_time__lte=date_time_to)
         if request.GET.get("json_status"):
             code_num = request.GET.get("json_status")
@@ -99,6 +101,34 @@ def reader_loan(request):
             return HttpResponse(data, content_type='json')
     else:
         error_query = "请先选择查询条件后再进行查询"
+    
+    if request.GET.get("json_reloan_id"):
+        loan_id= int(request.GET.get("json_reloan_id"))
+        # check if loan record exists
+        if LoanList.objects.filter(id=loan_id, is_return=False):
+            mloan = LoanList.objects.get(id=loan_id, is_return=False)
+        else:
+            return HttpResponse('{"state":"loan record not found"}') 
+        mreader = mloan.reader
+        # check if reader has book that didnt return in time 
+        loan_list_set = LoanList.objects.filter(reader=mreader, is_return=False)
+        if loan_list_set:
+            for ml in loan_list_set:
+                if timezone.now().date() > ml.should_return_date:
+                    return HttpResponse('{"state":"book beyond date"}') 
+
+        # check reloan times
+        if mloan.reloan_times < mreader.cate.reloan_times:
+            mloan.reloan_times += 1 
+        else:
+            return HttpResponse('{"state":"cannot reloan any more"}') 
+        # check if on five days before deadline
+        if timezone.now().date() < mloan.should_return_date - datetime.timedelta(days=5):
+            return HttpResponse('{"state":"cannot reloan yet"}') 
+        # modify next line when user module added!
+        mloan.should_return_date = mloan.should_return_date + datetime.timedelta(days=mreader.cate.reloan_days)
+        mloan.save()
+        return HttpResponse('{"state":"success"}')
     
     return render(request, 'lms/reader/myLoan.html', {'username':get_rer_name(request), 'error_query':error_query, })
 

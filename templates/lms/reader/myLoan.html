@@ -64,6 +64,11 @@
 <script type="text/javascript">
 	var loan_id="";
 	var rating="";
+	
+	function removeAlert() {
+		$('.alert').remove();
+	}
+	
 	function submitComment() {
 		var add_url="{% url 'rer:reader_loan' %}?json_id="+loan_id+"&json_comment="+$("#comment").val()+"&json_rating="+rating;
 		$.getJSON(
@@ -89,6 +94,7 @@
 	}
 
 	function setEmpty() {
+		removeAlert();
 		$('#bookName').val('');
 		$('#dateFrom').val('');
 		$('#dateTo').val('');
@@ -96,6 +102,7 @@
 	}
 
 	function seeComment(id) {
+		removeAlert();
 		$('#bookComment i').each(function(index) {
 			$(this).unbind('click');
 		});
@@ -117,6 +124,7 @@
 	}
 
 	function writeComment(id) {
+		removeAlert();
 		$("#comment").removeAttr('disabled','disabled');
 		starClick();
 		loan_id=id;
@@ -138,6 +146,29 @@
 		console.log(""+id);
 	}
 
+	function reloanOperator(id){
+		removeAlert();
+		$(".table").next('p').remove();
+		var add_url="{% url 'rer:reader_loan' %}?json_reloan_id="+id;
+		$.getJSON(
+    	add_url,  
+    	function(data){
+    		console.log(data);
+    		reloanMsg(data,id);
+		});
+	}
+	
+	function reloanMsg(data,id) {
+		var msg = data['state'];
+		console.log(msg);
+		if (msg == 'success') {
+			$('.titleBar').after('<div class="alert alert-success" role="alert">续借成功！</div>');
+		} else {
+			$('.titleBar').after('<div class="alert alert-danger" role="alert">续借失败！</div>');
+		}
+		$('td#'+id).next().find('a').remove();
+	}
+	
 	function commentUp() {
 		$('#bookComment').slideUp('slow');
 	}
@@ -166,6 +197,9 @@
 		var loan_date="";
 		var should_return_date=""
 		var id=""
+		var reloan_times="";
+		var has_reloan_times="";
+		console.log(data);
 		$(".bookRaw").remove();
 	    $.each(data,function(i,item){
 	    	$.each(item,function(key,value){
@@ -181,6 +215,8 @@
 	    									name=___value;
 	    							});
 	    					});
+	    				if(_key=="reader")
+	    					reloan_times=_value['2']['1']
 	    				if(_key=="reloan_date")
 	    					if(_value==null)
 	    						is_reloan=false;
@@ -192,6 +228,8 @@
 	    					is_return=_value;
 	    				if(_key=="should_return_date")
 	    					should_return_date=_value;
+	    				if(_key=="reloan_times")
+	    					has_reloan_times=_value;
 	    			});
 	    	});
 	    	if(is_reloan)
@@ -201,8 +239,8 @@
 	    			var start=new Date(should_return_date.replace("-","/"));
 	    			var end=new Date();
 	    			if(start>=end)
-	    				if(start-end<=5)
-	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td>续借</td></tr>");
+	    				if(start-end<=5*24*3600*1000 && has_reloan_times<reloan_times)
+	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td><a href='javascript:reloanOperator("+id+")'>续借</a></td></tr>");
 	    				else
 	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='xujie'>续借</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td></td></tr>");
 	    			else
@@ -215,8 +253,8 @@
 	    			var start=new Date(should_return_date.replace("-","/"));
 	    			var end=new Date();
 	    			if(start>=end)
-	    				if(start-end<=10)
-	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td>续借</td></tr>");
+	    				if(start-end<=5*24*3600*1000 && has_reloan_times<reloan_times)
+	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td><a href='javascript:reloanOperator("+id+")'>续借</a></td></tr>");
 	    				else
 	    					$(".table").append("<tr class='bookRaw'><td>"+name+"</td><td id='jieshu'>借书</td><td>"+loan_date+"</td><td>未还</td><td id="+id+"><a href='javascript:writeComment("+id+")'>写书评</a></td><td></td></tr>");
 	    			else
@@ -290,7 +328,7 @@
 	}
 
 	$(function() {
-		shortPageFooter();
+		/*shortPageFooter();*/
 		setThWidth();
 		/*$('#bookComment i').each(function(index) {
     		$(this).on('click', function() {
