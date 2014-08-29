@@ -56,12 +56,12 @@ WSGI_APPLICATION = 'columb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-# DATABASES = {
+#DATABASES = {
 # 'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'columb',
 #         'USER': 'root',
-#         'PASSWORD': '980723',
+#         'PASSWORD': '',
 #         'HOST': '',  
 #         'PORT': '3306',  
 #     }

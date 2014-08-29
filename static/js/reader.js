@@ -3,8 +3,7 @@ function indexLayout() {
 	var navY = $('section nav').offset().top;
 	$('section nav').css({
 		'position':'fixed',
-		'left': navX,
-		'top': navY
+		'top': navY,
 	});
 		//改变窗口大小时，现获取section的位置，重新定位
 	$(window).resize(function() {
@@ -14,12 +13,29 @@ function indexLayout() {
 			$('section nav').css({
 				'height':'350px',
 			});
+			$('.categoryList').css({
+				'height':'220px',
+			});
 		} else {
 			$('section nav').css({
 				'height':'450px',
 			});
+			$('.categoryList').css({
+				'height':'320px',
+			});
 		}
 	});
+
+	$('.categoryList').hover(
+		function() {
+			console.log('hoverIn');
+			$(this).css('overflow-y','auto');
+		}, 
+		function() {
+			console.log('hoverOut');
+			$(this).css('overflow-y','hidden');	
+		}
+	);
 }
 
 function baseLayout() {

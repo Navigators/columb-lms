@@ -243,7 +243,7 @@ $(function() {
 									if(_key=="reader"){
 										readername=_value['1'];
 										username=_value['0'];
-										readercate=_value['2'];
+										readercate=_value['2']['0'];
 										readerdept=_value['4'];
 									}
 									if(_key=="return_operator")
@@ -259,7 +259,7 @@ $(function() {
 						$(".table").append("<tr class='choosen'><td>"+loan_date+"</td><td>"+name+"</td><td>"+type+"</td><td>"+isbn+"</td><td>"+barcode+"</td><td>"+cate+"</td><td>"+readername+"</td><td>"+username+"</td><td>"+readercate+"</td><td>"+readerdept+"</td><td>"+should_return_date+"</td><td>"+loan_operator+"</td><td>"+return_operator+"</td></tr>");
 					});
 noData();
-newTableTd();
+newTableTd13();
 },
 error: function(xhr, status, error) {
 	console.log('status:'+status+',error:'+error);

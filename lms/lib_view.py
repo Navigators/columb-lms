@@ -55,6 +55,13 @@ def lib_buybook(request):
                                 price=book_apply.price,
                                 requester=book_apply.requester,
                                 )
+        _reader = Readers.objects.get(username = book_apply.requester)
+        _readername = '"' + _reader.name + '"'
+        _readeremail = _reader.email
+        runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar accept ' + _readername + ' '+book_apply.name + ' ' + _readeremail
+        runparam = runparam.encode('utf8')
+        os.popen(runparam)
+
         book_apply.delete()     
         data = serialize_buybook()
         return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
@@ -71,6 +78,13 @@ def lib_buybook(request):
                                 price=book_apply.price,
                                 requester=book_apply.requester,
                                 )
+        _reader = Readers.objects.get(username = book_apply.requester)
+        _readername = '"' + _reader.name + '"'
+        _readeremail = _reader.email
+        runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar deny ' + _readername + ' '+book_apply.name + ' ' + _readeremail
+        runparam = runparam.encode('utf8')
+        os.popen(runparam)
+
         book_apply.delete()
         data = serialize_buybook()
         return HttpResponse(json.dumps(data, sort_keys=True, ensure_ascii=False), content_type='json')
@@ -195,7 +209,10 @@ def lib_add_copies(request):
     isbn_string = request.POST['isbn']
     if not Books.objects.filter(isbn=isbn_string):
         lib = Librarians.objects.get(username=request.user.username)
-        pic_path = save_image(request.POST['bookimage'], isbn_string)
+	if request.POST['bookimage']:
+            pic_path = save_image(request.POST['bookimage'], isbn_string)
+	else:
+	    pic_path ="default.jpg"
         _cate_id = request.POST['categoryID']
         lib.books_set.create(
                                 isbn=isbn_string,
@@ -377,6 +394,7 @@ def reader_to_dict(reader):
     readerdict['cate'] = reader.cate.name
     readerdict['corp'] = reader.corp.name
     readerdict['dept'] = reader.dept.name
+    readerdict['pic'] = reader.pic_location
     return readerdict
 
 def get_state_list():
@@ -418,17 +436,21 @@ def lib_borrow(request):
     if Readers.objects.filter(pk=readerid):
         mreader = Readers.objects.get(pk=readerid)
     else:
-        return HttpResponse('{"state":"reader not found"}') 
+        return HttpResponse('{"state":"未找到此读者。"}') 
     # check if copy exists
     if Copies.objects.filter(pk=copyid):
         mcopy = Copies.objects.get(pk=copyid)
     else:
-        return HttpResponse('{"state":"copy not found"}') 
+        return HttpResponse('{"state":"未找到此复本。"}') 
+    loan_list_set = LoanList.objects.filter(reader=mreader, is_return=False)
+    # check if reaches book limit
+    if len(loan_list_set) >= mreader.cate.limit_books_count:
+        return HttpResponse('{"state":"已达到借书本数上线。"}') 
     # check if copy can be borrowed
     if LoanList.objects.filter(copy=mcopy, is_return=False):
-        return HttpResponse('{"state":"copy is borrowed"}') 
+        return HttpResponse('{"state":"此复本已借出。"}') 
     if mcopy.state.name != u'可借':
-        return HttpResponse('{"state":"book is ' + mcopy.book.book_type.name + '"}') 
+        return HttpResponse('{"state":"此复本为不可借状态。"}') 
     # check if reader can borrow japanese book
     if mcopy.book.isbn[0:4] == "9784":
         flag = True
@@ -436,18 +458,17 @@ def lib_borrow(request):
         flag = False
     if flag:
         if not mreader.cate.loan_books_jp:
-            return HttpResponse('{"state":"cant borrow japanese books"}') 
+            return HttpResponse('{"state":"该读者无权限借日文书籍。"}') 
     # check if reader has book that didnt return in time 
-    loan_list_set = LoanList.objects.filter(reader=mreader, is_return=False)
     if loan_list_set:
         for ml in loan_list_set:
             if ml.should_return_date < timezone.now().date():
-                return HttpResponse('{"state":"book beyond date"}') 
+                return HttpResponse('{"state":"借《'+mcopy.book.name.encode('UTF-8') +'》失败，发现图书《'+ml.copy.book.name.encode('UTF-8')+'》逾期未归还。"}') 
     # modify next line when user module added!
     mloan_operator = Librarians.objects.get(username=request.user.username)
     mis_return = False
     if LoanList.objects.filter(copy=mcopy, is_return=False):
-        return HttpResponse('{"state":"loan record not found"}') 
+        return HttpResponse('{"state":"此复本已借出。"}') 
     else:
         mlimit_days = mreader.cate.limit_days
         mshould_return_date = timezone.now() + datetime.timedelta(days=mlimit_days)
@@ -477,11 +498,11 @@ def lib_return(request):
     if Copies.objects.filter(pk=copyid):
         mcopy = Copies.objects.get(pk=copyid)
     else:
-        return HttpResponse('{"state":"copy not found"}') 
+        return HttpResponse('{"state":"未找到此复本。"}') 
     if LoanList.objects.filter(copy=mcopy, is_return=False):
         mloan = LoanList.objects.get(copy=mcopy, is_return=False)
     else:
-        return HttpResponse('{"state":"loan record not found"}') 
+        return HttpResponse('{"state":"未找到借书记录。"}') 
     # modify next line when user module added!
     mreturn_operator = Librarians.objects.get(username=request.user.username)
     mreader = mloan.reader
@@ -522,28 +543,28 @@ def lib_reloan(request):
     if Copies.objects.filter(pk=copyid):
         mcopy = Copies.objects.get(pk=copyid)
     else:
-        return HttpResponse('{"state":"copy not found"}') 
+        return HttpResponse('{"state":"未找到此复本。"}') 
     # check if loan record exists
     if LoanList.objects.filter(copy=mcopy, is_return=False):
         mloan = LoanList.objects.get(copy=mcopy, is_return=False)
     else:
-        return HttpResponse('{"state":"loan record not found"}') 
+        return HttpResponse('{"state":"未找到借书记录。"}') 
     mreader = mloan.reader
     # check if reader has book that didnt return in time 
     loan_list_set = LoanList.objects.filter(reader=mreader, is_return=False)
     if loan_list_set:
         for ml in loan_list_set:
             if timezone.now().date() > ml.should_return_date:
-                return HttpResponse('{"state":"book beyond date"}') 
+                return HttpResponse('{"state":"此复本已逾期，无法续借。"}') 
 
     # check reloan times
     if mloan.reloan_times < mreader.cate.reloan_times:
         mloan.reloan_times += 1 
     else:
-        return HttpResponse('{"state":"cannot reloan any more"}') 
+        return HttpResponse('{"state":"续借次数已满，无法再次续借。"}') 
     # check if on five days before deadline
-    if timezone.now().date() < mloan.should_return_date - datetime.timedelta(days=5):
-        return HttpResponse('{"state":"cannot reloan yet"}') 
+    if timezone.now().date() < mloan.should_return_date - datetime.timedelta(days=10):
+        return HttpResponse('{"state":"还未到续借时间。"}') 
     # modify next line when user module added!
     mloan.reloan_operator = Librarians.objects.get(username=request.user.username)
     mloan.should_return_date = mloan.should_return_date + datetime.timedelta(days=mreader.cate.reloan_days)
@@ -627,16 +648,16 @@ def lib_borrow_record(request):
     _item_dict['1'] = 'loan_date_time'
     _item_dict['2'] = 'copy__book__name'
     _item_dict['3'] = 'copy__book__book_type__name'
-    _item_dict['4'] = 'copy__barcode'
-    _item_dict['5'] = 'copy__book__isbn'
+    _item_dict['4'] = 'copy__book__isbn'
+    _item_dict['5'] = 'copy__barcode'
     _item_dict['6'] = 'copy__book__cate__name'
     _item_dict['7'] = 'reader__name'
     _item_dict['8'] = 'reader__username'
     _item_dict['9'] = 'reader__cate__name'
     _item_dict['10'] = 'reader__dept__name'
     _item_dict['11'] = 'should_return_date'
-    _item_dict['12'] = 'loan_operator'
-    _item_dict['13'] = 'return_operator'
+    _item_dict['12'] = 'loan_operator__username'
+    _item_dict['13'] = 'return_operator__username'
     
     _condition_dict = {}
     _condition_dict['l'] = '__lt' 
@@ -823,6 +844,7 @@ def lib_push_message_all(request):
     _username_list = request.user.email.split('@')
     _username = _username_list[0]
     runparam = 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar push ' + _subject + ' ' + _content + ' ' + _username + ' ' + _password
+    print(runparam)
     runparam = runparam.encode('utf8')
     os.popen(runparam)
     return HttpResponse('{"state":"push done"}')

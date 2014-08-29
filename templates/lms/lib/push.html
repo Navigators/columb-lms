@@ -159,7 +159,7 @@
 			})
 			$('#push').on('click', function() {
 				var pushsubject = $('#push-title').val();
-				var pushcontent = $('#push-content').val();	
+				var pushcontent = $('#push-content').val().replace(/\n/g,'<br>');
 				var password = $('#password').val();
 				$.ajax({
 					url:'{% url "lib:lib_pushms" %}',

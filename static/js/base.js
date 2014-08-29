@@ -183,12 +183,40 @@
 					$(this).removeAttr('checked');
 					console.log('这是第'+index+'个');
 					var length = $(this).parent().next().find('tr').length;
+					$(this).parent().next().find('tr th:eq('+index+')').hide();
 					for (var i=0; i<length; i++) {
 						$(this).parent().next().find('tr:eq('+i+')').find('td:eq('+index+')').hide();
 					}
 				} else {
 					$(this).attr('checked','checked');
 					var length = $(this).parent().next().find('tr').length;
+					$(this).parent().next().find('tr th:eq('+index+')').show();
+					for (var i=0; i<length; i++) {
+						$(this).parent().next().find('tr:eq('+i+')').find('td:eq('+index+')').show();
+					}
+				}
+			});
+		});
+	}
+
+	function newTableTd13() {
+		$('#tableItems').html('');
+		$('#tableItems').html('<input type="checkbox"><label>借出日期</label><input type="checkbox"><label>书刊名称</label><input type="checkbox"><label>馆藏类型</label><input type="checkbox"><label>书刊条号</label><input type="checkbox"><label>复本条号</label><input type="checkbox"><label>索书号</label><input type="checkbox"><label>读者姓名</label><input type="checkbox"><label>读者工号</label><input type="checkbox"><label>读者类别</label><input type="checkbox"><label>读者部门</label><input type="checkbox"><label>应还日期</label><input type="checkbox"><label>借书操作员</label><input type="checkbox"><label>还书操作员</label>');
+		$('#tableItems input').attr('checked','checked');
+		$('#tableItems input').each(function(index) {
+			$(this).click(function(){
+				if ($(this).attr('checked') == 'checked') {
+					$(this).removeAttr('checked');
+					console.log('这是第'+index+'个');
+					var length = $(this).parent().next().find('tr').length;
+					$(this).parent().next().find('tr th:eq('+index+')').hide();
+					for (var i=0; i<length; i++) {
+						$(this).parent().next().find('tr:eq('+i+')').find('td:eq('+index+')').hide();
+					}
+				} else {
+					$(this).attr('checked','checked');
+					var length = $(this).parent().next().find('tr').length;
+					$(this).parent().next().find('tr th:eq('+index+')').show();
 					for (var i=0; i<length; i++) {
 						$(this).parent().next().find('tr:eq('+i+')').find('td:eq('+index+')').show();
 					}

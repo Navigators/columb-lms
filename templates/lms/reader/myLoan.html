@@ -6,9 +6,9 @@
 		<div class="titleBar">
 			我的借阅
 		</div>
-		<!-- <div class="alert alert-warning" role="alert">
-			您的图书逾期，已经不能续借，也不能再借书，请尽快把书还至图书馆！
-		</div> -->
+		<div class="alert alert-danger" role="alert" display="none">
+			您的图书逾期，请尽快把书还至图书馆！
+		</div>
 	</header>
 	<section>
 		<div class="queryBar">
@@ -329,6 +329,11 @@
 
 	$(function() {
 		/*shortPageFooter();*/
+		var isOverdue = {{isoverdue}};
+		console.log(isOverdue);
+		if (isOverdue == '1') {
+			$('.alert').show();
+		} 
 		setThWidth();
 		/*$('#bookComment i').each(function(index) {
     		$(this).on('click', function() {

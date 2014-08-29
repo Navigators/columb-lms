@@ -47,6 +47,13 @@ def reader_loan(request):
         return HttpResponseRedirect('/index/')
     error_query = ""
     query_list = LoanList.objects.all()
+    _start_date = datetime.date(2010,1,1)
+    _end_date = (timezone.now()- datetime.timedelta(days = 1)).date()
+    if LoanList.objects.filter(is_return = False,should_return_date__range = (_start_date,_end_date)):
+        isoverdue = '1'
+    else:
+        isoverdue = '0'
+    
     
     if request.GET.get("json_id"):
         if request.GET.get("json_comment"):
@@ -130,7 +137,7 @@ def reader_loan(request):
         mloan.save()
         return HttpResponse('{"state":"success"}')
     
-    return render(request, 'lms/reader/myLoan.html', {'username':get_rer_name(request), 'error_query':error_query, })
+    return render(request, 'lms/reader/myLoan.html', {'username':get_rer_name(request), 'error_query':error_query, 'isoverdue':isoverdue})
 
 def reader_point(request):
     if not is_login_rer(request):

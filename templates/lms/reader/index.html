@@ -1,6 +1,21 @@
 {% extends "lms/reader/readerBase.html" %} 
 {% block title %}首页{%endblock %}
 {% block content %}
+<style type="text/css">
+.booksNum {
+	margin-left:-25px;
+	margin-top:-10px;
+	width:23px;
+	height: 23px;
+	line-height: 23px;
+	background-color: #FAF1C3;
+	color:#ffffff;
+	float:left;
+	-moz-border-radius: 50px; 
+	-webkit-border-radius: 50px; 
+	border-radius: 50px; 
+}
+</style>
 <nav>
 	<div class="titleBar" style="width:240px;margin:-10px">图书分类</div>
 	<div class="search">
@@ -21,7 +36,7 @@
 	<ul class="bookList" style="margin-top:30px">
 		{% for book in popular_books %}
 		<li>
-			<a class="img" href="{% url 'rer:reader_book_detail' book.id %}"><img src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}" title="{{book.name}}"></a>
+			<a class="img" href="{% url 'rer:reader_book_detail' book.id %}"><!-- <div class="booksNum">3</div> --><img src="{{STATIC_PREFIX}}img_user/{{book.pic_location}}" title="{{book.name}}"></a>
 			<p class="bookName">{{book.name}}</p>
 			<div class="stars rating">
 				<span style="display:none">{{book.rating_sum}}</span>
@@ -32,6 +47,10 @@
 				<i class="star-4">★</i>
 				<i class="star-5">★</i>
 			</div>
+			<!-- add template data here -->
+			<span style="display:none">{{book.total_count}}</span>
+			<span style="display:none">{{book.loan_count}}</span>
+			<p>books: </p>
 		</li>
 		{% endfor %}
 	</ul>
@@ -120,10 +139,12 @@
 	
 	function parser(data) {
 		var name="";
-	    var pic="";
+	        var pic="";
 		var rating_sum="";
 		var rating_count="";
 		var id="";
+                var total="0"
+		var loan="0"
 		$(".bookRow").remove();
 		$(".pager").remove();
 	    $.each(data,function(i,item){
@@ -144,22 +165,35 @@
     						rating_count=_value;
     					if(_key=="rating_sum")
     						rating_sum=_value;
+                                        if(_key=="total_count")
+    						total=_value;
+    					if(_key=="loan_count")
+    						loan=_value;
     				});
 	    	});
-	    	$("#row"+Math.floor(i/3)).append("<li><a class='img' href='/rer/bookdetails/"+id+"'><img src='{{STATIC_PREFIX}}img_user/"+pic+"' title='"+name+"'></a><p class='bookName'>"+name+"</p><div class='stars rating'><span style='display:none'>"+rating_sum+"</span><span style='display:none'>"+rating_count+"</span><i class='star-1'>★</i><i class='star-2'>★</i><i class='star-3'>★</i><i class='star-4'>★</i><i class='star-5'>★</i></div></li>");
+		var rest = total-loan;
+		console.log(rest);
+		console.log(total);
+		console.log(loan);
+	    	$("#row"+Math.floor(i/3)).append("<li><a class='img' href='/rer/bookdetails/"+id+"'><img src='{{STATIC_PREFIX}}img_user/"+pic+"' title='"+name+"'></a><p class='bookName'>"+name+"</p><div class='stars rating'><span style='display:none'>"+rating_sum+"</span><span style='display:none'>"+rating_count+"</span><i class='star-1'>★</i><i class='star-2'>★</i><i class='star-3'>★</i><i class='star-4'>★</i><i class='star-5'>★</i></div><div>可借: "+rest+"/"+total+"</div></li>");
 	    });
-	    drawStar();
+	    bookNumAndStar();
 	   /* $(".books").append("<div class='pages'><ul class='pager'><li><a href='#'>上一页</a></li><li><a href='#'>下一页</a></li></ul></div>");*/
 	}
 	
-	function drawStar() {
+	function bookNumAndStar() {
 		$('.bookList li').each(function() {
 			var that = $(this);
 			var sum = $(this).find("span:eq(0)").text();
 			var num = $(this).find("span:eq(1)").text();
+			var totalBookNum = $(this).find("span:eq(2)").text();
+			var loanBookNum = $(this).find("span:eq(3)").text();
+			var restBookNum = totalBookNum-loanBookNum;
 			scoreToStar(Math.floor(sum*2/num),that);
+			$(this).find('p:eq(1)').html('可借：'+restBookNum+'/'+totalBookNum);
 		})
 	}
+
 	
 	$(function() {
 		indexLayout();

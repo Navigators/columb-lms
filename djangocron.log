@@ -1,1 +1,18 @@
+Sep 28, 2014 12:00:07 AM org.apache.commons.httpclient.auth.AuthChallengeProcessor selectAuthScheme
+INFO: NTLM authentication scheme selected
+Sep 28, 2014 12:00:08 AM org.apache.commons.httpclient.auth.AuthChallengeProcessor selectAuthScheme
+INFO: NTLM authentication scheme selected
+microsoft.exchange.webservices.data.ServiceResponseException: One or more recipients are invalid.
+	at microsoft.exchange.webservices.data.ServiceResponse.internalThrowIfNecessary(Unknown Source)
+	at microsoft.exchange.webservices.data.ServiceResponse.throwIfNecessary(Unknown Source)
+	at microsoft.exchange.webservices.data.MultiResponseServiceRequest.execute(Unknown Source)
+	at microsoft.exchange.webservices.data.ExchangeService.internalCreateItems(Unknown Source)
+	at microsoft.exchange.webservices.data.ExchangeService.createItem(Unknown Source)
+	at microsoft.exchange.webservices.data.Item.internalCreate(Unknown Source)
+	at microsoft.exchange.webservices.data.EmailMessage.internalSend(Unknown Source)
+	at microsoft.exchange.webservices.data.EmailMessage.sendAndSaveCopy(Unknown Source)
+	at columbmail.sendEmail(columbmail.java:111)
+	at columbmail.main(columbmail.java:43)
+<open file 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar overdue2 \xe4\xb8\x81\xe5\xbb\xba\xe5\xbd\xac Ruby\xe7\xb2\xbe\xe7\xb2\xb9\xe4\xb8\x93\xe5\xae\xb6\xe7\xbc\x96\xe7\xa8\x8b 2014-08-2814:14:16 2014-09-27 xiayc.fnst@cn.fujitsu.com', mode 'r' at 0x7f627219a1e0>
+<open file 'java -jar /home/guoyfnst/dev/place/django/columb/columbmail.jar overdue2 \xe9\xa2\x9c\xe6\x98\x8e\xe6\x97\xad \xe6\xad\xa3\xe8\x83\xbd\xe9\x87\x8f. 2, \xe5\xb9\xb8\xe8\xbf\x90\xe7\x9a\x84\xe6\x96\xb9\xe6\xb3\x95 2014-08-2814:15:33 2014-09-27 xiayc.fnst@cn.fujitsu.com', mode 'r' at 0x7f627219a1e0>
 time task complete
